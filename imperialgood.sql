@@ -1,0 +1,2217 @@
+-- --------------------------------------------------------
+-- Host:                         127.0.0.1
+-- Server version:               10.11.6-MariaDB - mariadb.org binary distribution
+-- Server OS:                    Win64
+-- HeidiSQL Version:             12.3.0.6589
+-- --------------------------------------------------------
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET NAMES utf8 */;
+/*!50503 SET NAMES utf8mb4 */;
+/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
+/*!40103 SET TIME_ZONE='+00:00' */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+
+
+-- Dumping database structure for rise
+CREATE DATABASE IF NOT EXISTS `rise` /*!40100 DEFAULT CHARACTER SET latin1 COLLATE latin1_swedish_ci */;
+USE `rise`;
+
+-- Dumping structure for table rise.imp_activity_logs
+CREATE TABLE IF NOT EXISTS `imp_activity_logs` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `created_at` datetime NOT NULL,
+  `created_by` int(11) NOT NULL,
+  `action` enum('created','updated','deleted','bitbucket_notification_received','github_notification_received') NOT NULL,
+  `log_type` varchar(30) NOT NULL,
+  `log_type_title` mediumtext NOT NULL,
+  `log_type_id` int(11) NOT NULL DEFAULT 0,
+  `changes` mediumtext DEFAULT NULL,
+  `log_for` varchar(30) NOT NULL DEFAULT '0',
+  `log_for_id` int(11) NOT NULL DEFAULT 0,
+  `log_for2` varchar(30) DEFAULT NULL,
+  `log_for_id2` int(11) DEFAULT NULL,
+  `deleted` tinyint(1) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`),
+  KEY `log_for` (`log_for`,`log_for_id`),
+  KEY `log_for2` (`log_for2`,`log_for_id2`),
+  KEY `log_type` (`log_type`,`log_type_id`),
+  KEY `created_by` (`created_by`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+
+-- Dumping data for table rise.imp_activity_logs: ~0 rows (approximately)
+
+-- Dumping structure for table rise.imp_announcements
+CREATE TABLE IF NOT EXISTS `imp_announcements` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `title` text NOT NULL,
+  `description` mediumtext NOT NULL,
+  `start_date` date NOT NULL,
+  `end_date` date NOT NULL,
+  `created_by` int(11) NOT NULL,
+  `share_with` mediumtext DEFAULT NULL,
+  `created_at` datetime NOT NULL,
+  `files` text NOT NULL,
+  `read_by` mediumtext DEFAULT NULL,
+  `deleted` int(11) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`),
+  KEY `created_by` (`created_by`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+
+-- Dumping data for table rise.imp_announcements: ~0 rows (approximately)
+
+-- Dumping structure for table rise.imp_article_helpful_status
+CREATE TABLE IF NOT EXISTS `imp_article_helpful_status` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `article_id` int(11) NOT NULL,
+  `status` enum('yes','no') NOT NULL,
+  `created_by` int(11) NOT NULL DEFAULT 0,
+  `created_at` datetime NOT NULL,
+  `deleted` tinyint(1) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+
+-- Dumping data for table rise.imp_article_helpful_status: ~0 rows (approximately)
+
+-- Dumping structure for table rise.imp_attendance
+CREATE TABLE IF NOT EXISTS `imp_attendance` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `status` enum('incomplete','pending','approved','rejected','deleted') NOT NULL DEFAULT 'incomplete',
+  `user_id` int(11) NOT NULL,
+  `in_time` datetime NOT NULL,
+  `out_time` datetime DEFAULT NULL,
+  `checked_by` int(11) DEFAULT NULL,
+  `note` text DEFAULT NULL,
+  `checked_at` datetime DEFAULT NULL,
+  `reject_reason` text DEFAULT NULL,
+  `deleted` int(11) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`),
+  KEY `user_id` (`user_id`),
+  KEY `checked_by` (`checked_by`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+
+-- Dumping data for table rise.imp_attendance: ~0 rows (approximately)
+
+-- Dumping structure for table rise.imp_automation_settings
+CREATE TABLE IF NOT EXISTS `imp_automation_settings` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `title` text NOT NULL,
+  `matching_type` enum('match_any','match_all') NOT NULL,
+  `event_name` text NOT NULL,
+  `conditions` text NOT NULL,
+  `actions` text NOT NULL,
+  `related_to` varchar(255) NOT NULL,
+  `status` enum('active','inactive') NOT NULL DEFAULT 'active',
+  `deleted` tinyint(1) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+
+-- Dumping data for table rise.imp_automation_settings: ~0 rows (approximately)
+
+-- Dumping structure for table rise.imp_checklist_groups
+CREATE TABLE IF NOT EXISTS `imp_checklist_groups` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `title` text NOT NULL,
+  `checklists` mediumtext NOT NULL,
+  `deleted` int(11) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+
+-- Dumping data for table rise.imp_checklist_groups: ~0 rows (approximately)
+
+-- Dumping structure for table rise.imp_checklist_items
+CREATE TABLE IF NOT EXISTS `imp_checklist_items` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `title` text NOT NULL,
+  `is_checked` int(11) NOT NULL DEFAULT 0,
+  `task_id` int(11) NOT NULL DEFAULT 0,
+  `sort` int(11) NOT NULL DEFAULT 0,
+  `deleted` int(11) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+
+-- Dumping data for table rise.imp_checklist_items: ~0 rows (approximately)
+
+-- Dumping structure for table rise.imp_checklist_template
+CREATE TABLE IF NOT EXISTS `imp_checklist_template` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `title` text NOT NULL,
+  `deleted` tinyint(1) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+
+-- Dumping data for table rise.imp_checklist_template: ~0 rows (approximately)
+
+-- Dumping structure for table rise.imp_ci_sessions
+CREATE TABLE IF NOT EXISTS `imp_ci_sessions` (
+  `id` varchar(128) NOT NULL,
+  `ip_address` varchar(45) NOT NULL,
+  `timestamp` timestamp NOT NULL DEFAULT current_timestamp(),
+  `data` blob NOT NULL,
+  KEY `ci_sessions_timestamp` (`timestamp`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+
+-- Dumping data for table rise.imp_ci_sessions: ~33 rows (approximately)
+INSERT INTO `imp_ci_sessions` (`id`, `ip_address`, `timestamp`, `data`) VALUES
+	('ci_session:nvhq0j8j0ouj37vt40j44lk692atle9k', '::1', '2024-10-11 03:47:53', _binary 0x5f5f63695f6c6173745f726567656e65726174657c693a313732383631383437333b5f63695f70726576696f75735f75726c7c733a34353a22687474703a2f2f6c6f63616c686f73742f696e6465782e7068702f73657474696e67732f657374696d61746573223b757365725f69647c733a313a2231223b),
+	('ci_session:eosa3mvmijtjfnfi7pt9t849q76m4aoc', '::1', '2024-10-11 03:42:18', _binary 0x5f5f63695f6c6173745f726567656e65726174657c693a313732383631383133363b5f63695f70726576696f75735f75726c7c733a32373a22687474703a2f2f6c6f63616c686f73742f696e6465782e7068702f223b757365725f69647c733a313a2231223b),
+	('ci_session:dr01vurpc5bg1d9i75us5rssqgseq98c', '::1', '2024-10-11 03:45:26', _binary 0x5f5f63695f6c6173745f726567656e65726174657c693a313732383631383332363b),
+	('ci_session:strpsaoho2v26iq18202s0cc4u0vrh5o', '::1', '2024-10-11 03:53:03', _binary 0x5f5f63695f6c6173745f726567656e65726174657c693a313732383631383738333b5f63695f70726576696f75735f75726c7c733a34343a22687474703a2f2f6c6f63616c686f73742f696e6465782e7068702f73657474696e67732f696e766f69636573223b757365725f69647c733a313a2231223b),
+	('ci_session:24de6mikea80bvs5l37b355rpd7er76l', '::1', '2024-10-11 03:51:22', _binary 0x5f5f63695f6c6173745f726567656e65726174657c693a313732383631383638323b),
+	('ci_session:saata0ruduk7mrdqcsv2mj99k8v7jn2c', '::1', '2024-10-11 03:58:24', _binary 0x5f5f63695f6c6173745f726567656e65726174657c693a313732383631393130343b5f63695f70726576696f75735f75726c7c733a34343a22687474703a2f2f6c6f63616c686f73742f696e6465782e7068702f73657474696e67732f696e766f69636573223b757365725f69647c733a313a2231223b),
+	('ci_session:e04khh1auumep0lpq7lui9m5gsagehmh', '::1', '2024-10-11 03:53:04', _binary 0x5f5f63695f6c6173745f726567656e65726174657c693a313732383631383738343b),
+	('ci_session:vdql99rffqf00hb5dql602mjfph17on6', '::1', '2024-10-11 04:03:36', _binary 0x5f5f63695f6c6173745f726567656e65726174657c693a313732383631393431363b5f63695f70726576696f75735f75726c7c733a34323a22687474703a2f2f6c6f63616c686f73742f696e6465782e7068702f696e766f696365732f766965772f32223b757365725f69647c733a313a2231223b),
+	('ci_session:d3ajjaf9h4l7rnlf7amv8ckdpibu9fse', '::1', '2024-10-11 03:59:01', _binary 0x5f5f63695f6c6173745f726567656e65726174657c693a313732383631393134313b),
+	('ci_session:r9s6nmjpbrvsurvkp3di5ld3tcotn9np', '::1', '2024-10-11 03:59:04', _binary 0x5f5f63695f6c6173745f726567656e65726174657c693a313732383631393134343b),
+	('ci_session:mdekuudbg96o7mt9a76393f2mosts9ls', '::1', '2024-10-11 04:01:47', _binary 0x5f5f63695f6c6173745f726567656e65726174657c693a313732383631393330373b),
+	('ci_session:h7epi0tafsp65s2fbmp68mtvqn3bnu03', '::1', '2024-10-11 04:01:49', _binary 0x5f5f63695f6c6173745f726567656e65726174657c693a313732383631393330393b),
+	('ci_session:4p1keptkqr7tn64snn86bur8ji113ajg', '::1', '2024-10-11 04:02:11', _binary 0x5f5f63695f6c6173745f726567656e65726174657c693a313732383631393333313b),
+	('ci_session:rplghg2820ligrg1fllihg57gfd8c80p', '::1', '2024-10-11 04:02:13', _binary 0x5f5f63695f6c6173745f726567656e65726174657c693a313732383631393333333b),
+	('ci_session:lt5d0ssk3ojlelm078geepjs6vb3vbtv', '::1', '2024-10-11 04:02:20', _binary 0x5f5f63695f6c6173745f726567656e65726174657c693a313732383631393334303b),
+	('ci_session:76ohrb23fol0og0oh6tgujjcc0e71vlm', '::1', '2024-10-11 04:02:27', _binary 0x5f5f63695f6c6173745f726567656e65726174657c693a313732383631393334373b),
+	('ci_session:prgpb6kpjjicp32shkn27gork2cgv36s', '::1', '2024-10-11 04:02:43', _binary 0x5f5f63695f6c6173745f726567656e65726174657c693a313732383631393336333b),
+	('ci_session:haeuvq9fq0mm4ktptpm82gktcjs13ojn', '::1', '2024-10-11 04:02:58', _binary 0x5f5f63695f6c6173745f726567656e65726174657c693a313732383631393337383b),
+	('ci_session:mdpgiijh2g1grovd4buhhnp6hb0duni5', '::1', '2024-10-11 04:03:02', _binary 0x5f5f63695f6c6173745f726567656e65726174657c693a313732383631393338323b),
+	('ci_session:5cu7sk80rfnf1b6abnlgrphsfaq9gkq6', '::1', '2024-10-11 04:03:18', _binary 0x5f5f63695f6c6173745f726567656e65726174657c693a313732383631393339383b),
+	('ci_session:ol06nrllefrbi5rc9ph1hl00kl69826u', '::1', '2024-10-11 04:03:20', _binary 0x5f5f63695f6c6173745f726567656e65726174657c693a313732383631393430303b),
+	('ci_session:avkfemupgkdfkag8pkqan9ulpsk5p625', '::1', '2024-10-11 04:20:21', _binary 0x5f5f63695f6c6173745f726567656e65726174657c693a313732383632303432303b5f63695f70726576696f75735f75726c7c733a34323a22687474703a2f2f6c6f63616c686f73742f696e6465782e7068702f696e766f696365732f766965772f33223b757365725f69647c733a313a2231223b),
+	('ci_session:h5u2ddmop89ur1p6ov9ctvp10oum21mp', '::1', '2024-10-11 04:03:36', _binary 0x5f5f63695f6c6173745f726567656e65726174657c693a313732383631393431363b),
+	('ci_session:9hlvj7uf51ctbn1oebe0pud621m55952', '::1', '2024-10-11 04:03:45', _binary 0x5f5f63695f6c6173745f726567656e65726174657c693a313732383631393432353b),
+	('ci_session:kqjgk14rbio1303coaacv4vm57ltusss', '::1', '2024-10-11 04:03:47', _binary 0x5f5f63695f6c6173745f726567656e65726174657c693a313732383631393432373b),
+	('ci_session:7alh4r44q0ncsplvekgecknvbkb9uatl', '::1', '2024-10-11 04:03:50', _binary 0x5f5f63695f6c6173745f726567656e65726174657c693a313732383631393433303b),
+	('ci_session:2jf0rdg6bu650b2q6uigmhndm6ifodqv', '::1', '2024-10-11 04:04:03', _binary 0x5f5f63695f6c6173745f726567656e65726174657c693a313732383631393434333b),
+	('ci_session:o9ioss12ca7r4g41ocu6nnfpb1tdch14', '::1', '2024-10-11 04:08:44', _binary 0x5f5f63695f6c6173745f726567656e65726174657c693a313732383631393732343b5f63695f70726576696f75735f75726c7c733a34323a22687474703a2f2f6c6f63616c686f73742f696e6465782e7068702f696e766f696365732f766965772f33223b757365725f69647c733a313a2231223b),
+	('ci_session:dipu09djeqk26j7d02r638cgb2lql9pc', '::1', '2024-10-11 04:28:02', _binary 0x5f5f63695f6c6173745f726567656e65726174657c693a313732383632303838323b5f63695f70726576696f75735f75726c7c733a34333a22687474703a2f2f6c6f63616c686f73742f696e6465782e7068702f657374696d617465732f766965772f31223b757365725f69647c733a313a2231223b),
+	('ci_session:0h80vdl8fuh1lgcntlrh8rv92tomt504', '::1', '2024-10-11 04:22:14', _binary 0x5f5f63695f6c6173745f726567656e65726174657c693a313732383632303533343b),
+	('ci_session:6gkm1o729kafh52ins2bbm2svcpr8bke', '::1', '2024-10-11 04:22:16', _binary 0x5f5f63695f6c6173745f726567656e65726174657c693a313732383632303533363b),
+	('ci_session:9h9f82a1rb24j2m4rt9aua6rnufqe4u2', '::1', '2024-10-11 04:33:42', _binary 0x5f5f63695f6c6173745f726567656e65726174657c693a313732383632313232323b5f63695f70726576696f75735f75726c7c733a34333a22687474703a2f2f6c6f63616c686f73742f696e6465782e7068702f657374696d617465732f766965772f31223b757365725f69647c733a313a2231223b),
+	('ci_session:5asj323cntf2npidrm5jatq05k87datv', '::1', '2024-10-11 04:40:12', _binary 0x5f5f63695f6c6173745f726567656e65726174657c693a313732383632313631323b5f63695f70726576696f75735f75726c7c733a34333a22687474703a2f2f6c6f63616c686f73742f696e6465782e7068702f657374696d617465732f766965772f31223b757365725f69647c733a313a2231223b),
+	('ci_session:nv4a0cge53mn7qseop2eth846b3cpms7', '::1', '2024-10-11 04:38:30', _binary 0x5f5f63695f6c6173745f726567656e65726174657c693a313732383632313531303b),
+	('ci_session:7vdikb90ave7cj3d2ohmcpl0kaidasvi', '::1', '2024-10-11 04:38:34', _binary 0x5f5f63695f6c6173745f726567656e65726174657c693a313732383632313531343b),
+	('ci_session:hsl1nvojs7be67p1ick940i279bebgns', '::1', '2024-10-11 04:38:36', _binary 0x5f5f63695f6c6173745f726567656e65726174657c693a313732383632313531363b),
+	('ci_session:7joe25j4usv5m1158arthcq2r8fke9qs', '::1', '2024-10-11 04:45:40', _binary 0x5f5f63695f6c6173745f726567656e65726174657c693a313732383632313934303b5f63695f70726576696f75735f75726c7c733a34333a22687474703a2f2f6c6f63616c686f73742f696e6465782e7068702f657374696d617465732f766965772f31223b757365725f69647c733a313a2231223b),
+	('ci_session:rm3b1fme5kpgp7dmbh0e0t2664gac73e', '::1', '2024-10-11 04:41:50', _binary 0x5f5f63695f6c6173745f726567656e65726174657c693a313732383632313731303b),
+	('ci_session:1dk1hjrcjnp17bi73175tr169vu6nbic', '::1', '2024-10-11 04:42:01', _binary 0x5f5f63695f6c6173745f726567656e65726174657c693a313732383632313732313b),
+	('ci_session:ctl1q335q1hn1d2f3cs7nakus8hq4evs', '::1', '2024-10-11 04:42:04', _binary 0x5f5f63695f6c6173745f726567656e65726174657c693a313732383632313732343b),
+	('ci_session:r1iukhnqgnbfm4a6cimqovdla15s7v2d', '::1', '2024-10-11 04:50:43', _binary 0x5f5f63695f6c6173745f726567656e65726174657c693a313732383632323234333b5f63695f70726576696f75735f75726c7c733a34323a22687474703a2f2f6c6f63616c686f73742f696e6465782e7068702f696e766f696365732f766965772f34223b757365725f69647c733a313a2231223b),
+	('ci_session:jfbqo0lj4meks3svpu0bn25mosjph70i', '::1', '2024-10-11 04:47:05', _binary 0x5f5f63695f6c6173745f726567656e65726174657c693a313732383632323032353b),
+	('ci_session:6gpt5s8j1t2jmlub5vvm79scc5ra8sgo', '::1', '2024-10-11 04:47:09', _binary 0x5f5f63695f6c6173745f726567656e65726174657c693a313732383632323032393b),
+	('ci_session:3karqcro68fl4sm627j22f5p03l19eed', '::1', '2024-10-11 04:47:21', _binary 0x5f5f63695f6c6173745f726567656e65726174657c693a313732383632323034313b),
+	('ci_session:g5p72asniaa0854gppk3d8ig54scg4qo', '::1', '2024-10-11 04:56:56', _binary 0x5f5f63695f6c6173745f726567656e65726174657c693a313732383632323631363b5f63695f70726576696f75735f75726c7c733a34323a22687474703a2f2f6c6f63616c686f73742f696e6465782e7068702f696e766f696365732f766965772f34223b757365725f69647c733a313a2231223b),
+	('ci_session:5h2hsuvu73o73fqul575dd6tj9qjpohe', '::1', '2024-10-11 05:02:48', _binary 0x5f5f63695f6c6173745f726567656e65726174657c693a313732383632323936383b5f63695f70726576696f75735f75726c7c733a34333a22687474703a2f2f6c6f63616c686f73742f696e6465782e7068702f657374696d617465732f766965772f32223b757365725f69647c733a313a2231223b),
+	('ci_session:i64svnk5o00e02ftostcvrlgd1m4em1c', '::1', '2024-10-11 05:00:39', _binary 0x5f5f63695f6c6173745f726567656e65726174657c693a313732383632323833393b),
+	('ci_session:rgdem974lh8m3sdjht0p4n806bb2q61n', '::1', '2024-10-11 05:00:43', _binary 0x5f5f63695f6c6173745f726567656e65726174657c693a313732383632323834333b),
+	('ci_session:jkcagiq1n9q489gpn072siuo0ja01sng', '::1', '2024-10-11 05:00:46', _binary 0x5f5f63695f6c6173745f726567656e65726174657c693a313732383632323834363b),
+	('ci_session:dsusknd63mmbnld7v1b8trhp7eev1b1d', '::1', '2024-10-11 05:01:23', _binary 0x5f5f63695f6c6173745f726567656e65726174657c693a313732383632323838333b),
+	('ci_session:u47hoovi3ae89il6am2okqt5v8a8p6rg', '::1', '2024-10-11 05:01:40', _binary 0x5f5f63695f6c6173745f726567656e65726174657c693a313732383632323930303b),
+	('ci_session:dul2o5v9ufulhjkmbs7qlgas2reqq9tc', '::1', '2024-10-11 05:08:16', _binary 0x5f5f63695f6c6173745f726567656e65726174657c693a313732383632333239363b5f63695f70726576696f75735f75726c7c733a34323a22687474703a2f2f6c6f63616c686f73742f696e6465782e7068702f696e766f696365732f766965772f35223b757365725f69647c733a313a2231223b),
+	('ci_session:cr27mmvrrgvbh44f2u875kum1luqo7s8', '::1', '2024-10-11 05:03:31', _binary 0x5f5f63695f6c6173745f726567656e65726174657c693a313732383632333031313b),
+	('ci_session:lbkmcr5amm82m1qrui6jibhv11lhhf46', '::1', '2024-10-11 05:03:42', _binary 0x5f5f63695f6c6173745f726567656e65726174657c693a313732383632333032323b),
+	('ci_session:8ke3930snkqok6dturvkpdhtj7ij7sdk', '::1', '2024-10-11 05:05:21', _binary 0x5f5f63695f6c6173745f726567656e65726174657c693a313732383632333132313b),
+	('ci_session:fo14t27gaq1ulri7ehn6vav0v5fssl9l', '::1', '2024-10-11 05:05:23', _binary 0x5f5f63695f6c6173745f726567656e65726174657c693a313732383632333132333b),
+	('ci_session:qbgb5dibrk3r7r6catibol415e6k04fv', '::1', '2024-10-11 05:05:44', _binary 0x5f5f63695f6c6173745f726567656e65726174657c693a313732383632333134343b5f63695f70726576696f75735f75726c7c733a36393a22687474703a2f2f6c6f63616c686f73742f696e6465782e7068702f6e6f74696669636174696f6e5f70726f636573736f722f6372656174655f6e6f74696669636174696f6e223b),
+	('ci_session:6hgtev39017oa4gavojadfpj9bjod5nd', '::1', '2024-10-11 05:05:44', _binary 0x5f5f63695f6c6173745f726567656e65726174657c693a313732383632333134343b5f63695f70726576696f75735f75726c7c733a36393a22687474703a2f2f6c6f63616c686f73742f696e6465782e7068702f6e6f74696669636174696f6e5f70726f636573736f722f6372656174655f6e6f74696669636174696f6e223b),
+	('ci_session:o8ghiqsd836ma8st7becua2quh24i8e7', '::1', '2024-10-11 05:05:48', _binary 0x5f5f63695f6c6173745f726567656e65726174657c693a313732383632333134383b),
+	('ci_session:slm107jd1kek4u7tncje00n5uqcc3042', '::1', '2024-10-11 05:06:33', _binary 0x5f5f63695f6c6173745f726567656e65726174657c693a313732383632333139333b),
+	('ci_session:b468gp2kd0824cl27dje5577c2pgi4o1', '::1', '2024-10-11 05:06:35', _binary 0x5f5f63695f6c6173745f726567656e65726174657c693a313732383632333139353b),
+	('ci_session:3jvrkoic1h7huq11jvhdbt22iku7kbvn', '::1', '2024-10-11 05:06:45', _binary 0x5f5f63695f6c6173745f726567656e65726174657c693a313732383632333230353b),
+	('ci_session:h1ch7rv2t3tgc8jc4upgtldjm46l929j', '::1', '2024-10-11 05:06:52', _binary 0x5f5f63695f6c6173745f726567656e65726174657c693a313732383632333231323b),
+	('ci_session:33pb5bi74q4fhf4va5vdhujfnplsg979', '::1', '2024-10-11 05:07:06', _binary 0x5f5f63695f6c6173745f726567656e65726174657c693a313732383632333232363b5f63695f70726576696f75735f75726c7c733a36393a22687474703a2f2f6c6f63616c686f73742f696e6465782e7068702f6e6f74696669636174696f6e5f70726f636573736f722f6372656174655f6e6f74696669636174696f6e223b),
+	('ci_session:5bi98j3b5afnkeqlvdc8dsmglimermuc', '::1', '2024-10-11 05:07:06', _binary 0x5f5f63695f6c6173745f726567656e65726174657c693a313732383632333232363b5f63695f70726576696f75735f75726c7c733a36393a22687474703a2f2f6c6f63616c686f73742f696e6465782e7068702f6e6f74696669636174696f6e5f70726f636573736f722f6372656174655f6e6f74696669636174696f6e223b),
+	('ci_session:ggg93b4o0c8qmlk7hvc0m102efd8mo08', '::1', '2024-10-11 05:07:08', _binary 0x5f5f63695f6c6173745f726567656e65726174657c693a313732383632333232383b),
+	('ci_session:lat330ktq01feej5qght649cjsls10ma', '::1', '2024-10-11 05:14:50', _binary 0x5f5f63695f6c6173745f726567656e65726174657c693a313732383632333639303b5f63695f70726576696f75735f75726c7c733a34323a22687474703a2f2f6c6f63616c686f73742f696e6465782e7068702f696e766f696365732f766965772f35223b757365725f69647c733a313a2231223b),
+	('ci_session:b3e0pglamjghuggacfmbr456fkjc7ksm', '::1', '2024-10-11 05:11:06', _binary 0x5f5f63695f6c6173745f726567656e65726174657c693a313732383632333436363b),
+	('ci_session:j3t0hir308qopqud6v4ag30quu4di6ji', '::1', '2024-10-11 05:11:08', _binary 0x5f5f63695f6c6173745f726567656e65726174657c693a313732383632333436383b),
+	('ci_session:vartrtomgihohuv13q6vd2grudr5rbvd', '::1', '2024-10-11 05:20:34', _binary 0x5f5f63695f6c6173745f726567656e65726174657c693a313732383632343033343b5f63695f70726576696f75735f75726c7c733a34323a22687474703a2f2f6c6f63616c686f73742f696e6465782e7068702f696e766f696365732f766965772f35223b757365725f69647c733a313a2231223b),
+	('ci_session:iciveqiec83b34gtp81br4s6m4kt5hdm', '::1', '2024-10-11 05:25:38', _binary 0x5f5f63695f6c6173745f726567656e65726174657c693a313732383632343333383b5f63695f70726576696f75735f75726c7c733a34333a22687474703a2f2f6c6f63616c686f73742f696e6465782e7068702f657374696d617465732f766965772f32223b757365725f69647c733a313a2231223b),
+	('ci_session:asdtqbanumil4cidcc0as9sr0pp4tcs1', '::1', '2024-10-11 05:24:12', _binary 0x5f5f63695f6c6173745f726567656e65726174657c693a313732383632343235323b),
+	('ci_session:f3k4has5olovopmktga6ck37kis7vbip', '::1', '2024-10-11 05:24:14', _binary 0x5f5f63695f6c6173745f726567656e65726174657c693a313732383632343235343b),
+	('ci_session:lh35pcpscqm4d16avb4fjct1btajhppk', '::1', '2024-10-11 05:31:22', _binary 0x5f5f63695f6c6173745f726567656e65726174657c693a313732383632343638323b5f63695f70726576696f75735f75726c7c733a34343a22687474703a2f2f6c6f63616c686f73742f696e6465782e7068702f73657474696e67732f696e766f69636573223b757365725f69647c733a313a2231223b),
+	('ci_session:47sbuckj41pj51cv8dn6e290cf0nnmjr', '::1', '2024-10-11 05:28:27', _binary 0x5f5f63695f6c6173745f726567656e65726174657c693a313732383632343530373b),
+	('ci_session:683ev1cssr5fdd7q6555ohajsg9g5csu', '::1', '2024-10-11 05:28:33', _binary 0x5f5f63695f6c6173745f726567656e65726174657c693a313732383632343531333b),
+	('ci_session:9d0ef84ftm1e4mij8umis7edasgu3k5a', '::1', '2024-10-11 05:28:45', _binary 0x5f5f63695f6c6173745f726567656e65726174657c693a313732383632343532353b),
+	('ci_session:k5cujqgg2fbf66t636u61j2vt81u3mis', '::1', '2024-10-11 05:30:16', _binary 0x5f5f63695f6c6173745f726567656e65726174657c693a313732383632343631363b),
+	('ci_session:tdisnkgq7hnbml7qra00uepncc0bu9ma', '::1', '2024-10-11 05:30:18', _binary 0x5f5f63695f6c6173745f726567656e65726174657c693a313732383632343631383b),
+	('ci_session:s5bhgcqkksk1nelvqu3k1eo6921pi7fc', '::1', '2024-10-11 05:30:22', _binary 0x5f5f63695f6c6173745f726567656e65726174657c693a313732383632343632323b),
+	('ci_session:ks1mne4o8t4j48ki7b1sfim2qu3iq8iv', '::1', '2024-10-11 05:36:24', _binary 0x5f5f63695f6c6173745f726567656e65726174657c693a313732383632343938343b5f63695f70726576696f75735f75726c7c733a34333a22687474703a2f2f6c6f63616c686f73742f696e6465782e7068702f73657474696e67732f67656e6572616c223b757365725f69647c733a313a2231223b),
+	('ci_session:27g8cboq7oa0rbvfr0sdupf6f8e1mft8', '::1', '2024-10-11 05:31:23', _binary 0x5f5f63695f6c6173745f726567656e65726174657c693a313732383632343638333b),
+	('ci_session:ovnhvkrbs68fg05qe7i3p8q65s0go48q', '::1', '2024-10-11 05:31:25', _binary 0x5f5f63695f6c6173745f726567656e65726174657c693a313732383632343638353b),
+	('ci_session:tduuhtkohqijfmcmcbpgov8lvl6drsps', '::1', '2024-10-11 05:31:31', _binary 0x5f5f63695f6c6173745f726567656e65726174657c693a313732383632343639313b),
+	('ci_session:tn91qqeb1lhksiore805dbt0lf7o3luq', '::1', '2024-10-11 05:32:34', _binary 0x5f5f63695f6c6173745f726567656e65726174657c693a313732383632343735343b),
+	('ci_session:vu3bamn64btch16nmdjm0emve69au7ta', '::1', '2024-10-11 05:32:36', _binary 0x5f5f63695f6c6173745f726567656e65726174657c693a313732383632343735363b),
+	('ci_session:rh4pgj3ofdc8mgu8tmq7gte4747jevr8', '::1', '2024-10-11 05:32:51', _binary 0x5f5f63695f6c6173745f726567656e65726174657c693a313732383632343737313b),
+	('ci_session:i90e8q5svo27aqelf0vvm112d9kgsk22', '::1', '2024-10-11 05:32:52', _binary 0x5f5f63695f6c6173745f726567656e65726174657c693a313732383632343737323b),
+	('ci_session:ao2pu2kvlmghps51qju45jhnjju0pjhp', '::1', '2024-10-11 05:33:08', _binary 0x5f5f63695f6c6173745f726567656e65726174657c693a313732383632343738383b),
+	('ci_session:uu403tqkujhn2hm8q2pukd4kune4gb4v', '::1', '2024-10-11 05:33:18', _binary 0x5f5f63695f6c6173745f726567656e65726174657c693a313732383632343739383b),
+	('ci_session:ov9i3sgmk2r6mekdehpe0u79m2i05kiu', '::1', '2024-10-11 05:33:24', _binary 0x5f5f63695f6c6173745f726567656e65726174657c693a313732383632343830343b),
+	('ci_session:058jvhfs49dpl43coka0pi96ggi629c5', '::1', '2024-10-11 05:35:11', _binary 0x5f5f63695f6c6173745f726567656e65726174657c693a313732383632343931313b),
+	('ci_session:8ndvbn0rss43b3bmp50jgfj19ieis9te', '::1', '2024-10-11 05:35:15', _binary 0x5f5f63695f6c6173745f726567656e65726174657c693a313732383632343931343b),
+	('ci_session:7cfil5u7erv5bbtcb889rurhoo4gt6hg', '::1', '2024-10-11 05:35:31', _binary 0x5f5f63695f6c6173745f726567656e65726174657c693a313732383632343933313b),
+	('ci_session:r2csrjd5o96tbme1d5b3a2hhqvedhoqp', '::1', '2024-10-11 05:35:32', _binary 0x5f5f63695f6c6173745f726567656e65726174657c693a313732383632343933323b),
+	('ci_session:sn4qsk161v1fil7r03l0ro3sibb2me4h', '::1', '2024-10-11 05:35:49', _binary 0x5f5f63695f6c6173745f726567656e65726174657c693a313732383632343934393b),
+	('ci_session:3nc3m5vu6de2isrdi2tpoo9755dc9j2s', '::1', '2024-10-11 05:35:50', _binary 0x5f5f63695f6c6173745f726567656e65726174657c693a313732383632343935303b),
+	('ci_session:n9a7gk8c8g07ne850f4v197csdidnkn4', '::1', '2024-10-11 05:36:01', _binary 0x5f5f63695f6c6173745f726567656e65726174657c693a313732383632343936313b),
+	('ci_session:hlum9c84dlkjtce001ea9hdm2sio37u4', '::1', '2024-10-11 07:08:53', _binary 0x5f5f63695f6c6173745f726567656e65726174657c693a313732383632343938343b5f63695f70726576696f75735f75726c7c733a34333a22687474703a2f2f6c6f63616c686f73742f696e6465782e7068702f657374696d617465732f766965772f32223b757365725f69647c733a313a2231223b),
+	('ci_session:ic2t8m18fslvcq9u5m5fvgg8t0u01eep', '::1', '2024-10-11 05:36:24', _binary 0x5f5f63695f6c6173745f726567656e65726174657c693a313732383632343938343b),
+	('ci_session:4rj1oct5o260m6vmqg60ql3b4edqqsr3', '::1', '2024-10-11 05:36:34', _binary 0x5f5f63695f6c6173745f726567656e65726174657c693a313732383632343939343b),
+	('ci_session:depsc6shimuopgdio1lb2mpqm7tm3o07', '::1', '2024-10-11 05:39:38', _binary 0x5f5f63695f6c6173745f726567656e65726174657c693a313732383632353137383b),
+	('ci_session:1fmf7pr3ihtnop6bvg7nk0etbj3c9bm2', '::1', '2024-10-11 05:39:47', _binary 0x5f5f63695f6c6173745f726567656e65726174657c693a313732383632353138373b),
+	('ci_session:spj486j6lnaflqsbi7ph3pvagfvl1vqo', '::1', '2024-10-11 05:39:56', _binary 0x5f5f63695f6c6173745f726567656e65726174657c693a313732383632353139353b),
+	('ci_session:cqhojs1c6icqt83jiohi1jdookuii5mi', '::1', '2024-10-11 05:40:48', _binary 0x5f5f63695f6c6173745f726567656e65726174657c693a313732383632353234383b),
+	('ci_session:1d2246aaie98h5tv31g72ovl3ns1l43a', '::1', '2024-10-11 05:40:50', _binary 0x5f5f63695f6c6173745f726567656e65726174657c693a313732383632353235303b),
+	('ci_session:eegkbqsc99rmtei0b3d8q2oorkfiug1d', '::1', '2024-10-11 14:03:41', _binary ''),
+	('ci_session:2kaf90nvp5uojpn3jsbouuh9rkmom3sh', '::1', '2024-10-11 14:13:06', _binary 0x5f5f63695f6c6173745f726567656e65726174657c693a313732383635353938353b5f63695f70726576696f75735f75726c7c733a34343a22687474703a2f2f6c6f63616c686f73742f696e6465782e7068702f73657474696e67732f696e766f69636573223b757365725f69647c733a313a2231223b),
+	('ci_session:m4htld08ofgufu5tgv958nv7c835di2n', '::1', '2024-10-11 14:04:14', _binary 0x5f5f63695f6c6173745f726567656e65726174657c693a313732383635353435343b),
+	('ci_session:ufb64959cagnn7letr903e79tkaa5nko', '::1', '2024-10-11 14:04:19', _binary 0x5f5f63695f6c6173745f726567656e65726174657c693a313732383635353435393b),
+	('ci_session:76ehjc0vaop181hq9e45t4fkshi85ue1', '::1', '2024-10-11 14:06:47', _binary 0x5f5f63695f6c6173745f726567656e65726174657c693a313732383635353630373b),
+	('ci_session:2jpk69dcdm6691b8jgp6i5434m1734bj', '::1', '2024-10-11 14:06:53', _binary 0x5f5f63695f6c6173745f726567656e65726174657c693a313732383635353631323b),
+	('ci_session:1dps0lvs0ptcqsu89rpkh1ltk6f8fd09', '::1', '2024-10-11 14:18:19', _binary 0x5f5f63695f6c6173745f726567656e65726174657c693a313732383635363239383b5f63695f70726576696f75735f75726c7c733a34343a22687474703a2f2f6c6f63616c686f73742f696e6465782e7068702f73657474696e67732f696e766f69636573223b757365725f69647c733a313a2231223b),
+	('ci_session:ggpo1gqq2sl3ogqdodd7od2rfkmvb8pp', '::1', '2024-10-11 14:23:42', _binary 0x5f5f63695f6c6173745f726567656e65726174657c693a313732383635363632323b5f63695f70726576696f75735f75726c7c733a34343a22687474703a2f2f6c6f63616c686f73742f696e6465782e7068702f73657474696e67732f696e766f69636573223b757365725f69647c733a313a2231223b),
+	('ci_session:5pd48lbm5c9jl51gmdefqj5djni7u61o', '::1', '2024-10-11 14:28:49', _binary 0x5f5f63695f6c6173745f726567656e65726174657c693a313732383635363932383b5f63695f70726576696f75735f75726c7c733a33343a22687474703a2f2f6c6f63616c686f73742f696e6465782e7068702f636f6d70616e79223b757365725f69647c733a313a2231223b),
+	('ci_session:limmlb16rjahhfdti8q1u0loo2poccrs', '::1', '2024-10-11 14:23:44', _binary 0x5f5f63695f6c6173745f726567656e65726174657c693a313732383635363632343b),
+	('ci_session:1m4bgu0uvnro5g2la5opg3vhm53muodr', '::1', '2024-10-11 14:23:46', _binary 0x5f5f63695f6c6173745f726567656e65726174657c693a313732383635363632353b),
+	('ci_session:evdhfh41v20p94sucg25ck6igfo5bn8c', '::1', '2024-10-11 14:24:50', _binary 0x5f5f63695f6c6173745f726567656e65726174657c693a313732383635363639303b),
+	('ci_session:omjrvsi464vce94bcspk4r6ftie2o5k5', '::1', '2024-10-11 14:24:58', _binary 0x5f5f63695f6c6173745f726567656e65726174657c693a313732383635363639383b),
+	('ci_session:i58sc5jlrs84bcvbuk454num3vh0kbl7', '::1', '2024-10-11 14:25:04', _binary 0x5f5f63695f6c6173745f726567656e65726174657c693a313732383635363730343b),
+	('ci_session:cigu4jhltqr192pkkn76bhutc19gncgm', '::1', '2024-10-11 14:25:13', _binary 0x5f5f63695f6c6173745f726567656e65726174657c693a313732383635363731333b),
+	('ci_session:i79r75hk64gkrfotkea8dabgqktcsla1', '::1', '2024-10-11 14:26:17', _binary 0x5f5f63695f6c6173745f726567656e65726174657c693a313732383635363737373b),
+	('ci_session:bltuhvd3o8ugqjnd5f49je45f8a72o9e', '::1', '2024-10-11 14:26:29', _binary 0x5f5f63695f6c6173745f726567656e65726174657c693a313732383635363738393b),
+	('ci_session:mibgmfm2p0aejp2tr58noeef1n123p5r', '::1', '2024-10-11 14:26:32', _binary 0x5f5f63695f6c6173745f726567656e65726174657c693a313732383635363739323b),
+	('ci_session:n4v7dog1ce9p3bq5sq1kbqberkqq2e5j', '::1', '2024-10-11 14:27:52', _binary 0x5f5f63695f6c6173745f726567656e65726174657c693a313732383635363837323b),
+	('ci_session:au53s1chr0lkjlbgmvq2d422ccrpnuot', '::1', '2024-10-11 14:27:56', _binary 0x5f5f63695f6c6173745f726567656e65726174657c693a313732383635363837363b),
+	('ci_session:126bud99tkbssaakm0775qan7498638b', '::1', '2024-10-11 14:28:21', _binary 0x5f5f63695f6c6173745f726567656e65726174657c693a313732383635363930313b),
+	('ci_session:4ov92ibhq77i45arpogm05kp8m99k8d5', '::1', '2024-10-11 14:28:22', _binary 0x5f5f63695f6c6173745f726567656e65726174657c693a313732383635363930323b),
+	('ci_session:020nlt21j1rg7733fh5fte90auq734uq', '::1', '2024-10-11 14:28:32', _binary 0x5f5f63695f6c6173745f726567656e65726174657c693a313732383635363931323b),
+	('ci_session:eirvc2p5nobo6r79996ps8jcl14e6ju5', '::1', '2024-10-11 14:28:38', _binary 0x5f5f63695f6c6173745f726567656e65726174657c693a313732383635363931383b),
+	('ci_session:5m6cvasblvqtvmmhhgq0l1fjho4alerr', '::1', '2024-10-11 14:34:43', _binary 0x5f5f63695f6c6173745f726567656e65726174657c693a313732383635363932383b5f63695f70726576696f75735f75726c7c733a34333a22687474703a2f2f6c6f63616c686f73742f696e6465782e7068702f696e766f6963655f7061796d656e7473223b757365725f69647c733a313a2231223b),
+	('ci_session:6brc4ugge5a49iar9jcaus4bjv7mn05a', '::1', '2024-10-11 14:29:22', _binary 0x5f5f63695f6c6173745f726567656e65726174657c693a313732383635363936323b),
+	('ci_session:oj08bg0ric2brefo8o3lppfqivs4jk0n', '::1', '2024-10-11 14:29:25', _binary 0x5f5f63695f6c6173745f726567656e65726174657c693a313732383635363936353b),
+	('ci_session:485kqo7pun51s8bqe0gcpu18bmogv405', '::1', '2024-10-11 14:30:31', _binary 0x5f5f63695f6c6173745f726567656e65726174657c693a313732383635373033313b),
+	('ci_session:hskv3mabqu4vcl5pameaof4j4uo5u555', '::1', '2024-10-11 14:30:33', _binary 0x5f5f63695f6c6173745f726567656e65726174657c693a313732383635373033333b),
+	('ci_session:pgt3cb5vc6pn9ouvd6ua87tusuim2dh8', '::1', '2024-10-11 14:30:43', _binary 0x5f5f63695f6c6173745f726567656e65726174657c693a313732383635373034333b),
+	('ci_session:ctv8udtqsfcmidaqsn7ajajchoesa30b', '::1', '2024-10-11 14:30:46', _binary 0x5f5f63695f6c6173745f726567656e65726174657c693a313732383635373034363b5f63695f70726576696f75735f75726c7c733a36393a22687474703a2f2f6c6f63616c686f73742f696e6465782e7068702f6e6f74696669636174696f6e5f70726f636573736f722f6372656174655f6e6f74696669636174696f6e223b),
+	('ci_session:3kc3k8d5trojg94ua1m3m6f375s7ghv7', '::1', '2024-10-11 14:30:49', _binary 0x5f5f63695f6c6173745f726567656e65726174657c693a313732383635373034393b5f63695f70726576696f75735f75726c7c733a36393a22687474703a2f2f6c6f63616c686f73742f696e6465782e7068702f6e6f74696669636174696f6e5f70726f636573736f722f6372656174655f6e6f74696669636174696f6e223b),
+	('ci_session:joo9nk3bf8gt63aaf7t5gifu8rlkfssn', '::1', '2024-10-11 14:30:50', _binary 0x5f5f63695f6c6173745f726567656e65726174657c693a313732383635373035303b),
+	('ci_session:0gvlk3nnsl5ligs2gr97bkjachcfis7s', '::1', '2024-10-11 14:30:53', _binary 0x5f5f63695f6c6173745f726567656e65726174657c693a313732383635373035333b),
+	('ci_session:rj0b8rbcucur09virc74al4ik117pplh', '::1', '2024-10-11 14:31:07', _binary 0x5f5f63695f6c6173745f726567656e65726174657c693a313732383635373036373b),
+	('ci_session:ove8in34mg19m8ktnv12844lj1mhvepc', '::1', '2024-10-11 14:31:26', _binary 0x5f5f63695f6c6173745f726567656e65726174657c693a313732383635373038363b),
+	('ci_session:4it0rl0l1q48nma7b3b657vb833o5e8m', '::1', '2024-10-11 14:31:28', _binary 0x5f5f63695f6c6173745f726567656e65726174657c693a313732383635373038383b),
+	('ci_session:47n8918sj5uc13p4b69u59if9ouqbiim', '::1', '2024-10-11 14:31:29', _binary 0x5f5f63695f6c6173745f726567656e65726174657c693a313732383635373038393b),
+	('ci_session:e76lvc5rlju0hh6lniirqe7vqifi4h4p', '::1', '2024-10-11 14:31:44', _binary 0x5f5f63695f6c6173745f726567656e65726174657c693a313732383635373130343b),
+	('ci_session:bb72hqq00aic1s56phe881gqd7jgko7p', '::1', '2024-10-11 14:31:53', _binary 0x5f5f63695f6c6173745f726567656e65726174657c693a313732383635373131333b),
+	('ci_session:sqhr89ovfi3rj7v72ej2p0qvnspvvrii', '::1', '2024-10-11 14:32:48', _binary 0x5f5f63695f6c6173745f726567656e65726174657c693a313732383635373136383b);
+
+-- Dumping structure for table rise.imp_clients
+CREATE TABLE IF NOT EXISTS `imp_clients` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `company_name` varchar(150) NOT NULL,
+  `type` enum('organization','person') NOT NULL DEFAULT 'organization',
+  `address` text DEFAULT NULL,
+  `city` varchar(50) DEFAULT NULL,
+  `state` varchar(50) DEFAULT NULL,
+  `zip` varchar(50) DEFAULT NULL,
+  `country` varchar(50) DEFAULT NULL,
+  `created_date` date NOT NULL,
+  `website` text DEFAULT NULL,
+  `email` varchar(50) DEFAULT NULL,
+  `phone` varchar(20) DEFAULT NULL,
+  `currency_symbol` varchar(20) DEFAULT NULL,
+  `starred_by` mediumtext NOT NULL,
+  `group_ids` text NOT NULL,
+  `deleted` tinyint(1) NOT NULL DEFAULT 0,
+  `is_lead` tinyint(1) NOT NULL DEFAULT 0,
+  `lead_status_id` int(11) NOT NULL,
+  `owner_id` int(11) NOT NULL,
+  `created_by` int(11) NOT NULL,
+  `sort` int(11) NOT NULL DEFAULT 0,
+  `lead_source_id` int(11) NOT NULL,
+  `last_lead_status` text NOT NULL,
+  `client_migration_date` date NOT NULL,
+  `vat_number` text DEFAULT NULL,
+  `gst_number` text DEFAULT NULL,
+  `stripe_customer_id` text NOT NULL,
+  `stripe_card_ending_digit` int(11) NOT NULL,
+  `currency` varchar(3) DEFAULT NULL,
+  `disable_online_payment` tinyint(1) NOT NULL DEFAULT 0,
+  `labels` text DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `owner_id` (`owner_id`),
+  KEY `created_by` (`created_by`),
+  KEY `lead_source_id` (`lead_source_id`),
+  KEY `is_lead` (`is_lead`)
+) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+
+-- Dumping data for table rise.imp_clients: ~0 rows (approximately)
+
+-- Dumping structure for table rise.imp_client_groups
+CREATE TABLE IF NOT EXISTS `imp_client_groups` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `title` text NOT NULL,
+  `deleted` tinyint(1) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+
+-- Dumping data for table rise.imp_client_groups: ~0 rows (approximately)
+
+-- Dumping structure for table rise.imp_company
+CREATE TABLE IF NOT EXISTS `imp_company` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` text NOT NULL,
+  `address` text NOT NULL,
+  `phone` text NOT NULL,
+  `email` text NOT NULL,
+  `website` text NOT NULL,
+  `vat_number` text NOT NULL,
+  `gst_number` text NOT NULL,
+  `is_default` tinyint(1) NOT NULL DEFAULT 0,
+  `logo` mediumtext NOT NULL,
+  `deleted` tinyint(1) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+
+-- Dumping data for table rise.imp_company: ~1 rows (approximately)
+INSERT INTO `imp_company` (`id`, `name`, `address`, `phone`, `email`, `website`, `vat_number`, `gst_number`, `is_default`, `logo`, `deleted`) VALUES
+	(1, 'Imperial Chimney & Masonry', '864 Queen Street\r\nPottstown, PA 19464', '(484) 447-1414', 'info@imperialchimney-masonry.com', '', '', '', 1, 'a:1:{i:0;a:4:{s:9:"file_name";s:74:"company_1_file6707dde435157-company_1_file670477a1e9e1a-IMG_8532-1--1-.png";s:9:"file_size";s:5:"18451";s:7:"file_id";N;s:12:"service_type";N;}}', 0);
+
+-- Dumping structure for table rise.imp_contracts
+CREATE TABLE IF NOT EXISTS `imp_contracts` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `title` text NOT NULL,
+  `client_id` int(11) NOT NULL,
+  `project_id` int(11) NOT NULL,
+  `contract_date` date NOT NULL,
+  `valid_until` date NOT NULL,
+  `note` mediumtext DEFAULT NULL,
+  `last_email_sent_date` date DEFAULT NULL,
+  `status` enum('draft','sent','accepted','declined') NOT NULL DEFAULT 'draft',
+  `tax_id` int(11) NOT NULL DEFAULT 0,
+  `tax_id2` int(11) NOT NULL DEFAULT 0,
+  `discount_type` enum('before_tax','after_tax') NOT NULL,
+  `discount_amount` double NOT NULL,
+  `discount_amount_type` enum('percentage','fixed_amount') NOT NULL,
+  `content` mediumtext NOT NULL,
+  `public_key` varchar(10) NOT NULL,
+  `accepted_by` int(11) NOT NULL DEFAULT 0,
+  `staff_signed_by` int(11) NOT NULL DEFAULT 0,
+  `meta_data` text NOT NULL,
+  `files` mediumtext NOT NULL,
+  `company_id` int(11) NOT NULL DEFAULT 0,
+  `deleted` tinyint(1) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+
+-- Dumping data for table rise.imp_contracts: ~0 rows (approximately)
+
+-- Dumping structure for table rise.imp_contract_items
+CREATE TABLE IF NOT EXISTS `imp_contract_items` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `title` text NOT NULL,
+  `description` text DEFAULT NULL,
+  `quantity` double NOT NULL,
+  `unit_type` varchar(20) NOT NULL DEFAULT '',
+  `rate` double NOT NULL,
+  `total` double NOT NULL,
+  `sort` int(11) NOT NULL DEFAULT 0,
+  `contract_id` int(11) NOT NULL,
+  `item_id` int(11) NOT NULL DEFAULT 0,
+  `deleted` tinyint(1) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+
+-- Dumping data for table rise.imp_contract_items: ~0 rows (approximately)
+
+-- Dumping structure for table rise.imp_contract_templates
+CREATE TABLE IF NOT EXISTS `imp_contract_templates` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `title` varchar(50) NOT NULL,
+  `template` mediumtext DEFAULT NULL,
+  `deleted` tinyint(1) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+
+-- Dumping data for table rise.imp_contract_templates: ~1 rows (approximately)
+INSERT INTO `imp_contract_templates` (`id`, `title`, `template`, `deleted`) VALUES
+	(1, 'Template 3.7', '<p>&nbsp;</p>\r\n<table class="table" style="background-color: #3d3d3d; color: #ffffff; width: 100%;">\r\n<tbody>\r\n<tr>\r\n<td style="text-align: center; width: 100%;">\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<div><span style="font-size: 40px;"><strong>{CONTRACT_TITLE}</strong></span></div>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n</td>\r\n</tr>\r\n</tbody>\r\n</table>\r\n<p style="text-align: justify;">&nbsp;</p>\r\n<p style="text-align: justify;">This contract states the terms and conditions that shall govern the contractual agreement between {COMPANY_NAME} (the Service Provider) and {CONTRACT_TO_COMPANY_NAME} (the Client) who agrees to be bound by the terms of the contract.</p>\r\n<table style="margin-top: 0px; margin-bottom: 10px; width: 100%;">\r\n<tbody>\r\n<tr>\r\n<td style="padding: 0px; width: 100%;">\r\n<div style="margin-top: 20px;">\r\n<div style="text-align: center;">\r\n<div style="font-size: 30px;">{CONTRACT_ID}</div>\r\n<table style="margin-top: 10px; width: 100%;">\r\n<tbody>\r\n<tr>\r\n<td style="width: 14.5125%;">&nbsp;</td>\r\n<td style="width: 14.5125%;">&nbsp;</td>\r\n<td style="width: 14.5125%;">&nbsp;</td>\r\n<td style="width: 14.5125%;">\r\n<div style="border-bottom: 5px solid #ff9800;">&nbsp;</div>\r\n</td>\r\n<td style="width: 14.5125%;">&nbsp;</td>\r\n<td style="width: 14.5125%;">&nbsp;</td>\r\n<td style="width: 14.5125%;">&nbsp;</td>\r\n</tr>\r\n</tbody>\r\n</table>\r\n</div>\r\n</div>\r\n</td>\r\n</tr>\r\n</tbody>\r\n</table>\r\n<div>Contract Date: {CONTRACT_DATE}<br>Expiry Date: {CONTRACT_EXPIRY_DATE}</div>\r\n<table style="width: 100%; padding-top: 30px; margin-top: 0px;">\r\n<tbody>\r\n<tr>\r\n<td style="width: 50%; padding-left: 0; padding-right: 10px;">\r\n<p>Client</p>\r\n{CONTRACT_TO_INFO}</td>\r\n<td style="width: 50%; padding-left: 10px;">\r\n<p>Service Provider</p>\r\n{COMPANY_INFO}</td>\r\n</tr>\r\n</tbody>\r\n</table>\r\n<p>&nbsp;</p>\r\n<table style="margin-top: 0px; margin-bottom: 10px; width: 100%;">\r\n<tbody>\r\n<tr>\r\n<td style="padding: 0px; width: 100%;">\r\n<div style="margin-top: 20px;">\r\n<div style="text-align: center;">\r\n<div style="font-size: 30px;">Service Details</div>\r\n<table style="margin-top: 10px; width: 100%;">\r\n<tbody>\r\n<tr>\r\n<td style="width: 14.4239%;">&nbsp;</td>\r\n<td style="width: 14.4239%;">&nbsp;</td>\r\n<td style="width: 14.4239%;">&nbsp;</td>\r\n<td style="width: 14.4239%;">\r\n<div style="border-bottom: 5px solid #ff9800;">&nbsp;</div>\r\n</td>\r\n<td style="width: 14.4239%;">&nbsp;</td>\r\n<td style="width: 14.4239%;">&nbsp;</td>\r\n<td style="width: 12.8504%;">&nbsp;</td>\r\n</tr>\r\n</tbody>\r\n</table>\r\n</div>\r\n</div>\r\n</td>\r\n</tr>\r\n</tbody>\r\n</table>\r\n<p style="text-align: justify;">The specific scope, timeline, and any additional requirements related to the services shall be detailed in a separate document or statement of work, which shall form an integral part of this contract.</p>\r\n<p>&nbsp;</p>\r\n<p>{CONTRACT_ITEMS}</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<table style="margin-top: 0px; margin-bottom: 10px; width: 100%;">\r\n<tbody>\r\n<tr>\r\n<td style="padding: 0px; width: 100%;">\r\n<div style="margin-top: 20px;">\r\n<div style="text-align: center;">\r\n<div style="font-size: 30px;">1. Service Policy</div>\r\n<table style="margin-top: 10px; width: 100%;">\r\n<tbody>\r\n<tr>\r\n<td style="width: 14.5125%;">&nbsp;</td>\r\n<td style="width: 14.5125%;">&nbsp;</td>\r\n<td style="width: 14.5125%;">&nbsp;</td>\r\n<td style="width: 14.5125%;">\r\n<div style="border-bottom: 5px solid #ff9800;">&nbsp;</div>\r\n</td>\r\n<td style="width: 14.5125%;">&nbsp;</td>\r\n<td style="width: 14.5125%;">&nbsp;</td>\r\n<td style="width: 14.5125%;">&nbsp;</td>\r\n</tr>\r\n</tbody>\r\n</table>\r\n</div>\r\n</div>\r\n</td>\r\n</tr>\r\n</tbody>\r\n</table>\r\n<p style="text-align: justify;">The Service Policy outlines the terms and conditions governing the provision of services by Service Provider to the Client. It encompasses guidelines regarding service delivery, quality standards, support mechanisms, and dispute resolution procedures. The Service Provider is committed to upholding the highest level of professionalism, responsiveness, and customer satisfaction in delivering the agreed upon services.</p>\r\n<p style="text-align: justify;">&nbsp;</p>\r\n<p style="text-align: justify;">Any deviations from the Service Policy shall be communicated promptly and resolved in a timely manner to ensure seamless collaboration and adherence to the mutual objectives outlined in the contract.</p>\r\n<p style="text-align: justify;">&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<table style="margin-top: 0px; margin-bottom: 10px; width: 100%;">\r\n<tbody>\r\n<tr>\r\n<td style="padding: 0px; width: 100%;">\r\n<div style="margin-top: 20px;">\r\n<div style="text-align: center;">\r\n<div style="font-size: 30px;">2. Delivery</div>\r\n<table style="margin-top: 10px; width: 100%;">\r\n<tbody>\r\n<tr>\r\n<td style="width: 14.5125%;">&nbsp;</td>\r\n<td style="width: 14.5125%;">&nbsp;</td>\r\n<td style="width: 14.5125%;">&nbsp;</td>\r\n<td style="width: 14.5125%;">\r\n<div style="border-bottom: 5px solid #ff9800;">&nbsp;</div>\r\n</td>\r\n<td style="width: 14.5125%;">&nbsp;</td>\r\n<td style="width: 14.5125%;">&nbsp;</td>\r\n<td style="width: 14.5125%;">&nbsp;</td>\r\n</tr>\r\n</tbody>\r\n</table>\r\n</div>\r\n</div>\r\n</td>\r\n</tr>\r\n</tbody>\r\n</table>\r\n<p style="text-align: justify;">The Service Provider will commence delivery of services upon receipt of a signed contract and any necessary initial payments as specified. Delivery timelines and milestones will be outlined in the project schedule or statement of work provided to the Client. The Service Provider will make reasonable efforts to meet agreed-upon deadlines and milestones, keeping the Client informed of any delays or changes to the delivery schedule. Delivery methods may vary depending on the nature of the services and may include in-person meetings, electronic communication, or physical shipment of goods.</p>\r\n<p style="text-align: justify;">&nbsp;</p>\r\n<p style="text-align: justify;">Upon completion of the services, the Client will be provided with deliverables as outlined in the project scope or statement of work, with any necessary documentation or training materials included as specified.</p>\r\n<p style="text-align: justify;">&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<table style="margin-top: 0px; margin-bottom: 10px; width: 100%;">\r\n<tbody>\r\n<tr>\r\n<td style="padding: 0px; width: 100%;">\r\n<div style="margin-top: 20px;">\r\n<div style="text-align: center;">\r\n<div style="font-size: 30px;">3. Intellectual property rights</div>\r\n<table style="margin-top: 10px; width: 100%;">\r\n<tbody>\r\n<tr>\r\n<td style="width: 14.5125%;">&nbsp;</td>\r\n<td style="width: 14.5125%;">&nbsp;</td>\r\n<td style="width: 14.5125%;">&nbsp;</td>\r\n<td style="width: 14.5125%;">\r\n<div style="border-bottom: 5px solid #ff9800;">&nbsp;</div>\r\n</td>\r\n<td style="width: 14.5125%;">&nbsp;</td>\r\n<td style="width: 14.5125%;">&nbsp;</td>\r\n<td style="width: 14.5125%;">&nbsp;</td>\r\n</tr>\r\n</tbody>\r\n</table>\r\n</div>\r\n</div>\r\n</td>\r\n</tr>\r\n</tbody>\r\n</table>\r\n<p style="text-align: justify;">All intellectual property rights, including but not limited to copyrights, patents, trademarks, and trade secrets, associated with the services provided under this contract shall remain the exclusive property of the originating party unless otherwise agreed upon in writing. The Service Provider retains ownership of any proprietary methodologies, technologies, or materials utilized in delivering the services, and the Client agrees not to reproduce, distribute, or disclose such intellectual property without prior written consent.</p>\r\n<p style="text-align: justify;">&nbsp;</p>\r\n<p style="text-align: justify;">Any intellectual property created or developed during the course of providing the services shall be jointly owned by both parties unless otherwise specified in a separate agreement. Any use or exploitation of intellectual property rights beyond the scope of this contract requires the express written consent of the owning party.</p>\r\n<p style="text-align: justify;">&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<table style="margin-top: 0px; margin-bottom: 10px; width: 100%;">\r\n<tbody>\r\n<tr>\r\n<td style="padding: 0px; width: 100%;">\r\n<div style="margin-top: 20px;">\r\n<div style="text-align: center;">\r\n<div style="font-size: 30px;">4. Confidentiality</div>\r\n<table style="margin-top: 10px; width: 100%;">\r\n<tbody>\r\n<tr>\r\n<td style="width: 14.5125%;">&nbsp;</td>\r\n<td style="width: 14.5125%;">&nbsp;</td>\r\n<td style="width: 14.5125%;">&nbsp;</td>\r\n<td style="width: 14.5125%;">\r\n<div style="border-bottom: 5px solid #ff9800;">&nbsp;</div>\r\n</td>\r\n<td style="width: 14.5125%;">&nbsp;</td>\r\n<td style="width: 14.5125%;">&nbsp;</td>\r\n<td style="width: 14.5125%;">&nbsp;</td>\r\n</tr>\r\n</tbody>\r\n</table>\r\n</div>\r\n</div>\r\n</td>\r\n</tr>\r\n</tbody>\r\n</table>\r\n<p style="text-align: justify;">Both parties agree to maintain strict confidentiality regarding any proprietary or sensitive information disclosed during the course of this contract. This includes but is not limited to trade secrets, business strategies, financial information, and client data. The Service Provider shall take all necessary precautions to prevent unauthorized access or disclosure of confidential information and shall only share such information with authorized personnel directly involved in fulfilling the obligations of this contract.</p>\r\n<p style="text-align: justify;">&nbsp;</p>\r\n<p style="text-align: justify;">The Client agrees not to disclose any confidential information obtained from the Service Provider to any third parties without prior written consent. This confidentiality obligation shall survive the termination of this contract and continue indefinitely thereafter.</p>\r\n<p style="text-align: justify;">&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<table style="margin-top: 0px; margin-bottom: 10px; width: 100%;">\r\n<tbody>\r\n<tr>\r\n<td style="padding: 0px; width: 100%;">\r\n<div style="margin-top: 20px;">\r\n<div style="text-align: center;">\r\n<div style="font-size: 30px;">5. Support</div>\r\n<table style="margin-top: 10px; width: 100%;">\r\n<tbody>\r\n<tr>\r\n<td style="width: 14.5125%;">&nbsp;</td>\r\n<td style="width: 14.5125%;">&nbsp;</td>\r\n<td style="width: 14.5125%;">&nbsp;</td>\r\n<td style="width: 14.5125%;">\r\n<div style="border-bottom: 5px solid #ff9800;">&nbsp;</div>\r\n</td>\r\n<td style="width: 14.5125%;">&nbsp;</td>\r\n<td style="width: 14.5125%;">&nbsp;</td>\r\n<td style="width: 14.5125%;">&nbsp;</td>\r\n</tr>\r\n</tbody>\r\n</table>\r\n</div>\r\n</div>\r\n</td>\r\n</tr>\r\n</tbody>\r\n</table>\r\n<p style="text-align: justify;">The Service Provider agrees to provide reasonable support and assistance to the Client during the term of this contract. Support may include but is not limited to troubleshooting, technical assistance, and guidance related to the services provided. The Service Provider will make commercially reasonable efforts to respond promptly to inquiries and requests for support from the Client, within the parameters specified in the service level agreement (SLA) or support agreement. Support will be provided during normal business hours unless otherwise agreed upon. Any additional support beyond the scope outlined in this contract may be subject to additional fees or terms as mutually agreed upon by both parties.</p>\r\n<p style="text-align: justify;">&nbsp;</p>\r\n<p style="text-align: justify;">{CONTRACT_NOTE}</p>', 0);
+
+-- Dumping structure for table rise.imp_custom_fields
+CREATE TABLE IF NOT EXISTS `imp_custom_fields` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `title` text NOT NULL,
+  `title_language_key` text NOT NULL,
+  `placeholder_language_key` text NOT NULL,
+  `show_in_embedded_form` tinyint(4) NOT NULL DEFAULT 0,
+  `placeholder` text NOT NULL,
+  `example_variable_name` text DEFAULT NULL,
+  `options` mediumtext NOT NULL,
+  `field_type` varchar(50) NOT NULL,
+  `related_to` varchar(50) NOT NULL,
+  `sort` int(11) NOT NULL,
+  `required` tinyint(1) NOT NULL DEFAULT 0,
+  `add_filter` tinyint(1) NOT NULL DEFAULT 0,
+  `show_in_table` tinyint(1) NOT NULL DEFAULT 0,
+  `show_in_invoice` tinyint(1) NOT NULL DEFAULT 0,
+  `show_in_estimate` tinyint(1) NOT NULL DEFAULT 0,
+  `show_in_contract` tinyint(1) NOT NULL DEFAULT 0,
+  `show_in_order` tinyint(1) NOT NULL DEFAULT 0,
+  `show_in_proposal` tinyint(1) NOT NULL DEFAULT 0,
+  `visible_to_admins_only` tinyint(1) NOT NULL DEFAULT 0,
+  `hide_from_clients` tinyint(1) NOT NULL DEFAULT 0,
+  `disable_editing_by_clients` tinyint(1) NOT NULL DEFAULT 0,
+  `show_on_kanban_card` tinyint(1) NOT NULL DEFAULT 0,
+  `deleted` tinyint(1) NOT NULL DEFAULT 0,
+  `show_in_subscription` tinyint(1) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`),
+  KEY `related_to` (`related_to`),
+  KEY `field_type` (`field_type`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+
+-- Dumping data for table rise.imp_custom_fields: ~0 rows (approximately)
+
+-- Dumping structure for table rise.imp_custom_field_values
+CREATE TABLE IF NOT EXISTS `imp_custom_field_values` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `related_to_type` varchar(50) NOT NULL,
+  `related_to_id` int(11) NOT NULL,
+  `custom_field_id` int(11) NOT NULL,
+  `value` longtext NOT NULL,
+  `deleted` tinyint(1) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`),
+  KEY `related_to_type` (`related_to_type`),
+  KEY `related_to_id` (`related_to_id`),
+  KEY `custom_field_id` (`custom_field_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+
+-- Dumping data for table rise.imp_custom_field_values: ~0 rows (approximately)
+
+-- Dumping structure for table rise.imp_custom_widgets
+CREATE TABLE IF NOT EXISTS `imp_custom_widgets` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL,
+  `title` text DEFAULT NULL,
+  `content` mediumtext DEFAULT NULL,
+  `show_title` tinyint(1) NOT NULL DEFAULT 0,
+  `show_border` tinyint(1) NOT NULL DEFAULT 0,
+  `deleted` tinyint(1) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`),
+  KEY `user_id` (`user_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+
+-- Dumping data for table rise.imp_custom_widgets: ~0 rows (approximately)
+
+-- Dumping structure for table rise.imp_dashboards
+CREATE TABLE IF NOT EXISTS `imp_dashboards` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL,
+  `title` text DEFAULT NULL,
+  `data` text DEFAULT NULL,
+  `color` varchar(15) NOT NULL,
+  `sort` int(11) NOT NULL DEFAULT 0,
+  `deleted` tinyint(1) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`),
+  KEY `user_id` (`user_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+
+-- Dumping data for table rise.imp_dashboards: ~0 rows (approximately)
+
+-- Dumping structure for table rise.imp_email_templates
+CREATE TABLE IF NOT EXISTS `imp_email_templates` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `template_name` varchar(50) NOT NULL,
+  `email_subject` text NOT NULL,
+  `default_message` mediumtext NOT NULL,
+  `custom_message` mediumtext DEFAULT NULL,
+  `template_type` enum('default','custom') NOT NULL DEFAULT 'default',
+  `language` varchar(50) NOT NULL,
+  `deleted` tinyint(1) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=46 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+
+-- Dumping data for table rise.imp_email_templates: ~45 rows (approximately)
+INSERT INTO `imp_email_templates` (`id`, `template_name`, `email_subject`, `default_message`, `custom_message`, `template_type`, `language`, `deleted`) VALUES
+	(1, 'login_info', 'Login details', '<div style="background-color: #eeeeef; padding: 50px 0; "><div style="max-width:640px; margin:0 auto; "> <div style="color: #fff; text-align: center; background-color:#33333e; padding: 30px; border-top-left-radius: 3px; border-top-right-radius: 3px; margin: 0;">  <h1>Login Details</h1></div><div style="padding: 20px; background-color: rgb(255, 255, 255);">            <p style="color: rgb(85, 85, 85); font-size: 14px;"> Hello {USER_FIRST_NAME} {USER_LAST_NAME},<br><br>An account has been created for you.</p>            <p style="color: rgb(85, 85, 85); font-size: 14px;"> Please use the following info to login your dashboard:</p>            <hr>            <p style="color: rgb(85, 85, 85); font-size: 14px;">Dashboard URL:&nbsp;<a href="{DASHBOARD_URL}" target="_blank">{DASHBOARD_URL}</a></p>            <p style="color: rgb(85, 85, 85); font-size: 14px;"></p>            <p style=""><span style="color: rgb(85, 85, 85); font-size: 14px; line-height: 20px;">Email: {USER_LOGIN_EMAIL}</span><br></p>            <p style=""><span style="color: rgb(85, 85, 85); font-size: 14px; line-height: 20px;">Password:&nbsp;{USER_LOGIN_PASSWORD}</span></p>            <p style="color: rgb(85, 85, 85);"><br></p>            <p style="color: rgb(85, 85, 85); font-size: 14px;">{SIGNATURE}</p>        </div>    </div></div>', '', 'default', '', 0),
+	(2, 'reset_password', 'Reset password', '<div style="background-color: #eeeeef; padding: 50px 0; "><div style="max-width:640px; margin:0 auto; "><div style="color: #fff; text-align: center; background-color:#33333e; padding: 30px; border-top-left-radius: 3px; border-top-right-radius: 3px; margin: 0;"><h1>Reset Password</h1>\n </div>\n <div style="padding: 20px; background-color: rgb(255, 255, 255); color:#555;">                    <p style="font-size: 14px;"> Hello {ACCOUNT_HOLDER_NAME},<br><br>A password reset request has been created for your account.&nbsp;</p>\n                    <p style="font-size: 14px;"> To initiate the password reset process, please click on the following link:</p>\n                    <p style="font-size: 14px;"><a href="{RESET_PASSWORD_URL}" target="_blank">Reset Password</a></p>\n                    <p style="font-size: 14px;"></p>\n                    <p style=""><span style="font-size: 14px; line-height: 20px;"><br></span></p>\n<p style=""><span style="font-size: 14px; line-height: 20px;">If you\'ve received this mail in error, it\'s likely that another user entered your email address by mistake while trying to reset a password.</span><br></p>\n<p style=""><span style="font-size: 14px; line-height: 20px;">If you didn\'t initiate the request, you don\'t need to take any further action and can safely disregard this email.</span><br></p>\n<p style="font-size: 14px;"><br></p>\n<p style="font-size: 14px;">{SIGNATURE}</p>\n                </div>\n            </div>\n        </div>', '', 'default', '', 0),
+	(3, 'team_member_invitation', 'You are invited', '<div style="background-color: #eeeeef; padding: 50px 0; "><div style="max-width:640px; margin:0 auto; "> <div style="color: #fff; text-align: center; background-color:#33333e; padding: 30px; border-top-left-radius: 3px; border-top-right-radius: 3px; margin: 0;"><h1>Account Invitation</h1>   </div>  <div style="padding: 20px; background-color: rgb(255, 255, 255);">            <p style=""><span style="color: rgb(85, 85, 85); font-size: 14px; line-height: 20px;">Hello,</span><span style="color: rgb(85, 85, 85); font-size: 14px; line-height: 20px;"><span style="font-weight: bold;"><br></span></span></p>            <p style=""><span style="color: rgb(85, 85, 85); font-size: 14px; line-height: 20px;"><span style="font-weight: bold;">{INVITATION_SENT_BY}</span> has sent you an invitation to join with a team.</span></p><p style=""><span style="color: rgb(85, 85, 85); font-size: 14px; line-height: 20px;"><br></span></p>            <p style=""><span style="color: rgb(85, 85, 85); font-size: 14px; line-height: 20px;"><a style="background-color: #00b393; padding: 10px 15px; color: #ffffff;" href="{INVITATION_URL}" target="_blank">Accept this Invitation</a></span></p>            <p style=""><span style="color: rgb(85, 85, 85); font-size: 14px; line-height: 20px;"><br></span></p><p style=""><span style="color: rgb(85, 85, 85); font-size: 14px; line-height: 20px;">If you don not want to accept this invitation, simply ignore this email.</span><br><br></p>            <p style="color: rgb(85, 85, 85); font-size: 14px;">{SIGNATURE}</p>        </div>    </div></div>', '', 'default', '', 0),
+	(4, 'send_invoice', 'New invoice', '<div style="background-color: #eeeeef; padding: 50px 0; "> <div style="max-width:640px; margin:0 auto; "> <div style="color: #fff; text-align: center; background-color:#33333e; padding: 30px; border-top-left-radius: 3px; border-top-right-radius: 3px; margin: 0;"><h1>INVOICE #{INVOICE_ID}</h1></div> <div style="padding: 20px; background-color: rgb(255, 255, 255);">  <p style=""><span style="color: rgb(85, 85, 85); font-size: 14px; line-height: 20px;">Hello {CONTACT_FIRST_NAME},</span><br></p><p style=""><span style="font-size: 14px; line-height: 20px;">Thank you for your business cooperation.</span><br></p><p style=""><span style="color: rgb(85, 85, 85); font-size: 14px; line-height: 20px;">Your invoice for the project {PROJECT_TITLE} has been generated and is attached here.</span></p><p style=""><br></p><p style=""><span style="color: rgb(85, 85, 85); font-size: 14px; line-height: 20px;"><a style="background-color: #00b393; padding: 10px 15px; color: #ffffff;" href="{INVOICE_URL}" target="_blank">Show Invoice</a></span></p><p style=""><span style="font-size: 14px; line-height: 20px;"><br></span></p><p style=""><span style="font-size: 14px; line-height: 20px;">Invoice balance due is {BALANCE_DUE}</span><br></p><p style=""><span style="color: rgb(85, 85, 85); font-size: 14px; line-height: 20px;">Please pay this invoice within {DUE_DATE}.&nbsp;</span></p><p style=""><span style="color: rgb(85, 85, 85); font-size: 14px; line-height: 20px;"><br></span></p><p style="color: rgb(85, 85, 85); font-size: 14px;">{SIGNATURE}</p>  </div> </div></div>', '', 'default', '', 0),
+	(5, 'signature', 'Signature', 'Powered By: <a href="http://fairsketch.com/" target="_blank">fairsketch </a>', '', 'default', '', 0),
+	(6, 'client_contact_invitation', 'You are invited', '<div style="background-color: #eeeeef; padding: 50px 0; ">    <div style="max-width:640px; margin:0 auto; ">  <div style="color: #fff; text-align: center; background-color:#33333e; padding: 30px; border-top-left-radius: 3px; border-top-right-radius: 3px; margin: 0;"><h1>Account Invitation</h1> </div> <div style="padding: 20px; background-color: rgb(255, 255, 255);">            <p style=""><span style="color: rgb(85, 85, 85); font-size: 14px; line-height: 20px;">Hello,</span><span style="color: rgb(85, 85, 85); font-size: 14px; line-height: 20px;"><span style="font-weight: bold;"><br></span></span></p>            <p style=""><span style="color: rgb(85, 85, 85); font-size: 14px; line-height: 20px;"><span style="font-weight: bold;">{INVITATION_SENT_BY}</span> has sent you an invitation to a client portal.</span></p><p style=""><span style="color: rgb(85, 85, 85); font-size: 14px; line-height: 20px;"><br></span></p>            <p style=""><span style="color: rgb(85, 85, 85); font-size: 14px; line-height: 20px;"><a style="background-color: #00b393; padding: 10px 15px; color: #ffffff;" href="{INVITATION_URL}" target="_blank">Accept this Invitation</a></span></p>            <p style=""><span style="color: rgb(85, 85, 85); font-size: 14px; line-height: 20px;"><br></span></p><p style=""><span style="color: rgb(85, 85, 85); font-size: 14px; line-height: 20px;">If you don not want to accept this invitation, simply ignore this email.</span><br><br></p>            <p style="color: rgb(85, 85, 85); font-size: 14px;">{SIGNATURE}</p>        </div>    </div></div>', '', 'default', '', 0),
+	(7, 'ticket_created', 'Ticket  #{TICKET_ID} - {TICKET_TITLE}', '<div style="background-color: #eeeeef; padding: 50px 0; "> <div style="max-width:640px; margin:0 auto; "> <div style="color: #fff; text-align: center; background-color:#33333e; padding: 30px; border-top-left-radius: 3px; border-top-right-radius: 3px; margin: 0;"><h1>Ticket #{TICKET_ID} Opened</h1></div><div style="padding: 20px; background-color: rgb(255, 255, 255);"><p style=""><span style="line-height: 18.5714px; font-weight: bold;">Title: {TICKET_TITLE}</span><span style="line-height: 18.5714px;"><br></span></p><p style=""><span style="line-height: 18.5714px;">{TICKET_CONTENT}</span><br></p> <p style=""><br></p> <p style=""><span style="color: rgb(85, 85, 85); font-size: 14px; line-height: 20px;"><a style="background-color: #00b393; padding: 10px 15px; color: #ffffff;" href="{TICKET_URL}" target="_blank">Show Ticket</a></span></p> <p style=""><br></p><p style="">Regards,</p><p style=""><span style="line-height: 18.5714px;">{USER_NAME}</span><br></p>   </div>  </div> </div>', '', 'default', '', 0),
+	(8, 'ticket_commented', 'Ticket  #{TICKET_ID} - {TICKET_TITLE}', '<div style="background-color: #eeeeef; padding: 50px 0; "> <div style="max-width:640px; margin:0 auto; "> <div style="color: #fff; text-align: center; background-color:#33333e; padding: 30px; border-top-left-radius: 3px; border-top-right-radius: 3px; margin: 0;"><h1>Ticket #{TICKET_ID} Replies</h1></div><div style="padding: 20px; background-color: rgb(255, 255, 255);"><p style=""><span style="line-height: 18.5714px; font-weight: bold;">Title: {TICKET_TITLE}</span><span style="line-height: 18.5714px;"><br></span></p><p style=""><span style="line-height: 18.5714px;">{TICKET_CONTENT}</span></p><p style=""><span style="line-height: 18.5714px;"><br></span></p><p style=""><span style="color: rgb(85, 85, 85); font-size: 14px; line-height: 20px;"><a style="background-color: #00b393; padding: 10px 15px; color: #ffffff;" href="{TICKET_URL}" target="_blank">Show Ticket</a></span></p></div></div></div>', '', 'default', '', 0),
+	(9, 'ticket_closed', 'Ticket  #{TICKET_ID} - {TICKET_TITLE}', '<div style="background-color: #eeeeef; padding: 50px 0; "> <div style="max-width:640px; margin:0 auto; "> <div style="color: #fff; text-align: center; background-color:#33333e; padding: 30px; border-top-left-radius: 3px; border-top-right-radius: 3px; margin: 0;"><h1>Ticket #{TICKET_ID}</h1></div><div style="padding: 20px; background-color: rgb(255, 255, 255);"><p style=""><span style="line-height: 18.5714px;">The Ticket #{TICKET_ID} has been closed by&nbsp;</span><span style="line-height: 18.5714px;">{USER_NAME}</span></p> <p style=""><br></p> <p style=""><span style="color: rgb(85, 85, 85); font-size: 14px; line-height: 20px;"><a style="background-color: #00b393; padding: 10px 15px; color: #ffffff;" href="{TICKET_URL}" target="_blank">Show Ticket</a></span></p>   </div>  </div> </div>', '', 'default', '', 0),
+	(10, 'ticket_reopened', 'Ticket  #{TICKET_ID} - {TICKET_TITLE}', '<div style="background-color: #eeeeef; padding: 50px 0; "> <div style="max-width:640px; margin:0 auto; "> <div style="color: #fff; text-align: center; background-color:#33333e; padding: 30px; border-top-left-radius: 3px; border-top-right-radius: 3px; margin: 0;"><h1>Ticket #{TICKET_ID}</h1></div><div style="padding: 20px; background-color: rgb(255, 255, 255);"><p style=""><span style="line-height: 18.5714px;">The Ticket #{TICKET_ID} has been reopened by&nbsp;</span><span style="line-height: 18.5714px;">{USER_NAME}</span></p><p style=""><br></p><p style=""><span style="color: rgb(85, 85, 85); font-size: 14px; line-height: 20px;"><a style="background-color: #00b393; padding: 10px 15px; color: #ffffff;" href="{TICKET_URL}" target="_blank">Show Ticket</a></span></p>  </div> </div></div>', '', 'default', '', 0),
+	(11, 'general_notification', '{EVENT_TITLE}', '<div style="background-color: #eeeeef; padding: 50px 0; "> <div style="max-width:640px; margin:0 auto; "> <div style="color: #fff; text-align: center; background-color:#33333e; padding: 30px; border-top-left-radius: 3px; border-top-right-radius: 3px; margin: 0;"><h1>{APP_TITLE}</h1></div><div style="padding: 20px; background-color: rgb(255, 255, 255);"><p style=""><span style="line-height: 18.5714px;">{EVENT_TITLE}</span></p><p style=""><span style="line-height: 18.5714px;">{EVENT_DETAILS}</span></p><p style=""><span style="line-height: 18.5714px;"><br></span></p><p style=""><span style="line-height: 18.5714px;"></span></p><p style=""><span style="color: rgb(85, 85, 85); font-size: 14px; line-height: 20px;"><a style="background-color: #00b393; padding: 10px 15px; color: #ffffff;" href="{NOTIFICATION_URL}" target="_blank">View Details</a></span></p>  </div> </div></div>', '', 'default', '', 0),
+	(12, 'invoice_payment_confirmation', 'Payment received', '<table border="0" cellpadding="0" cellspacing="0" width="100%" style="border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;background-color: #EEEEEE;border-top: 0;border-bottom: 0;">\r\n <tbody><tr>\r\n <td align="center" valign="top" style="padding-top: 30px;padding-right: 10px;padding-bottom: 30px;padding-left: 10px;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">\r\n <table border="0" cellpadding="0" cellspacing="0" width="600" style="border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">\r\n <tbody><tr>\r\n <td align="center" valign="top" style="mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">\r\n <table border="0" cellpadding="0" cellspacing="0" width="100%" style="border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;background-color: #FFFFFF;">\r\n                                        <tbody><tr>\r\n                                                <td valign="top" style="mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">\r\n                                                    <table border="0" cellpadding="0" cellspacing="0" width="100%" style="min-width: 100%;border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">\r\n                                                        <tbody>\r\n                                                            <tr>\r\n                                                                <td valign="top" style="mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">\r\n                                                                    <table align="left" border="0" cellpadding="0" cellspacing="0" style="background-color: #33333e; max-width: 100%;min-width: 100%;border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;" width="100%">\r\n                                                                        <tbody><tr>\r\n                                                                                <td valign="top" style="padding-top: 40px;padding-right: 18px;padding-bottom: 40px;padding-left: 18px;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;word-break: break-word;color: #606060;font-family: Arial;font-size: 15px;line-height: 150%;text-align: left;">\r\n                                                                                    <h2 style="display: block;margin: 0;padding: 0;font-family: Arial;font-size: 30px;font-style: normal;font-weight: bold;line-height: 100%;letter-spacing: -1px;text-align: center;color: #ffffff !important;">Payment Confirmation</h2>\r\n                                                                                </td>\r\n                                                                            </tr>\r\n                                                                        </tbody>\r\n                                                                    </table>\r\n                                                                </td>\r\n                                                            </tr>\r\n                                                        </tbody>\r\n                                                    </table>\r\n                                                    <table border="0" cellpadding="0" cellspacing="0" width="100%" style="min-width: 100%;border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">\r\n                                                        <tbody>\r\n                                                            <tr>\r\n                                                                <td valign="top" style="mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">\r\n\r\n                                                                    <table align="left" border="0" cellpadding="0" cellspacing="0" style="max-width: 100%;min-width: 100%;border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;" width="100%">\r\n                                                                        <tbody><tr>\r\n                                                                                <td valign="top" style="padding-top: 20px;padding-right: 18px;padding-bottom: 0;padding-left: 18px;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;word-break: break-word;color: #606060;font-family: Arial;font-size: 15px;line-height: 150%;text-align: left;">\r\n                                                                                    Hello,<br>\r\n                                                                                    We have received your payment of {PAYMENT_AMOUNT} for {INVOICE_ID} <br>\r\n                                                                                    Thank you for your business cooperation.\r\n                                                                                </td>\r\n                                                                            </tr>\r\n                                                                            <tr>\r\n                                                                                <td valign="top" style="padding-top: 10px;padding-right: 18px;padding-bottom: 10px;padding-left: 18px;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;word-break: break-word;color: #606060;font-family: Arial;font-size: 15px;line-height: 150%;text-align: left;">\r\n                                                                                    <table border="0" cellpadding="0" cellspacing="0" width="100%" style="min-width: 100%;border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">\r\n                                                                                        <tbody>\r\n                                                                                            <tr>\r\n                                                                                                <td style="padding-top: 15px;padding-right: 0x;padding-bottom: 15px;padding-left: 0px;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">\r\n                                                                                                    <table border="0" cellpadding="0" cellspacing="0" style="border-collapse: separate !important;border-radius: 2px;background-color: #00b393;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">\r\n                                                                                                        <tbody>\r\n                                                                                                            <tr>\r\n                                                                                                                <td align="center" valign="middle" style="font-family: Arial;font-size: 16px;padding: 10px;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">\r\n                                                                                                                    <a href="{INVOICE_URL}" target="_blank" style="font-weight: bold;letter-spacing: normal;line-height: 100%;text-align: center;text-decoration: none;color: #FFFFFF;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;display: block;">View Invoice</a>\r\n                                                                                                                </td>\r\n                                                                                                            </tr>\r\n                                                                                                        </tbody>\r\n                                                                                                    </table>\r\n                                                                                                </td>\r\n                                                                                            </tr>\r\n                                                                                        </tbody>\r\n                                                                                    </table>\r\n                                                                                </td>\r\n                                                                            </tr>\r\n                                                                            <tr>\r\n                                                                                <td valign="top" style="padding-top: 0px;padding-right: 18px;padding-bottom: 10px;padding-left: 18px;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;word-break: break-word;color: #606060;font-family: Arial;font-size: 15px;line-height: 150%;text-align: left;"> \r\n                                                                                    \r\n                                                                                </td>\r\n                                                                            </tr>\r\n                                                                            <tr>\r\n                                                                                <td valign="top" style="padding-top: 0px;padding-right: 18px;padding-bottom: 20px;padding-left: 18px;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;word-break: break-word;color: #606060;font-family: Arial;font-size: 15px;line-height: 150%;text-align: left;"> \r\n  {SIGNATURE}\r\n  </td>\r\n </tr>\r\n </tbody>\r\n  </table>\r\n  </td>\r\n  </tr>\r\n  </tbody>\r\n </table>\r\n  </td>\r\n </tr>\r\n  </tbody>\r\n  </table>\r\n  </td>\r\n </tr>\r\n </tbody>\r\n </table>\r\n </td>\r\n </tr>\r\n </tbody>\r\n  </table>', '', 'default', '', 0),
+	(13, 'message_received', '{SUBJECT}', '<meta content="text/html; charset=utf-8" http-equiv="Content-Type"> <meta content="width=device-width, initial-scale=1.0" name="viewport"> <style type="text/css"> #message-container p {margin: 10px 0;} #message-container h1, #message-container h2, #message-container h3, #message-container h4, #message-container h5, #message-container h6 { padding:10px; margin:0; } #message-container table td {border-collapse: collapse;} #message-container table { border-collapse:collapse; mso-table-lspace:0pt; mso-table-rspace:0pt; } #message-container a span{padding:10px 15px !important;} </style> <table id="message-container" align="center" border="0" cellpadding="0" cellspacing="0" style="background:#eee; margin:0; padding:0; width:100% !important; line-height: 100% !important; -webkit-text-size-adjust:100%; -ms-text-size-adjust:100%; margin:0; padding:0; font-family:Helvetica,Arial,sans-serif; color: #555;"> <tbody> <tr> <td valign="top"> <table align="center" border="0" cellpadding="0" cellspacing="0"> <tbody> <tr> <td height="50" width="600">&nbsp;</td> </tr> <tr> <td style="background-color:#33333e; padding:25px 15px 30px 15px; font-weight:bold; " width="600"><h2 style="color:#fff; text-align:center;">{USER_NAME} sent you a message</h2></td> </tr> <tr> <td bgcolor="whitesmoke" style="background:#fff; font-family:Helvetica,Arial,sans-serif" valign="top" width="600"> <table align="center" border="0" cellpadding="0" cellspacing="0"> <tbody> <tr> <td height="10" width="560">&nbsp;</td> </tr> <tr> <td width="560"><p><span style="background-color: transparent;">{MESSAGE_CONTENT}</span></p> <p style="display:inline-block; padding: 10px 15px; background-color: #00b393;"><a href="{MESSAGE_URL}" style="text-decoration: none; color:#fff;" target="_blank">Reply Message</a></p> </td> </tr> <tr> <td height="10" width="560">&nbsp;</td> </tr> </tbody> </table> </td> </tr> <tr> <td height="60" width="600">&nbsp;</td> </tr> </tbody> </table> </td> </tr> </tbody> </table>', '', 'default', '', 0),
+	(14, 'invoice_due_reminder_before_due_date', 'Invoice due reminder', '<table border="0" cellpadding="0" cellspacing="0" width="100%" style="border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;background-color: #EEEEEE;border-top: 0;border-bottom: 0;"> <tbody><tr> <td align="center" valign="top" style="padding-top: 30px;padding-right: 10px;padding-bottom: 30px;padding-left: 10px;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;"> <table border="0" cellpadding="0" cellspacing="0" width="600" style="border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;"> <tbody><tr> <td align="center" valign="top" style="mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;"> <table border="0" cellpadding="0" cellspacing="0" width="100%" style="border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;background-color: #FFFFFF;"> <tbody><tr> <td valign="top" style="mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;"> <table border="0" cellpadding="0" cellspacing="0" width="100%" style="min-width: 100%;border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;"> <tbody> <tr> <td valign="top" style="mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;"> <table align="left" border="0" cellpadding="0" cellspacing="0" style="background-color: #33333e; max-width: 100%;min-width: 100%;border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;" width="100%"> <tbody><tr> <td valign="top" style="padding-top: 40px;padding-right: 18px;padding-bottom: 40px;padding-left: 18px;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;word-break: break-word;color: #606060;font-family: Arial;font-size: 15px;line-height: 150%;text-align: left;"> <h2 style="display: block;margin: 0;padding: 0;font-family: Arial;font-size: 30px;font-style: normal;font-weight: bold;line-height: 100%;letter-spacing: -1px;text-align: center;color: #ffffff !important;">Invoice Due Reminder</h2></td></tr></tbody></table></td></tr></tbody></table> <table border="0" cellpadding="0" cellspacing="0" width="100%" style="min-width: 100%;border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;"> <tbody> <tr> <td valign="top" style="mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;"> <table align="left" border="0" cellpadding="0" cellspacing="0" style="max-width: 100%;min-width: 100%;border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;" width="100%"> <tbody><tr> <td valign="top" style="padding-top: 20px;padding-right: 18px;padding-bottom: 0;padding-left: 18px;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;word-break: break-word;color: #606060;font-family: Arial;font-size: 15px;line-height: 150%;text-align: left;"><p> Hello,<br>We would like to remind you that invoice {INVOICE_ID} is due on {DUE_DATE}. Please pay the invoice within due date.&nbsp;</p><p></p></td></tr><tr><td valign="top" style="padding-top: 10px;padding-right: 18px;padding-bottom: 10px;padding-left: 18px;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;word-break: break-word;color: #606060;font-family: Arial;font-size: 15px;line-height: 150%;text-align: left;"><p>If you have already submitted the payment, please ignore this email.</p><table border="0" cellpadding="0" cellspacing="0" width="100%" style="min-width: 100%;border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;"><tbody><tr><td style="padding-top: 15px;padding-right: 0x;padding-bottom: 15px;padding-left: 0px;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;"><table border="0" cellpadding="0" cellspacing="0" style="border-collapse: separate !important;border-radius: 2px;background-color: #00b393;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;"><tbody><tr><td align="center" valign="middle" style="font-family: Arial;font-size: 16px;padding: 10px;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;"><a href="{INVOICE_URL}" target="_blank" style="font-weight: bold;letter-spacing: normal;line-height: 100%;text-align: center;text-decoration: none;color: #FFFFFF;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;display: block;">View Invoice</a> </td> </tr> </tbody> </table> </td> </tr> </tbody> </table> <p></p></td> </tr> <tr> <td valign="top" style="padding-top: 0px;padding-right: 18px;padding-bottom: 20px;padding-left: 18px;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;word-break: break-word;color: #606060;font-family: Arial;font-size: 15px;line-height: 150%;text-align: left;"> {SIGNATURE} </td> </tr> </tbody> </table> </td> </tr> </tbody> </table> </td> </tr> </tbody> </table> </td> </tr> </tbody> </table> </td> </tr> </tbody> </table>', '', 'default', '', 0),
+	(15, 'invoice_overdue_reminder', 'Invoice overdue reminder', '<table border="0" cellpadding="0" cellspacing="0" width="100%" style="border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;background-color: #EEEEEE;border-top: 0;border-bottom: 0;"> <tbody><tr> <td align="center" valign="top" style="padding-top: 30px;padding-right: 10px;padding-bottom: 30px;padding-left: 10px;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;"> <table border="0" cellpadding="0" cellspacing="0" width="600" style="border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;"> <tbody><tr> <td align="center" valign="top" style="mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;"> <table border="0" cellpadding="0" cellspacing="0" width="100%" style="border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;background-color: #FFFFFF;"> <tbody><tr> <td valign="top" style="mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;"> <table border="0" cellpadding="0" cellspacing="0" width="100%" style="min-width: 100%;border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;"> <tbody> <tr> <td valign="top" style="mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;"> <table align="left" border="0" cellpadding="0" cellspacing="0" style="background-color: #33333e; max-width: 100%;min-width: 100%;border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;" width="100%"> <tbody><tr> <td valign="top" style="padding-top: 40px;padding-right: 18px;padding-bottom: 40px;padding-left: 18px;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;word-break: break-word;color: #606060;font-family: Arial;font-size: 15px;line-height: 150%;text-align: left;"> <h2 style="display: block;margin: 0;padding: 0;font-family: Arial;font-size: 30px;font-style: normal;font-weight: bold;line-height: 100%;letter-spacing: -1px;text-align: center;color: #ffffff !important;">Invoice Overdue Reminder</h2></td></tr></tbody></table></td></tr></tbody></table> <table border="0" cellpadding="0" cellspacing="0" width="100%" style="min-width: 100%;border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;"> <tbody> <tr> <td valign="top" style="mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;"> <table align="left" border="0" cellpadding="0" cellspacing="0" style="max-width: 100%;min-width: 100%;border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;" width="100%"> <tbody><tr> <td valign="top" style="padding-top: 20px;padding-right: 18px;padding-bottom: 0;padding-left: 18px;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;word-break: break-word;color: #606060;font-family: Arial;font-size: 15px;line-height: 150%;text-align: left;"><p> Hello,<br>We would like to remind you that you have an unpaid invoice {INVOICE_ID}. We kindly request you to pay the invoice as soon as possible.&nbsp;</p><p></p></td></tr><tr><td valign="top" style="padding-top: 10px;padding-right: 18px;padding-bottom: 10px;padding-left: 18px;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;word-break: break-word;color: #606060;font-family: Arial;font-size: 15px;line-height: 150%;text-align: left;"><p>If you have already submitted the payment, please ignore this email.</p><table border="0" cellpadding="0" cellspacing="0" width="100%" style="min-width: 100%;border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;"><tbody><tr><td style="padding-top: 15px;padding-right: 0x;padding-bottom: 15px;padding-left: 0px;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;"><table border="0" cellpadding="0" cellspacing="0" style="border-collapse: separate !important;border-radius: 2px;background-color: #00b393;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;"><tbody><tr><td align="center" valign="middle" style="font-family: Arial;font-size: 16px;padding: 10px;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;"><a href="{INVOICE_URL}" target="_blank" style="font-weight: bold;letter-spacing: normal;line-height: 100%;text-align: center;text-decoration: none;color: #FFFFFF;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;display: block;">View Invoice</a> </td> </tr> </tbody> </table> </td> </tr> </tbody> </table> <p></p></td> </tr> <tr> <td valign="top" style="padding-top: 0px;padding-right: 18px;padding-bottom: 20px;padding-left: 18px;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;word-break: break-word;color: #606060;font-family: Arial;font-size: 15px;line-height: 150%;text-align: left;"> {SIGNATURE} </td> </tr> </tbody> </table> </td> </tr> </tbody> </table> </td> </tr> </tbody> </table> </td> </tr> </tbody> </table> </td> </tr> </tbody> </table>', '', 'default', '', 0),
+	(16, 'recurring_invoice_creation_reminder', 'Recurring invoice creation reminder', '<table border="0" cellpadding="0" cellspacing="0" width="100%" style="border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;background-color: #EEEEEE;border-top: 0;border-bottom: 0;"> <tbody><tr> <td align="center" valign="top" style="padding-top: 30px;padding-right: 10px;padding-bottom: 30px;padding-left: 10px;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;"> <table border="0" cellpadding="0" cellspacing="0" width="600" style="border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;"> <tbody><tr> <td align="center" valign="top" style="mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;"> <table border="0" cellpadding="0" cellspacing="0" width="100%" style="border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;background-color: #FFFFFF;"> <tbody><tr> <td valign="top" style="mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;"> <table border="0" cellpadding="0" cellspacing="0" width="100%" style="min-width: 100%;border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;"> <tbody> <tr> <td valign="top" style="mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;"> <table align="left" border="0" cellpadding="0" cellspacing="0" style="background-color: #33333e; max-width: 100%;min-width: 100%;border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;" width="100%"> <tbody><tr> <td valign="top" style="padding-top: 40px;padding-right: 18px;padding-bottom: 40px;padding-left: 18px;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;word-break: break-word;color: #606060;font-family: Arial;font-size: 15px;line-height: 150%;text-align: left;"> <h2 style="display: block;margin: 0;padding: 0;font-family: Arial;font-size: 30px;font-style: normal;font-weight: bold;line-height: 100%;letter-spacing: -1px;text-align: center;color: #ffffff !important;">Invoice Cration Reminder</h2></td></tr></tbody></table></td></tr></tbody></table> <table border="0" cellpadding="0" cellspacing="0" width="100%" style="min-width: 100%;border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;"> <tbody> <tr> <td valign="top" style="mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;"> <table align="left" border="0" cellpadding="0" cellspacing="0" style="max-width: 100%;min-width: 100%;border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;" width="100%"> <tbody><tr> <td valign="top" style="padding-top: 20px;padding-right: 18px;padding-bottom: 0;padding-left: 18px;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;word-break: break-word;color: #606060;font-family: Arial;font-size: 15px;line-height: 150%;text-align: left;"><p> Hello,<br>We would like to remind you that a recurring invoice will be created on {NEXT_RECURRING_DATE}.</p><p></p></td></tr><tr><td valign="top" style="padding-top: 10px;padding-right: 18px;padding-bottom: 10px;padding-left: 18px;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;word-break: break-word;color: #606060;font-family: Arial;font-size: 15px;line-height: 150%;text-align: left;"><table border="0" cellpadding="0" cellspacing="0" width="100%" style="min-width: 100%; text-size-adjust: 100%;"><tbody><tr><td style="padding-top: 15px; padding-bottom: 15px; text-size-adjust: 100%;"><table border="0" cellpadding="0" cellspacing="0" style="border-collapse: separate !important;border-radius: 2px;background-color: #00b393;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;"><tbody><tr><td align="center" valign="middle" style="font-size: 16px; padding: 10px; text-size-adjust: 100%;"><a href="{INVOICE_URL}" target="_blank" style="font-weight: bold; line-height: 100%; color: rgb(255, 255, 255); text-size-adjust: 100%; display: block;">View Invoice</a></td></tr></tbody></table></td></tr></tbody></table> <p></p></td> </tr> <tr> <td valign="top" style="padding-top: 0px;padding-right: 18px;padding-bottom: 20px;padding-left: 18px;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;word-break: break-word;color: #606060;font-family: Arial;font-size: 15px;line-height: 150%;text-align: left;"> {SIGNATURE} </td> </tr> </tbody> </table> </td> </tr> </tbody> </table> </td> </tr> </tbody> </table> </td> </tr> </tbody> </table> </td> </tr> </tbody> </table>', '', 'default', '', 0),
+	(17, 'project_task_deadline_reminder', 'Project task deadline reminder', '<div style="background-color: #eeeeef; padding: 50px 0; "> <div style="max-width:640px; margin:0 auto; "> <div style="color: #fff; text-align: center; background-color:#33333e; padding: 30px; border-top-left-radius: 3px; border-top-right-radius: 3px; margin: 0;"><h1>{APP_TITLE}</h1></div> <div style="padding: 20px; background-color: rgb(255, 255, 255);">  <p style=""><span style="color: rgb(85, 85, 85); font-size: 14px; line-height: 20px;">Hello,</span></p><p style=""><span style="color: rgb(85, 85, 85); font-size: 14px; line-height: 20px;">This is to remind you that there are some tasks which deadline is {DEADLINE}.</span></p><p style=""><span style="color: rgb(85, 85, 85); font-size: 14px; line-height: 20px;">{TASKS_LIST}</span></p><p style=""><span style="color: rgb(85, 85, 85); font-size: 14px; line-height: 20px;"><br></span></p><p style="color: rgb(85, 85, 85); font-size: 14px;">{SIGNATURE}</p>  </div> </div></div>', '', 'default', '', 0),
+	(18, 'estimate_sent', 'New estimate', '<table border="0" cellpadding="0" cellspacing="0" width="100%" style="border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;background-color: #EEEEEE;border-top: 0;border-bottom: 0;"> <tbody><tr> <td align="center" valign="top" style="padding-top: 30px;padding-right: 10px;padding-bottom: 30px;padding-left: 10px;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;"> <table border="0" cellpadding="0" cellspacing="0" width="600" style="border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;"> <tbody><tr> <td align="center" valign="top" style="mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;"> <table border="0" cellpadding="0" cellspacing="0" width="100%" style="border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;background-color: #FFFFFF;"> <tbody><tr> <td valign="top" style="mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;"> <table border="0" cellpadding="0" cellspacing="0" width="100%" style="min-width: 100%;border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;"> <tbody> <tr> <td valign="top" style="mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;"> <table align="left" border="0" cellpadding="0" cellspacing="0" style="background-color: #33333e; max-width: 100%;min-width: 100%;border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;" width="100%"> <tbody><tr> <td valign="top" style="padding: 40px 18px; text-size-adjust: 100%; word-break: break-word; line-height: 150%; text-align: left;"> <h2 style="display: block; margin: 0px; padding: 0px; line-height: 100%; text-align: center;"><font color="#ffffff" face="Arial"><span style="letter-spacing: -1px;"><b>ESTIMATE #{ESTIMATE_ID}</b></span></font><br></h2></td></tr></tbody></table></td></tr></tbody></table> <table border="0" cellpadding="0" cellspacing="0" width="100%" style="min-width: 100%;border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;"> <tbody> <tr> <td valign="top" style="mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;"> <table align="left" border="0" cellpadding="0" cellspacing="0" style="max-width: 100%;min-width: 100%;border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;" width="100%"> <tbody><tr> <td valign="top" style="padding-top: 20px;padding-right: 18px;padding-bottom: 0;padding-left: 18px;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;word-break: break-word;color: #606060;font-family: Arial;font-size: 15px;line-height: 150%;text-align: left;"><p> Hello {CONTACT_FIRST_NAME},<br></p><p>Here is the estimate. Please check the attachment.</p><p></p></td></tr><tr><td valign="top" style="padding-top: 10px;padding-right: 18px;padding-bottom: 10px;padding-left: 18px;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;word-break: break-word;color: #606060;font-family: Arial;font-size: 15px;line-height: 150%;text-align: left;"><table border="0" cellpadding="0" cellspacing="0" width="100%" style="min-width: 100%; text-size-adjust: 100%;"><tbody><tr><td style="padding-top: 15px; padding-bottom: 15px; text-size-adjust: 100%;"><table border="0" cellpadding="0" cellspacing="0" style="border-collapse: separate !important;border-radius: 2px;background-color: #00b393;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;"><tbody><tr><td align="center" valign="middle" style="font-size: 16px; padding: 10px; text-size-adjust: 100%;"><a href="{ESTIMATE_URL}" target="_blank" style="font-weight: bold; line-height: 100%; color: rgb(255, 255, 255); text-size-adjust: 100%; display: block;">Show Estimate</a></td></tr></tbody></table></td></tr></tbody></table> <p></p></td> </tr> <tr> <td valign="top" style="padding-top: 0px;padding-right: 18px;padding-bottom: 20px;padding-left: 18px;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;word-break: break-word;color: #606060;font-family: Arial;font-size: 15px;line-height: 150%;text-align: left;"> {SIGNATURE} </td> </tr> </tbody> </table> </td> </tr> </tbody> </table> </td> </tr> </tbody> </table> </td> </tr> </tbody> </table> </td> </tr> </tbody> </table>', '', 'default', '', 0),
+	(19, 'estimate_request_received', 'Estimate request received', '<table border="0" cellpadding="0" cellspacing="0" width="100%" style="border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;background-color: #EEEEEE;border-top: 0;border-bottom: 0;"> <tbody><tr> <td align="center" valign="top" style="padding-top: 30px;padding-right: 10px;padding-bottom: 30px;padding-left: 10px;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;"> <table border="0" cellpadding="0" cellspacing="0" width="600" style="border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;"> <tbody><tr> <td align="center" valign="top" style="mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;"> <table border="0" cellpadding="0" cellspacing="0" width="100%" style="border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;background-color: #FFFFFF;"> <tbody><tr> <td valign="top" style="mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;"> <table border="0" cellpadding="0" cellspacing="0" width="100%" style="min-width: 100%;border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;"> <tbody> <tr> <td valign="top" style="mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;"> <table align="left" border="0" cellpadding="0" cellspacing="0" style="background-color: #33333e; max-width: 100%;min-width: 100%;border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;" width="100%"> <tbody><tr> <td valign="top" style="padding: 40px 18px; text-size-adjust: 100%; word-break: break-word; line-height: 150%; text-align: left;"> <h2 style="display: block; margin: 0px; padding: 0px; line-height: 100%; text-align: center;"><font color="#ffffff" face="Arial"><span style="letter-spacing: -1px;"><b>ESTIMATE REQUEST #{ESTIMATE_REQUEST_ID}</b></span></font><br></h2></td></tr></tbody></table></td></tr></tbody></table> <table border="0" cellpadding="0" cellspacing="0" width="100%" style="min-width: 100%;border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;"> <tbody> <tr> <td valign="top" style="mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;"> <table align="left" border="0" cellpadding="0" cellspacing="0" style="max-width: 100%;min-width: 100%;border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;" width="100%"> <tbody><tr> <td valign="top" style="padding: 20px 18px 0px; text-size-adjust: 100%; word-break: break-word; line-height: 150%; text-align: left;"><p style="color: rgb(96, 96, 96); font-family: Arial; font-size: 15px;"><span style="background-color: transparent;">A new estimate request has been received from {CONTACT_FIRST_NAME}.</span><br></p><p style="color: rgb(96, 96, 96); font-family: Arial; font-size: 15px;"></p></td></tr><tr><td valign="top" style="padding-top: 10px;padding-right: 18px;padding-bottom: 10px;padding-left: 18px;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;word-break: break-word;color: #606060;font-family: Arial;font-size: 15px;line-height: 150%;text-align: left;"><table border="0" cellpadding="0" cellspacing="0" width="100%" style="min-width: 100%; text-size-adjust: 100%;"><tbody><tr><td style="padding-top: 15px; padding-bottom: 15px; text-size-adjust: 100%;"><table border="0" cellpadding="0" cellspacing="0" style="border-collapse: separate !important;border-radius: 2px;background-color: #00b393;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;"><tbody><tr><td align="center" valign="middle" style="font-size: 16px; padding: 10px; text-size-adjust: 100%;"><a href="{ESTIMATE_REQUEST_URL}" target="_blank" style="font-weight: bold; line-height: 100%; color: rgb(255, 255, 255); text-size-adjust: 100%; display: block;">Show Estimate Request</a></td></tr></tbody></table></td></tr></tbody></table> <p></p></td> </tr> <tr> <td valign="top" style="padding-top: 0px;padding-right: 18px;padding-bottom: 20px;padding-left: 18px;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;word-break: break-word;color: #606060;font-family: Arial;font-size: 15px;line-height: 150%;text-align: left;"> {SIGNATURE} </td> </tr> </tbody> </table> </td> </tr> </tbody> </table> </td> </tr> </tbody> </table> </td> </tr> </tbody> </table> </td> </tr> </tbody> </table>', '', 'default', '', 0),
+	(20, 'estimate_rejected', 'Estimate rejected', '<table border="0" cellpadding="0" cellspacing="0" width="100%" style="border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;background-color: #EEEEEE;border-top: 0;border-bottom: 0;"> <tbody><tr> <td align="center" valign="top" style="padding-top: 30px;padding-right: 10px;padding-bottom: 30px;padding-left: 10px;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;"> <table border="0" cellpadding="0" cellspacing="0" width="600" style="border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;"> <tbody><tr> <td align="center" valign="top" style="mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;"> <table border="0" cellpadding="0" cellspacing="0" width="100%" style="border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;background-color: #FFFFFF;"> <tbody><tr> <td valign="top" style="mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;"> <table border="0" cellpadding="0" cellspacing="0" width="100%" style="min-width: 100%;border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;"> <tbody> <tr> <td valign="top" style="mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;"> <table align="left" border="0" cellpadding="0" cellspacing="0" style="background-color: #33333e; max-width: 100%;min-width: 100%;border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;" width="100%"> <tbody><tr> <td valign="top" style="padding: 40px 18px; text-size-adjust: 100%; word-break: break-word; line-height: 150%; text-align: left;"> <h2 style="display: block; margin: 0px; padding: 0px; line-height: 100%; text-align: center;"><font color="#ffffff" face="Arial"><span style="letter-spacing: -1px;"><b>ESTIMATE #{ESTIMATE_ID}</b></span></font><br></h2></td></tr></tbody></table></td></tr></tbody></table> <table border="0" cellpadding="0" cellspacing="0" width="100%" style="min-width: 100%;border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;"> <tbody> <tr> <td valign="top" style="mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;"> <table align="left" border="0" cellpadding="0" cellspacing="0" style="max-width: 100%;min-width: 100%;border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;" width="100%"> <tbody><tr> <td valign="top" style="padding: 20px 18px 0px; text-size-adjust: 100%; word-break: break-word; line-height: 150%; text-align: left;"><p style=""><font color="#606060" face="Arial"><span style="font-size: 15px;">The estimate #{ESTIMATE_ID} has been rejected.</span></font><br></p><p style="color: rgb(96, 96, 96); font-family: Arial; font-size: 15px;"></p></td></tr><tr><td valign="top" style="padding-top: 10px;padding-right: 18px;padding-bottom: 10px;padding-left: 18px;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;word-break: break-word;color: #606060;font-family: Arial;font-size: 15px;line-height: 150%;text-align: left;"><table border="0" cellpadding="0" cellspacing="0" width="100%" style="min-width: 100%; text-size-adjust: 100%;"><tbody><tr><td style="padding-top: 15px; padding-bottom: 15px; text-size-adjust: 100%;"><table border="0" cellpadding="0" cellspacing="0" style="border-collapse: separate !important;border-radius: 2px;background-color: #00b393;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;"><tbody><tr><td align="center" valign="middle" style="font-size: 16px; padding: 10px; text-size-adjust: 100%;"><a href="{ESTIMATE_URL}" target="_blank" style="font-weight: bold; line-height: 100%; color: rgb(255, 255, 255); text-size-adjust: 100%; display: block;">Show Estimate</a></td></tr></tbody></table></td></tr></tbody></table> <p></p></td> </tr> <tr> <td valign="top" style="padding-top: 0px;padding-right: 18px;padding-bottom: 20px;padding-left: 18px;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;word-break: break-word;color: #606060;font-family: Arial;font-size: 15px;line-height: 150%;text-align: left;"> {SIGNATURE} </td> </tr> </tbody> </table> </td> </tr> </tbody> </table> </td> </tr> </tbody> </table> </td> </tr> </tbody> </table> </td> </tr> </tbody> </table>', '', 'default', '', 0),
+	(21, 'estimate_accepted', 'Estimate accepted', '<table border="0" cellpadding="0" cellspacing="0" width="100%" style="border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;background-color: #EEEEEE;border-top: 0;border-bottom: 0;"> <tbody><tr> <td align="center" valign="top" style="padding-top: 30px;padding-right: 10px;padding-bottom: 30px;padding-left: 10px;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;"> <table border="0" cellpadding="0" cellspacing="0" width="600" style="border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;"> <tbody><tr> <td align="center" valign="top" style="mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;"> <table border="0" cellpadding="0" cellspacing="0" width="100%" style="border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;background-color: #FFFFFF;"> <tbody><tr> <td valign="top" style="mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;"> <table border="0" cellpadding="0" cellspacing="0" width="100%" style="min-width: 100%;border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;"> <tbody> <tr> <td valign="top" style="mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;"> <table align="left" border="0" cellpadding="0" cellspacing="0" style="background-color: #33333e; max-width: 100%;min-width: 100%;border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;" width="100%"> <tbody><tr> <td valign="top" style="padding: 40px 18px; text-size-adjust: 100%; word-break: break-word; line-height: 150%; text-align: left;"> <h2 style="display: block; margin: 0px; padding: 0px; line-height: 100%; text-align: center;"><font color="#ffffff" face="Arial"><span style="letter-spacing: -1px;"><b>ESTIMATE #{ESTIMATE_ID}</b></span></font><br></h2></td></tr></tbody></table></td></tr></tbody></table> <table border="0" cellpadding="0" cellspacing="0" width="100%" style="min-width: 100%;border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;"> <tbody> <tr> <td valign="top" style="mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;"> <table align="left" border="0" cellpadding="0" cellspacing="0" style="max-width: 100%;min-width: 100%;border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;" width="100%"> <tbody><tr> <td valign="top" style="padding: 20px 18px 0px; text-size-adjust: 100%; word-break: break-word; line-height: 150%; text-align: left;"><p style=""><font color="#606060" face="Arial"><span style="font-size: 15px;">The estimate #{ESTIMATE_ID} has been accepted.</span></font><br></p><p style="color: rgb(96, 96, 96); font-family: Arial; font-size: 15px;"></p></td></tr><tr><td valign="top" style="padding-top: 10px;padding-right: 18px;padding-bottom: 10px;padding-left: 18px;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;word-break: break-word;color: #606060;font-family: Arial;font-size: 15px;line-height: 150%;text-align: left;"><table border="0" cellpadding="0" cellspacing="0" width="100%" style="min-width: 100%; text-size-adjust: 100%;"><tbody><tr><td style="padding-top: 15px; padding-bottom: 15px; text-size-adjust: 100%;"><table border="0" cellpadding="0" cellspacing="0" style="border-collapse: separate !important;border-radius: 2px;background-color: #00b393;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;"><tbody><tr><td align="center" valign="middle" style="font-size: 16px; padding: 10px; text-size-adjust: 100%;"><a href="{ESTIMATE_URL}" target="_blank" style="font-weight: bold; line-height: 100%; color: rgb(255, 255, 255); text-size-adjust: 100%; display: block;">Show Estimate</a></td></tr></tbody></table></td></tr></tbody></table> <p></p></td> </tr> <tr> <td valign="top" style="padding-top: 0px;padding-right: 18px;padding-bottom: 20px;padding-left: 18px;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;word-break: break-word;color: #606060;font-family: Arial;font-size: 15px;line-height: 150%;text-align: left;"> {SIGNATURE} </td> </tr> </tbody> </table> </td> </tr> </tbody> </table> </td> </tr> </tbody> </table> </td> </tr> </tbody> </table> </td> </tr> </tbody> </table>', '', 'default', '', 0),
+	(22, 'new_client_greetings', 'Welcome!', '<div style="background-color: #eeeeef; padding: 50px 0; ">    <div style="max-width:640px; margin:0 auto; ">  <div style="color: #fff; text-align: center; background-color:#33333e; padding: 30px; border-top-left-radius: 3px; border-top-right-radius: 3px; margin: 0;"><h1>Welcome to {COMPANY_NAME}</h1> </div> <div style="padding: 20px; background-color: rgb(255, 255, 255);">            <p><span style="color: rgb(85, 85, 85); font-size: 14px; line-height: 20px;">Hello {CONTACT_FIRST_NAME},</span></p><p><span style="color: rgb(85, 85, 85); font-size: 14px; line-height: 20px;">Thank you for creating your account. </span></p><p><span style="color: rgb(85, 85, 85); font-size: 14px; line-height: 20px;">We are happy to see you here.<br></span></p><hr><p style="color: rgb(85, 85, 85); font-size: 14px;">Dashboard URL:&nbsp;<a href="{DASHBOARD_URL}" target="_blank">{DASHBOARD_URL}</a></p><p style="color: rgb(85, 85, 85); font-size: 14px;"></p><p><span style="color: rgb(85, 85, 85); font-size: 14px; line-height: 20px;">Email: {CONTACT_LOGIN_EMAIL}</span><br></p><p><span style="color: rgb(85, 85, 85); font-size: 14px; line-height: 20px;">Password:&nbsp;{CONTACT_LOGIN_PASSWORD}</span></p><p style="color: rgb(85, 85, 85);"><br></p><p style="color: rgb(85, 85, 85); font-size: 14px;">{SIGNATURE}</p>        </div>    </div></div>', '', 'default', '', 0),
+	(23, 'verify_email', 'Please verify your email', '<div style="background-color: #eeeeef; padding: 50px 0; "><div style="max-width:640px; margin:0 auto; "><div style="color: #fff; text-align: center; background-color:#33333e; padding: 30px; border-top-left-radius: 3px; border-top-right-radius: 3px; margin: 0;"><h1>Account verification</h1></div><div style="padding: 20px; background-color: rgb(255, 255, 255); color:#555;"><p style="font-size: 14px;">To initiate the signup process, please click on the following link:<br></p><p style="font-size: 14px;"><br></p><p style=""><span style="color: rgb(85, 85, 85); font-size: 14px; line-height: 20px;"><a style="background-color: #00b393; padding: 10px 15px; color: #ffffff;" href="{VERIFY_EMAIL_URL}" target="_blank">Verify Email</a></span></p>  <p style="font-size: 14px;"><br></p><p style=""><span style="font-size: 14px;">If you did not initiate the request, you do not need to take any further action and can safely disregard this email.</span></p><p style=""><span style="font-size: 14px;"><br></span></p><p style="font-size: 14px;">{SIGNATURE}</p></div></div></div>', '', 'default', '', 0),
+	(24, 'new_order_received', 'New order received', '<div style="background-color: #eeeeef; padding: 50px 0; "> <div style="max-width:640px; margin:0 auto; "> <div style="color: #fff; text-align: center; background-color:#33333e; padding: 30px; border-top-left-radius: 3px; border-top-right-radius: 3px; margin: 0;"><h1>ORDER #{ORDER_ID}</h1></div> <div style="padding: 20px; background-color: rgb(255, 255, 255);">  <p style=""><span style="color: rgb(85, 85, 85); font-size: 14px;">A new order has been received from&nbsp;</span><span style="color: rgb(85, 85, 85); font-size: 14px;">{CONTACT_FIRST_NAME} and is attached here.</span><br></p><p style=""><br></p><p style=""><span style="color: rgb(85, 85, 85); font-size: 14px; line-height: 20px;"><a style="background-color: #00b393; padding: 10px 15px; color: #ffffff;" href="{ORDER_URL}" target="_blank">Show Order</a></span></p><p style=""><br></p>  </div> </div></div>', '', 'default', '', 0),
+	(25, 'order_status_updated', 'Order status updated', '<div style="background-color: #eeeeef; padding: 50px 0; "> <div style="max-width:640px; margin:0 auto; "> <div style="color: #fff; text-align: center; background-color:#33333e; padding: 30px; border-top-left-radius: 3px; border-top-right-radius: 3px; margin: 0;"><h1>ORDER #{ORDER_ID}</h1></div> <div style="padding: 20px; background-color: rgb(255, 255, 255);">  <p><span style="color: rgb(85, 85, 85); font-size: 14px; line-height: 20px;">Hello {CONTACT_FIRST_NAME},</span><br></p><p><span style="font-size: 14px; line-height: 20px;">Thank you for your business cooperation.</span><br></p><p><span style="color: rgb(85, 85, 85); font-size: 14px; line-height: 20px;">Your order&nbsp;</span><font color="#555555"><span style="font-size: 14px;">has been updated&nbsp;</span></font><span style="color: rgb(85, 85, 85); font-size: 14px;">and is attached here.</span></p><p style=""><br></p><p style=""><span style="color: rgb(85, 85, 85); font-size: 14px; line-height: 20px;"><a style="background-color: #00b393; padding: 10px 15px; color: #ffffff;" href="{ORDER_URL}" target="_blank">Show Order</a></span></p><p style=""><br></p>  </div> </div></div>', '', 'default', '', 0),
+	(26, 'proposal_sent', 'Proposal sent', '<table border="0" cellpadding="0" cellspacing="0" width="100%" style="border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;background-color: #EEEEEE;border-top: 0;border-bottom: 0;"> <tbody><tr> <td align="center" valign="top" style="padding-top: 30px;padding-right: 10px;padding-bottom: 30px;padding-left: 10px;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;"> <table border="0" cellpadding="0" cellspacing="0" width="600" style="border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;"> <tbody><tr> <td align="center" valign="top" style="mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;"> <table border="0" cellpadding="0" cellspacing="0" width="100%" style="border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;background-color: #FFFFFF;"> <tbody><tr> <td valign="top" style="mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;"> <table border="0" cellpadding="0" cellspacing="0" width="100%" style="min-width: 100%;border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;"> <tbody> <tr> <td valign="top" style="mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;"> <table align="left" border="0" cellpadding="0" cellspacing="0" style="background-color: #33333e; max-width: 100%;min-width: 100%;border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;" width="100%"> <tbody><tr> <td valign="top" style="padding: 40px 18px; text-size-adjust: 100%; word-break: break-word; line-height: 150%; text-align: left;"> <h2 style="display: block; margin: 0px; padding: 0px; line-height: 100%; text-align: center;"><font color="#ffffff" face="Arial"><span style="letter-spacing: -1px;"><b>PROPOSAL #{PROPOSAL_ID}</b></span></font><br></h2></td></tr></tbody></table></td></tr></tbody></table> <table border="0" cellpadding="0" cellspacing="0" width="100%" style="min-width: 100%;border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;"> <tbody> <tr> <td valign="top" style="mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;"> <table align="left" border="0" cellpadding="0" cellspacing="0" style="max-width: 100%;min-width: 100%;border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;" width="100%"> <tbody><tr> <td valign="top" style="padding-top: 20px;padding-right: 18px;padding-bottom: 0;padding-left: 18px;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;word-break: break-word;color: #606060;font-family: Arial;font-size: 15px;line-height: 150%;text-align: left;"><p> Hello {CONTACT_FIRST_NAME},<br></p><p>Here is a proposal for you.</p><p></p></td></tr><tr><td valign="top" style="padding-top: 10px;padding-right: 18px;padding-bottom: 10px;padding-left: 18px;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;word-break: break-word;color: #606060;font-family: Arial;font-size: 15px;line-height: 150%;text-align: left;"><table border="0" cellpadding="0" cellspacing="0" width="100%" style="min-width: 100%; text-size-adjust: 100%;"><tbody><tr><td style="padding-top: 15px; padding-bottom: 15px; text-size-adjust: 100%;"><table border="0" cellpadding="0" cellspacing="0" style="border-collapse: separate !important;border-radius: 2px;background-color: #00b393;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;"><tbody><tr><td align="center" valign="middle" style="font-size: 16px; padding: 10px; text-size-adjust: 100%;"><a href="{PROPOSAL_URL}" target="_blank" style="font-weight: bold; line-height: 100%; color: rgb(255, 255, 255); text-size-adjust: 100%; display: block;">Show Proposal</a></td></tr></tbody></table></td></tr></tbody></table> <p></p></td> </tr> <tr> <td valign="top" style="padding-top: 0px;padding-right: 18px;padding-bottom: 20px;padding-left: 18px;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;word-break: break-word;color: #606060;font-family: Arial;font-size: 15px;line-height: 150%;text-align: left;"><p> </p><p>Public URL: {PUBLIC_PROPOSAL_URL}</p><p><br></p><p>{SIGNATURE} </p></td> </tr> </tbody> </table> </td> </tr> </tbody> </table> </td> </tr> </tbody> </table> </td> </tr> </tbody> </table> </td> </tr> </tbody> </table>', '', 'default', '', 0),
+	(27, 'project_completed', 'Project completed', '<div style="background-color: #eeeeef; padding: 50px 0; "> <div style="max-width:640px; margin:0 auto; "> <div style="color: #fff; text-align: center; background-color:#33333e; padding: 30px; border-top-left-radius: 3px; border-top-right-radius: 3px; margin: 0;"><h1>Project #{PROJECT_ID}</h1></div><div style="padding: 20px; background-color: rgb(255, 255, 255);"><p style=""><span style="line-height: 18.5714px;">The Project #{PROJECT_ID}&nbsp;has been closed by&nbsp;</span><span style="line-height: 18.5714px;">{USER_NAME}</span></p><p style=""><span style="line-height: 18.5714px;">Title:&nbsp;</span>{PROJECT_TITLE}</p> <p style=""><br></p> <p style=""><span style="color: rgb(85, 85, 85); font-size: 14px; line-height: 20px;"><a style="background-color: #00b393; padding: 10px 15px; color: #ffffff;" href="{PROJECT_URL}" target="_blank">Show Project</a></span></p><p style=""><span style="color: rgb(85, 85, 85); font-size: 14px; line-height: 20px;"><br></span></p><p style=""><span style="color: rgb(85, 85, 85); font-size: 14px; line-height: 20px;"><span style="color: rgb(78, 94, 106); font-size: 13.5px;">{SIGNATURE}</span><br></span></p>   </div>  </div> </div>', '', 'default', '', 0),
+	(28, 'proposal_accepted', 'Proposal accepted', '<div style="background-color: #eeeeef; padding: 50px 0; "> <div style="max-width:640px; margin:0 auto; "> <div style="color: #fff; text-align: center; background-color:#33333e; padding: 30px; border-top-left-radius: 3px; border-top-right-radius: 3px; margin: 0;"><h1>PROPOSAL #{PROPOSAL_ID}</h1></div> <div style="padding: 20px; background-color: rgb(255, 255, 255);">  <p style=""><span style="color: rgb(85, 85, 85); font-size: 14px;">The proposal #{PROPOSAL_ID} has been accepted.</span><br></p><p style=""><br></p><p style=""><span style="color: rgb(85, 85, 85); font-size: 14px; line-height: 20px;"><a style="background-color: #00b393; padding: 10px 15px; color: #ffffff;" href="{PROPOSAL_URL}" target="_blank">Show Proposal</a></span></p><p style=""><br></p>  </div> </div></div>', '', 'default', '', 0),
+	(29, 'proposal_rejected', 'Proposal rejected', '<div style="background-color: #eeeeef; padding: 50px 0; "> <div style="max-width:640px; margin:0 auto; "> <div style="color: #fff; text-align: center; background-color:#33333e; padding: 30px; border-top-left-radius: 3px; border-top-right-radius: 3px; margin: 0;"><h1>PROPOSAL #{PROPOSAL_ID}</h1></div> <div style="padding: 20px; background-color: rgb(255, 255, 255);">  <p style=""><span style="color: rgb(85, 85, 85); font-size: 14px;">The proposal #{PROPOSAL_ID} has been rejected.</span><br></p><p style=""><br></p><p style=""><span style="color: rgb(85, 85, 85); font-size: 14px; line-height: 20px;"><a style="background-color: #00b393; padding: 10px 15px; color: #ffffff;" href="{PROPOSAL_URL}" target="_blank">Show Proposal</a></span></p><p style=""><br></p>  </div> </div></div>', '', 'default', '', 0),
+	(30, 'estimate_commented', 'Estimate  #{ESTIMATE_ID}', '<div style="background-color: #eeeeef; padding: 50px 0; "> <div style="max-width:640px; margin:0 auto; "> <div style="color: #fff; text-align: center; background-color:#33333e; padding: 30px; border-top-left-radius: 3px; border-top-right-radius: 3px; margin: 0;"><h1>Estimate #{ESTIMATE_ID} Replies</h1></div><div style="padding: 20px; background-color: rgb(255, 255, 255);"><p style=""><span style="line-height: 18.5714px;">{COMMENT_CONTENT}</span></p><p style=""><span style="line-height: 18.5714px;"><br></span></p><p style=""><span style="color: rgb(85, 85, 85); font-size: 14px; line-height: 20px;"><a style="background-color: #00b393; padding: 10px 15px; color: #ffffff;" href="{ESTIMATE_URL}" target="_blank">Show Estimate</a></span></p></div></div></div>', '', 'default', '', 0),
+	(31, 'contract_sent', 'Contract sent', '<table border="0" cellpadding="0" cellspacing="0" width="100%" style="border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;background-color: #EEEEEE;border-top: 0;border-bottom: 0;"> <tbody><tr> <td align="center" valign="top" style="padding-top: 30px;padding-right: 10px;padding-bottom: 30px;padding-left: 10px;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;"> <table border="0" cellpadding="0" cellspacing="0" width="600" style="border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;"> <tbody><tr> <td align="center" valign="top" style="mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;"> <table border="0" cellpadding="0" cellspacing="0" width="100%" style="border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;background-color: #FFFFFF;"> <tbody><tr> <td valign="top" style="mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;"> <table border="0" cellpadding="0" cellspacing="0" width="100%" style="min-width: 100%;border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;"> <tbody> <tr> <td valign="top" style="mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;"> <table align="left" border="0" cellpadding="0" cellspacing="0" style="background-color: #33333e; max-width: 100%;min-width: 100%;border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;" width="100%"> <tbody><tr> <td valign="top" style="padding: 40px 18px; text-size-adjust: 100%; word-break: break-word; line-height: 150%; text-align: left;"> <h2 style="display: block; margin: 0px; padding: 0px; line-height: 100%; text-align: center;"><font color="#ffffff" face="Arial"><span style="letter-spacing: -1px;"><b>CONTRACT #{CONTRACT_ID}</b></span></font><br></h2></td></tr></tbody></table></td></tr></tbody></table> <table border="0" cellpadding="0" cellspacing="0" width="100%" style="min-width: 100%;border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;"> <tbody> <tr> <td valign="top" style="mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;"> <table align="left" border="0" cellpadding="0" cellspacing="0" style="max-width: 100%;min-width: 100%;border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;" width="100%"> <tbody><tr> <td valign="top" style="padding-top: 20px;padding-right: 18px;padding-bottom: 0;padding-left: 18px;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;word-break: break-word;color: #606060;font-family: Arial;font-size: 15px;line-height: 150%;text-align: left;"><p> Hello {CONTACT_FIRST_NAME},<br></p><p>Here is a contract for you.</p><p></p></td></tr><tr><td valign="top" style="padding-top: 10px;padding-right: 18px;padding-bottom: 10px;padding-left: 18px;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;word-break: break-word;color: #606060;font-family: Arial;font-size: 15px;line-height: 150%;text-align: left;"><table border="0" cellpadding="0" cellspacing="0" width="100%" style="min-width: 100%; text-size-adjust: 100%;"><tbody><tr><td style="padding-top: 15px; padding-bottom: 15px; text-size-adjust: 100%;"><table border="0" cellpadding="0" cellspacing="0" style="border-collapse: separate !important;border-radius: 2px;background-color: #00b393;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;"><tbody><tr><td align="center" valign="middle" style="font-size: 16px; padding: 10px; text-size-adjust: 100%;"><a href="{CONTRACT_URL}" target="_blank" style="font-weight: bold; line-height: 100%; color: rgb(255, 255, 255); text-size-adjust: 100%; display: block;">Show Contract</a></td></tr></tbody></table></td></tr></tbody></table></td></tr><tr><td valign="top" style="padding-top: 0px;padding-right: 18px;padding-bottom: 20px;padding-left: 18px;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;word-break: break-word;color: #606060;font-family: Arial;font-size: 15px;line-height: 150%;text-align: left;"><p>Public URL: {PUBLIC_CONTRACT_URL}<br></p><p><br></p><p>{SIGNATURE}<br></p></td> </tr> </tbody> </table> </td> </tr> </tbody> </table> </td> </tr> </tbody> </table> </td> </tr> </tbody> </table> </td> </tr> </tbody> </table>', '', 'default', '', 0),
+	(32, 'contract_accepted', 'Contract accepted', '<div style="background-color: #eeeeef; padding: 50px 0; "> <div style="max-width:640px; margin:0 auto; "> <div style="color: #fff; text-align: center; background-color:#33333e; padding: 30px; border-top-left-radius: 3px; border-top-right-radius: 3px; margin: 0;"><h1>CONTRACT #{CONTRACT_ID}</h1></div> <div style="padding: 20px; background-color: rgb(255, 255, 255);">  <p style=""><span style="color: rgb(85, 85, 85); font-size: 14px;">The contract #{CONTRACT_ID} has been accepted.</span><br></p><p style=""><br></p><p style=""><span style="color: rgb(85, 85, 85); font-size: 14px; line-height: 20px;"><a style="background-color: #00b393; padding: 10px 15px; color: #ffffff;" href="{CONTRACT_URL}" target="_blank">Show Contract</a></span></p><p style=""><br></p>  </div> </div></div>', '', 'default', '', 0),
+	(33, 'contract_rejected', 'Contract rejected', '<div style="background-color: #eeeeef; padding: 50px 0; "> <div style="max-width:640px; margin:0 auto; "> <div style="color: #fff; text-align: center; background-color:#33333e; padding: 30px; border-top-left-radius: 3px; border-top-right-radius: 3px; margin: 0;"><h1>CONTRACT #{CONTRACT_ID}</h1></div> <div style="padding: 20px; background-color: rgb(255, 255, 255);">  <p style=""><span style="color: rgb(85, 85, 85); font-size: 14px;">The contract #{CONTRACT_ID} has been rejected.</span><br></p><p style=""><br></p><p style=""><span style="color: rgb(85, 85, 85); font-size: 14px; line-height: 20px;"><a style="background-color: #00b393; padding: 10px 15px; color: #ffffff;" href="{CONTRACT_URL}" target="_blank">Show Contract</a></span></p><p style=""><br></p>  </div> </div></div>', '', 'default', '', 0),
+	(34, 'invoice_manual_payment_added', 'Manual payment added', '<table border="0" cellpadding="0" cellspacing="0" width="100%" style="border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;background-color: #EEEEEE;border-top: 0;border-bottom: 0;"> <tbody><tr> <td align="center" valign="top" style="padding-top: 30px;padding-right: 10px;padding-bottom: 30px;padding-left: 10px;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;"> <table border="0" cellpadding="0" cellspacing="0" width="600" style="border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;"> <tbody><tr> <td align="center" valign="top" style="mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;"> <table border="0" cellpadding="0" cellspacing="0" width="100%" style="border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;background-color: #FFFFFF;"> <tbody><tr> <td valign="top" style="mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;"> <table border="0" cellpadding="0" cellspacing="0" width="100%" style="min-width: 100%;border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;"> <tbody> <tr> <td valign="top" style="mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;"> <table align="left" border="0" cellpadding="0" cellspacing="0" style="background-color: #33333e; max-width: 100%;min-width: 100%;border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;" width="100%"> <tbody><tr> <td valign="top" style="padding-top: 40px;padding-right: 18px;padding-bottom: 40px;padding-left: 18px;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;word-break: break-word;color: #606060;font-family: Arial;font-size: 15px;line-height: 150%;text-align: left;"> <h2 style="display: block;margin: 0;padding: 0;font-family: Arial;font-size: 30px;font-style: normal;font-weight: bold;line-height: 100%;letter-spacing: -1px;text-align: center;color: #ffffff !important;">Payment Added</h2> </td> </tr> </tbody> </table> </td> </tr> </tbody> </table> <table border="0" cellpadding="0" cellspacing="0" width="100%" style="min-width: 100%;border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;"> <tbody> <tr> <td valign="top" style="mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;"> <table align="left" border="0" cellpadding="0" cellspacing="0" style="max-width: 100%;min-width: 100%;border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;" width="100%"> <tbody><tr> <td valign="top" style="padding-top: 20px;padding-right: 18px;padding-bottom: 0;padding-left: 18px;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;word-break: break-word;color: #606060;font-family: Arial;font-size: 15px;line-height: 150%;text-align: left;"><p> Hello,</p><p>A new payment has been added to {INVOICE_ID}. </p><p>Payment amount: {PAYMENT_AMOUNT}</p></td> </tr> <tr> <td valign="top" style="padding-top: 10px;padding-right: 18px;padding-bottom: 10px;padding-left: 18px;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;word-break: break-word;color: #606060;font-family: Arial;font-size: 15px;line-height: 150%;text-align: left;"> <table border="0" cellpadding="0" cellspacing="0" width="100%" style="min-width: 100%;border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;"> <tbody> <tr> <td style="padding-top: 15px;padding-right: 0x;padding-bottom: 15px;padding-left: 0px;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;"> <table border="0" cellpadding="0" cellspacing="0" style="border-collapse: separate !important;border-radius: 2px;background-color: #00b393;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;"> <tbody> <tr> <td align="center" valign="middle" style="font-family: Arial;font-size: 16px;padding: 10px;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;"> <a href="{INVOICE_URL}" target="_blank" style="font-weight: bold;letter-spacing: normal;line-height: 100%;text-align: center;text-decoration: none;color: #FFFFFF;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;display: block;">View Invoice</a> </td> </tr> </tbody> </table> </td> </tr> </tbody> </table> </td> </tr> <tr> <td valign="top" style="padding-top: 0px;padding-right: 18px;padding-bottom: 10px;padding-left: 18px;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;word-break: break-word;color: #606060;font-family: Arial;font-size: 15px;line-height: 150%;text-align: left;"> </td> </tr> <tr> <td valign="top" style="padding-top: 0px;padding-right: 18px;padding-bottom: 20px;padding-left: 18px;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;word-break: break-word;color: #606060;font-family: Arial;font-size: 15px;line-height: 150%;text-align: left;"> {SIGNATURE} </td> </tr> </tbody> </table> </td> </tr> </tbody> </table> </td> </tr> </tbody> </table> </td> </tr> </tbody> </table> </td> </tr> </tbody> </table>', '', 'default', '', 0),
+	(35, 'subscription_request_sent', 'New subscription request', '<div style="background-color: #eeeeef; padding: 50px 0; "> <div style="max-width:640px; margin:0 auto; "> <div style="color: #fff; text-align: center; background-color:#33333e; padding: 30px; border-top-left-radius: 3px; border-top-right-radius: 3px; margin: 0;"><h2>{SUBSCRIPTION_TITLE}</h2></div> <div style="padding: 20px; background-color: rgb(255, 255, 255);">  <p style=""><span style="color: rgb(85, 85, 85); font-size: 14px; line-height: 20px;">Hello {CONTACT_FIRST_NAME},</span><br></p><p style=""><span style="font-size: 14px;">You have a new subscription request. Please click here to see the subscription.</span></p><p style=""><br></p><p style=""><span style="color: rgb(85, 85, 85); font-size: 14px; line-height: 20px;"><a style="background-color: #00b393; padding: 10px 15px; color: #ffffff;" href="{SUBSCRIPTION_URL}" target="_blank">Show Subscription</a></span></p><p style=""><span style="color: rgb(85, 85, 85); font-size: 14px; line-height: 20px;"><br></span></p><p style="color: rgb(85, 85, 85); font-size: 14px;">{SIGNATURE}</p>  </div> </div></div>', '', 'default', '', 0),
+	(36, 'announcement_created', '{ANNOUNCEMENT_TITLE}', '<div style="background-color: #eeeeef; padding: 50px 0; "> <div style="max-width:640px; margin:0 auto; "> <div style="color: #fff; text-align: center; background-color:#33333e; padding: 30px; border-top-left-radius: 3px; border-top-right-radius: 3px; margin: 0;"><h1>Announcement: {ANNOUNCEMENT_TITLE}</h1></div><div style="padding: 20px; background-color: rgb(255, 255, 255);"><p style=""><span style="line-height: 18.5714px;">A new announcement has been created by {USER_NAME}.</span></p><p style=""><span style="line-height: 18.5714px;"><br></span></p><p style=""><span style="color: rgb(85, 85, 85); font-size: 14px; line-height: 20px;"><a style="background-color: #00b393; padding: 10px 15px; color: #ffffff;" href="{ANNOUNCEMENT_URL}" target="_blank">Show Announcement</a></span></p></div></div></div>', '', 'default', '', 0),
+	(37, 'task_general', '{TASK_TITLE} (Task #{TASK_ID})', '<div style="background-color: #eeeeef; padding: 50px 0; "> <div style="max-width:640px; margin:0 auto; "> <div style="color: #fff; text-align: center; background-color:#33333e; padding: 30px; border-top-left-radius: 3px; border-top-right-radius: 3px; margin: 0;"><h1>{EVENT_TITLE}</h1></div><div style="padding: 20px; background-color: rgb(255, 255, 255);"><p style=""><span style="line-height: 18.5714px;"><b>Task:</b> #</span><span style="font-weight: var(--bs-body-font-weight); text-align: var(--bs-body-text-align);">{TASK_ID} -&nbsp;</span><span style="font-weight: var(--bs-body-font-weight); text-align: var(--bs-body-text-align);">{TASK_TITLE}</span></p><p style=""><span style="line-height: 18.5714px;"><b>{CONTEXT_LABEL}:</b>&nbsp;</span>{CONTEXT_TITLE}</p> <p style=""><br></p> <p style=""><span style="color: rgb(85, 85, 85); font-size: 14px; line-height: 20px;"><a style="background-color: #00b393; padding: 10px 15px; color: #ffffff;" href="{TASK_URL}" target="_blank">Show Task&nbsp;</a></span></p><p style=""><span style="color: rgb(85, 85, 85); font-size: 14px; line-height: 20px;"><br></span></p><p style=""><span style="color: rgb(85, 85, 85); font-size: 14px; line-height: 20px;"><span style="color: rgb(78, 94, 106); font-size: 13.5px;">{SIGNATURE}</span><br></span></p>   </div>  </div> </div>', '', 'default', '', 0),
+	(38, 'task_assigned', '{TASK_TITLE} (Task #{TASK_ID})', '<div style="background-color: #eeeeef; padding: 50px 0; "> <div style="max-width:640px; margin:0 auto; "> <div style="color: #fff; text-align: center; background-color:#33333e; padding: 30px; border-top-left-radius: 3px; border-top-right-radius: 3px; margin: 0;"><h1>Task assigned</h1></div><div style="padding: 20px; background-color: rgb(255, 255, 255);"><p style=""><span style="line-height: 18.5714px;"><b>{USER_NAME}</b>  Assigned a task to <b>{ASSIGNED_TO_USER_NAME}</b></span></p><p style=""><span style="line-height: 18.5714px;"><b>Task:</b> #</span><span style="font-weight: var(--bs-body-font-weight); text-align: var(--bs-body-text-align);">{TASK_ID} -&nbsp;</span><span style="font-weight: var(--bs-body-font-weight); text-align: var(--bs-body-text-align);">{TASK_TITLE}</span></p><p style=""><span style="line-height: 18.5714px;"><b>{CONTEXT_LABEL}:</b>&nbsp;</span>{CONTEXT_TITLE}</p> <p style=""><br></p> <p style=""><span style="color: rgb(85, 85, 85); font-size: 14px; line-height: 20px;"><a style="background-color: #00b393; padding: 10px 15px; color: #ffffff;" href="{TASK_URL}" target="_blank">Show Task&nbsp;</a></span></p><p style=""><span style="color: rgb(85, 85, 85); font-size: 14px; line-height: 20px;"><br></span></p><p style=""><span style="color: rgb(85, 85, 85); font-size: 14px; line-height: 20px;"><span style="color: rgb(78, 94, 106); font-size: 13.5px;">{SIGNATURE}</span><br></span></p>   </div>  </div> </div>', '', 'default', '', 0),
+	(39, 'task_commented', '{TASK_TITLE} (Task #{TASK_ID})', '<div style="background-color: #eeeeef; padding: 50px 0; "> <div style="max-width:640px; margin:0 auto; "> <div style="color: #fff; text-align: center; background-color:#33333e; padding: 30px; border-top-left-radius: 3px; border-top-right-radius: 3px; margin: 0;"><h1>Task commented</h1></div><div style="padding: 20px; background-color: rgb(255, 255, 255);"><p style=""><span style="line-height: 18.5714px;"><b>{USER_NAME}</b>  Commented on a task.</span></p><p style=""><span style="line-height: 18.5714px;"><b>Task:</b> #</span><span style="font-weight: var(--bs-body-font-weight); text-align: var(--bs-body-text-align);">{TASK_ID} -&nbsp;</span><span style="font-weight: var(--bs-body-font-weight); text-align: var(--bs-body-text-align);">{TASK_TITLE}</span></p><p style=""><span style="line-height: 18.5714px;"><b>{CONTEXT_LABEL}:</b>&nbsp;</span>{CONTEXT_TITLE}</p> <p style=""><br></p> <p style=""><span style="color: rgb(85, 85, 85); font-size: 14px; line-height: 20px;"><a style="background-color: #00b393; padding: 10px 15px; color: #ffffff;" href="{TASK_URL}" target="_blank">Show Task&nbsp;</a></span></p><p style=""><span style="color: rgb(85, 85, 85); font-size: 14px; line-height: 20px;"><br></span></p><p style=""><span style="color: rgb(85, 85, 85); font-size: 14px; line-height: 20px;"><span style="color: rgb(78, 94, 106); font-size: 13.5px;">{SIGNATURE}</span><br></span></p>   </div>  </div> </div>', '', 'default', '', 0),
+	(40, 'subscription_started', 'Started a subscription', '<div style="background-color: #eeeeef; padding: 50px 0; "> <div style="max-width:640px; margin:0 auto; "> <div style="color: #fff; text-align: center; background-color:#33333e; padding: 30px; border-top-left-radius: 3px; border-top-right-radius: 3px; margin: 0;"><h2>{SUBSCRIPTION_TITLE}</h2></div> <div style="padding: 20px; background-color: rgb(255, 255, 255);">  <p style=""><span style="color: rgb(85, 85, 85); font-size: 14px; line-height: 20px;">Hello {CONTACT_FIRST_NAME},</span><br></p><p style=""><span style="font-size: 14px;">A new subscription has been started.&nbsp;</span></p><p style=""><br></p><p style=""><span style="color: rgb(85, 85, 85); font-size: 14px; line-height: 20px;"><a style="background-color: #00b393; padding: 10px 15px; color: #ffffff;" href="{SUBSCRIPTION_URL}" target="_blank">Show Subscription</a></span></p><p style=""><span style="color: rgb(85, 85, 85); font-size: 14px; line-height: 20px;"><br></span></p><p style="color: rgb(85, 85, 85); font-size: 14px;">{SIGNATURE}</p>  </div> </div></div>', '', 'default', '', 0),
+	(41, 'subscription_invoice_created_via_cron_job', 'New invoice generated from subscription', '<div style="background-color: #eeeeef; padding: 50px 0; "> <div style="max-width:640px; margin:0 auto; "> <div style="color: #fff; text-align: center; background-color:#33333e; padding: 30px; border-top-left-radius: 3px; border-top-right-radius: 3px; margin: 0;"><h1>INVOICE #{INVOICE_ID}</h1></div> <div style="padding: 20px; background-color: rgb(255, 255, 255);">  <p style=""><span style="color: rgb(85, 85, 85); font-size: 14px; line-height: 20px;">Hello {CONTACT_FIRST_NAME},</span><br></p><p style=""><span style="font-size: 14px; line-height: 20px;">Thank you for your business cooperation.</span><br></p><p style=""><span style="color: rgb(85, 85, 85); font-size: 14px; line-height: 20px;">Your invoice for the subscription {SUBSCRIPTION_TITLE} has been generated and is attached here.</span></p><p style=""><br></p><p style=""><span style="color: rgb(85, 85, 85); font-size: 14px; line-height: 20px;"><a style="background-color: #00b393; padding: 10px 15px; color: #ffffff;" href="{INVOICE_URL}" target="_blank">Show Invoice</a></span></p><p style=""><span style="font-size: 14px; line-height: 20px;"><br></span></p><p style=""><span style="font-size: 14px; line-height: 20px;">Invoice balance due is {BALANCE_DUE}</span><br></p><p style=""><span style="color: rgb(85, 85, 85); font-size: 14px; line-height: 20px;">Please pay this invoice within {DUE_DATE}.&nbsp;</span></p><p style=""><span style="color: rgb(85, 85, 85); font-size: 14px; line-height: 20px;"><br></span></p><p style="color: rgb(85, 85, 85); font-size: 14px;">{SIGNATURE}</p>  </div> </div></div>', '', 'default', '', 0),
+	(42, 'send_credit_note', 'New credit note', '<div style="background-color: #eeeeef; padding: 50px 0; "> <div style="max-width:640px; margin:0 auto; "> <div style="color: #fff; text-align: center; background-color:#33333e; padding: 30px; border-top-left-radius: 3px; border-top-right-radius: 3px; margin: 0;"><h1>CREDIT NOTE #{CREDIT_NOTE_ID}</h1></div> <div style="padding: 20px; background-color: rgb(255, 255, 255);">  <p style=""><span style="color: rgb(85, 85, 85); font-size: 14px; line-height: 20px;">Hello {CONTACT_FIRST_NAME},</span><br></p><p style=""><span style="font-size: 14px; line-height: 20px;">Your invoice {INVOICE_ID} has been credited.&nbsp;</span><br></p><p style=""><span style="color: rgb(85, 85, 85); font-size: 14px; line-height: 20px;">Here is the credit note.&nbsp;</span></p><p style=""><br></p><p style=""><span style="color: rgb(85, 85, 85); font-size: 14px; line-height: 20px;"><a style="background-color: #00b393; padding: 10px 15px; color: #ffffff;" href="{CREDIT_NOTE_URL}" target="_blank">Show Credit Note</a></span></p><p style=""><br></p><p style="color: rgb(85, 85, 85); font-size: 14px;">{SIGNATURE}</p>  </div> </div></div>', '', 'default', '', 0),
+	(43, 'subscription_cancelled', 'Subscription cancelled', '<div style="background-color: #eeeeef; padding: 50px 0; "> <div style="max-width:640px; margin:0 auto; "> <div style="color: #fff; text-align: center; background-color:#33333e; padding: 30px; border-top-left-radius: 3px; border-top-right-radius: 3px; margin: 0;"><h2>{SUBSCRIPTION_TITLE}</h2></div> <div style="padding: 20px; background-color: rgb(255, 255, 255);">  <p style=""><font color="#606060" face="Arial"><span style="font-size: 15px;">The subscription {SUBSCRIPTION_TITLE} has been cancelled by {CANCELLED_BY}.</span></font><br></p><p style=""><br></p><p style=""><span style="color: rgb(85, 85, 85); font-size: 14px; line-height: 20px;"><a style="background-color: #00b393; padding: 10px 15px; color: #ffffff;" href="{SUBSCRIPTION_URL}" target="_blank">Show Subscription</a></span></p><p style=""><span style="color: rgb(85, 85, 85); font-size: 14px; line-height: 20px;"><br></span></p><p style="color: rgb(85, 85, 85); font-size: 14px;">{SIGNATURE}</p>  </div> </div></div>', '', 'default', '', 0),
+	(44, 'proposal_commented', 'Proposal #{PROPOSAL_ID}', '<div style="background-color: #eeeeef; padding: 50px 0; "> <div style="max-width:640px; margin:0 auto; "> <div style="color: #fff; text-align: center; background-color:#33333e; padding: 30px; border-top-left-radius: 3px; border-top-right-radius: 3px; margin: 0;"><h1>Proposal #{PROPOSAL_ID} Replies</h1></div><div style="padding: 20px; background-color: rgb(255, 255, 255);"><p style=""><span style="line-height: 18.5714px;">{COMMENT_CONTENT}</span></p><p style=""><span style="line-height: 18.5714px;"><br></span></p><p style=""><span style="color: rgb(85, 85, 85); font-size: 14px; line-height: 20px;"><a style="background-color: #00b393; padding: 10px 15px; color: #ffffff;" href="{PROPOSAL_URL}" target="_blank">Show Proposal</a></span></p></div></div></div>', '', 'default', '', 0),
+	(45, 'subscription_renewal_reminder', 'Subscription Renewal Reminder', '<table border="0" cellpadding="0" cellspacing="0" width="100%" style="border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;background-color: #EEEEEE;border-top: 0;border-bottom: 0;"> <tbody> <tr> <td align="center" valign="top" style="padding-top: 30px;padding-right: 10px;padding-bottom: 30px;padding-left: 10px;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;"> <table border="0" cellpadding="0" cellspacing="0" width="600" style="border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;"> <tbody> <tr> <td align="center" valign="top" style="mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;"> <table border="0" cellpadding="0" cellspacing="0" width="100%" style="border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;background-color: #FFFFFF;"> <tbody> <tr> <td valign="top" style="mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;"> <table border="0" cellpadding="0" cellspacing="0" width="100%" style="min-width: 100%;border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;"> <tbody> <tr> <td valign="top" style="mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;"> <table align="left" border="0" cellpadding="0" cellspacing="0" style="background-color: #33333e; max-width: 100%;min-width: 100%;border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;" width="100%"> <tbody> <tr> <td valign="top" style="padding-top: 40px;padding-right: 18px;padding-bottom: 40px;padding-left: 18px;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;word-break: break-word;color: #606060;font-family: Arial;font-size: 15px;line-height: 150%;text-align: left;"> <h2 style="display: block;margin: 0;padding: 0;font-family: Arial;font-size: 30px;font-style: normal;font-weight: bold;line-height: 100%;letter-spacing: -1px;text-align: center;color: #ffffff !important;">Subscription Renewal Reminder</h2> </td> </tr> </tbody> </table> </td> </tr> </tbody> </table> <table border="0" cellpadding="0" cellspacing="0" width="100%" style="min-width: 100%;border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;"> <tbody> <tr> <td valign="top" style="mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;"> <table align="left" border="0" cellpadding="0" cellspacing="0" style="max-width: 100%;min-width: 100%;border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;" width="100%"> <tbody> <tr> <td valign="top" style="padding: 20px 18px 0px; text-size-adjust: 100%; word-break: break-word; line-height: 150%; text-align: left;"> <p style=""><font color="#606060" face="Arial"><span style="font-size: 15px;">This is a reminder that your subscription:&nbsp;<b>{SUBSCRIPTION_TITLE}</b></span></font><font color="#606060" face="Arial" style="font-weight: var(--bs-body-font-weight);"><span style="font-size: 15px;">&nbsp;</span></font><font color="#606060" face="Arial" style="font-weight: var(--bs-body-font-weight);"><span style="font-size: 15px;">will renew soon. Please ensure that your payment details are up to date to avoid any interruptions in your service.</span></font></p> <p style=""><font color="#606060" face="Arial"><span style="font-size: 15px;"><br></span></font></p> <p style=""><font color="#606060" face="Arial"><span style="font-size: 15px;">If you have already renewed your subscription, please ignore this email. </span></font></p> <p style=""><font color="#606060" face="Arial"><span style="font-size: 15px;">Thank you for your continued support.</span></font><br></p> </td> </tr> <tr> <td valign="top" style="padding-top: 10px;padding-right: 18px;padding-bottom: 10px;padding-left: 18px;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;word-break: break-word;color: #606060;font-family: Arial;font-size: 15px;line-height: 150%;text-align: left;"> <table border="0" cellpadding="0" cellspacing="0" width="100%" style="min-width: 100%;border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;"> <tbody> <tr> <td style="padding-top: 15px;padding-right: 0x;padding-bottom: 15px;padding-left: 0px;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;"> <table border="0" cellpadding="0" cellspacing="0" style="border-collapse: separate !important;border-radius: 2px;background-color: #00b393;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;"> <tbody> <tr> <td align="center" valign="middle" style="font-family: Arial;font-size: 16px;padding: 10px;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;"> <a href="{SUBSCRIPTION_URL}" target="_blank" style="font-weight: bold;letter-spacing: normal;line-height: 100%;text-align: center;text-decoration: none;color: #FFFFFF;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;display: block;">View Subscription</a> </td> </tr> </tbody> </table> </td> </tr> </tbody> </table> <p></p> </td> </tr> <tr> <td valign="top" style="padding-top: 0px;padding-right: 18px;padding-bottom: 20px;padding-left: 18px;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;word-break: break-word;color: #606060;font-family: Arial;font-size: 15px;line-height: 150%;text-align: left;"> {SIGNATURE} </td> </tr> </tbody> </table> </td> </tr> </tbody> </table> </td> </tr> </tbody> </table> </td> </tr> </tbody> </table> </td> </tr> </tbody> </table>', '', 'default', '', 0);
+
+-- Dumping structure for table rise.imp_estimates
+CREATE TABLE IF NOT EXISTS `imp_estimates` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `client_id` int(11) NOT NULL,
+  `estimate_request_id` int(11) NOT NULL DEFAULT 0,
+  `estimate_date` date NOT NULL,
+  `valid_until` date NOT NULL,
+  `note` mediumtext DEFAULT NULL,
+  `last_email_sent_date` date DEFAULT NULL,
+  `status` enum('draft','sent','accepted','declined') NOT NULL DEFAULT 'draft',
+  `tax_id` int(11) NOT NULL DEFAULT 0,
+  `tax_id2` int(11) NOT NULL DEFAULT 0,
+  `discount_type` enum('before_tax','after_tax') NOT NULL,
+  `discount_amount` double NOT NULL,
+  `discount_amount_type` enum('percentage','fixed_amount') NOT NULL,
+  `project_id` int(11) NOT NULL DEFAULT 0,
+  `accepted_by` int(11) NOT NULL DEFAULT 0,
+  `meta_data` text NOT NULL,
+  `created_by` int(11) NOT NULL,
+  `signature` text NOT NULL,
+  `public_key` text NOT NULL,
+  `company_id` int(11) NOT NULL DEFAULT 0,
+  `deleted` tinyint(1) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+
+-- Dumping data for table rise.imp_estimates: ~0 rows (approximately)
+
+-- Dumping structure for table rise.imp_estimate_comments
+CREATE TABLE IF NOT EXISTS `imp_estimate_comments` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `created_by` int(11) NOT NULL,
+  `created_at` datetime NOT NULL,
+  `description` mediumtext NOT NULL,
+  `estimate_id` int(11) NOT NULL DEFAULT 0,
+  `files` longtext DEFAULT NULL,
+  `deleted` tinyint(1) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+
+-- Dumping data for table rise.imp_estimate_comments: ~0 rows (approximately)
+
+-- Dumping structure for table rise.imp_estimate_forms
+CREATE TABLE IF NOT EXISTS `imp_estimate_forms` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `title` text NOT NULL,
+  `description` longtext NOT NULL,
+  `status` enum('active','inactive') NOT NULL,
+  `assigned_to` int(11) NOT NULL,
+  `public` tinyint(1) NOT NULL DEFAULT 0,
+  `enable_attachment` tinyint(4) NOT NULL DEFAULT 0,
+  `deleted` tinyint(1) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+
+-- Dumping data for table rise.imp_estimate_forms: ~0 rows (approximately)
+
+-- Dumping structure for table rise.imp_estimate_items
+CREATE TABLE IF NOT EXISTS `imp_estimate_items` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `title` text NOT NULL,
+  `description` text DEFAULT NULL,
+  `quantity` double NOT NULL,
+  `unit_type` varchar(20) NOT NULL DEFAULT '',
+  `rate` double NOT NULL,
+  `total` double NOT NULL,
+  `sort` int(11) NOT NULL DEFAULT 0,
+  `estimate_id` int(11) NOT NULL,
+  `item_id` int(11) NOT NULL DEFAULT 0,
+  `deleted` tinyint(1) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+
+-- Dumping data for table rise.imp_estimate_items: ~2 rows (approximately)
+INSERT INTO `imp_estimate_items` (`id`, `title`, `description`, `quantity`, `unit_type`, `rate`, `total`, `sort`, `estimate_id`, `item_id`, `deleted`) VALUES
+	(1, 'nnnnnn', 'hahahaha', 1, '', 21314, 21314, 0, 1, 1, 0),
+	(2, 'yuytu', '<p>ghghg</p>', 2, '', 789, 1578, 0, 1, 2, 1),
+	(3, 'Food ', '<p>Cook 2 mins</p>', 1, '', 103, 103, 0, 1, 3, 1),
+	(4, 'Food', '<p>Cook 5 Mins</p>', 1, '', 110, 110, 0, 1, 4, 1),
+	(5, 'nnnnnn', '<p>bcvbvcbvc</p>', 1, '', 21314, 21314, 0, 1, 1, 0),
+	(6, 'yuytu', '<p>ghghgfh</p>', 1, '', 789, 789, 0, 1, 2, 0),
+	(7, 'Re-pointing Exterior Brick', '<u>dssssssssssssssssssssssssssssssssssfjlkdsjfkdsjfkldsjflkdsflkdsfddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd</u>', 1, '', 129927, 129927, 0, 1, 5, 0),
+	(8, 'Pointing Brick', '<p>We will point all of the brick on the house<span style="background-color: var(--bs-modal-bg); color: var(--bs-modal-color); font-weight: var(--bs-body-font-weight); text-align: var(--bs-body-text-align);">We will point all of the brick on the house</span><span style="background-color: var(--bs-modal-bg); color: var(--bs-modal-color); font-weight: var(--bs-body-font-weight); text-align: var(--bs-body-text-align);">We will point all of the brick on the house</span><br></p>', 1, '', 12345, 12345, 0, 2, 6, 0),
+	(9, 'Food', '<p>Cook 5 Mins</p>', 1, '', 110, 110, 0, 2, 4, 0),
+	(10, 'Pointing Brick', '<p>We will point all of the brick on the house<span style="background-color: var(--bs-modal-bg); color: var(--bs-modal-color); font-weight: var(--bs-body-font-weight); text-align: var(--bs-body-text-align);">We will point all of the brick on the house</span><span style="background-color: var(--bs-modal-bg); color: var(--bs-modal-color); font-weight: var(--bs-body-font-weight); text-align: var(--bs-body-text-align);">We will point all of the brick on the house</span><br></p>', 2, '', 12345, 24690, 0, 2, 6, 0),
+	(11, 'Re-pointing Exterior Brick', '<u>dssssssssssssssssssssssssssssssssssfjlkdsjfkdsjfkldsjflkdsflkdsfddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd</u>', 1, '', 129927, 129927, 0, 3, 5, 0),
+	(12, 'Pressure Washing', '<p>Pressure washing whole house<span style="background-color: var(--bs-modal-bg); color: var(--bs-modal-color); font-weight: var(--bs-body-font-weight); text-align: var(--bs-body-text-align);">Pressure washing whole house</span><span style="background-color: var(--bs-modal-bg); color: var(--bs-modal-color); font-weight: var(--bs-body-font-weight); text-align: var(--bs-body-text-align);">Pressure washing whole house</span><span style="background-color: var(--bs-modal-bg); color: var(--bs-modal-color); font-weight: var(--bs-body-font-weight); text-align: var(--bs-body-text-align);">Pressure washing whole house</span><span style="background-color: var(--bs-modal-bg); color: var(--bs-modal-color); font-weight: var(--bs-body-font-weight); text-align: var(--bs-body-text-align);">Pressure washing whole house</span><span style="background-color: var(--bs-modal-bg); color: var(--bs-modal-color); font-weight: var(--bs-body-font-weight); text-align: var(--bs-body-text-align);">Pressure washing whole house</span><span style="background-color: var(--bs-modal-bg); color: var(--bs-modal-color); font-weight: var(--bs-body-font-weight); text-align: var(--bs-body-text-align);">Pressure washing whole house</span><span style="background-color: var(--bs-modal-bg); color: var(--bs-modal-color); font-weight: var(--bs-body-font-weight); text-align: var(--bs-body-text-align);">Pressure washing whole house</span><br></p>', 1, '', 134, 134, 0, 3, 7, 0);
+
+-- Dumping structure for table rise.imp_estimate_requests
+CREATE TABLE IF NOT EXISTS `imp_estimate_requests` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `estimate_form_id` int(11) NOT NULL,
+  `created_by` int(11) NOT NULL,
+  `created_at` datetime NOT NULL,
+  `client_id` int(11) NOT NULL,
+  `lead_id` int(11) NOT NULL,
+  `assigned_to` int(11) NOT NULL,
+  `status` enum('new','processing','hold','canceled','estimated') NOT NULL DEFAULT 'new',
+  `files` mediumtext NOT NULL,
+  `deleted` tinyint(1) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+
+-- Dumping data for table rise.imp_estimate_requests: ~0 rows (approximately)
+
+-- Dumping structure for table rise.imp_events
+CREATE TABLE IF NOT EXISTS `imp_events` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `title` text NOT NULL,
+  `description` mediumtext NOT NULL,
+  `start_date` date NOT NULL,
+  `end_date` date DEFAULT NULL,
+  `start_time` time DEFAULT NULL,
+  `end_time` time DEFAULT NULL,
+  `created_by` int(11) NOT NULL,
+  `location` mediumtext DEFAULT NULL,
+  `client_id` int(11) NOT NULL DEFAULT 0,
+  `labels` text NOT NULL,
+  `share_with` mediumtext DEFAULT NULL,
+  `editable_google_event` tinyint(1) NOT NULL DEFAULT 0,
+  `google_event_id` text NOT NULL,
+  `deleted` int(11) NOT NULL DEFAULT 0,
+  `lead_id` int(11) NOT NULL DEFAULT 0,
+  `ticket_id` int(11) NOT NULL DEFAULT 0,
+  `project_id` int(11) NOT NULL DEFAULT 0,
+  `task_id` int(11) NOT NULL DEFAULT 0,
+  `proposal_id` int(11) NOT NULL DEFAULT 0,
+  `contract_id` int(11) NOT NULL DEFAULT 0,
+  `subscription_id` int(11) NOT NULL DEFAULT 0,
+  `invoice_id` int(11) NOT NULL DEFAULT 0,
+  `order_id` int(11) NOT NULL DEFAULT 0,
+  `estimate_id` int(11) NOT NULL DEFAULT 0,
+  `next_recurring_time` datetime DEFAULT NULL,
+  `no_of_cycles_completed` int(11) NOT NULL DEFAULT 0,
+  `snoozing_time` datetime DEFAULT NULL,
+  `reminder_status` enum('new','shown','done') NOT NULL DEFAULT 'new',
+  `type` enum('event','reminder') NOT NULL DEFAULT 'event',
+  `color` varchar(15) NOT NULL,
+  `recurring` int(11) NOT NULL DEFAULT 0,
+  `repeat_every` int(11) NOT NULL DEFAULT 0,
+  `repeat_type` enum('days','weeks','months','years') DEFAULT NULL,
+  `no_of_cycles` int(11) NOT NULL DEFAULT 0,
+  `last_start_date` date DEFAULT NULL,
+  `recurring_dates` longtext NOT NULL,
+  `confirmed_by` text NOT NULL,
+  `rejected_by` text NOT NULL,
+  `files` text NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `created_by` (`created_by`),
+  KEY `project_id` (`project_id`),
+  KEY `task_id` (`task_id`),
+  KEY `recurring` (`recurring`),
+  KEY `start_date` (`start_date`),
+  KEY `end_date` (`end_date`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+
+-- Dumping data for table rise.imp_events: ~0 rows (approximately)
+
+-- Dumping structure for table rise.imp_event_tracker
+CREATE TABLE IF NOT EXISTS `imp_event_tracker` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `event_type` varchar(255) NOT NULL,
+  `context` varchar(255) NOT NULL,
+  `context_id` int(11) NOT NULL,
+  `read_count` int(11) DEFAULT NULL,
+  `status` enum('new','read') DEFAULT 'new',
+  `last_read_time` datetime DEFAULT NULL,
+  `created_at` datetime NOT NULL,
+  `logs` text DEFAULT NULL,
+  `random_id` varchar(10) NOT NULL,
+  `deleted` int(11) DEFAULT 0,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+
+-- Dumping data for table rise.imp_event_tracker: ~0 rows (approximately)
+
+-- Dumping structure for table rise.imp_expenses
+CREATE TABLE IF NOT EXISTS `imp_expenses` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `expense_date` date NOT NULL,
+  `category_id` int(11) NOT NULL,
+  `description` mediumtext DEFAULT NULL,
+  `amount` double NOT NULL,
+  `files` mediumtext NOT NULL,
+  `title` text NOT NULL,
+  `project_id` int(11) NOT NULL DEFAULT 0,
+  `user_id` int(11) NOT NULL DEFAULT 0,
+  `tax_id` int(11) NOT NULL DEFAULT 0,
+  `tax_id2` int(11) NOT NULL DEFAULT 0,
+  `client_id` int(11) NOT NULL DEFAULT 0,
+  `recurring` tinyint(4) NOT NULL DEFAULT 0,
+  `recurring_expense_id` tinyint(4) NOT NULL DEFAULT 0,
+  `repeat_every` int(11) NOT NULL DEFAULT 0,
+  `repeat_type` enum('days','weeks','months','years') DEFAULT NULL,
+  `no_of_cycles` int(11) NOT NULL DEFAULT 0,
+  `next_recurring_date` date DEFAULT NULL,
+  `no_of_cycles_completed` int(11) NOT NULL DEFAULT 0,
+  `deleted` tinyint(1) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`),
+  KEY `category_id` (`category_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+
+-- Dumping data for table rise.imp_expenses: ~0 rows (approximately)
+
+-- Dumping structure for table rise.imp_expense_categories
+CREATE TABLE IF NOT EXISTS `imp_expense_categories` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `title` text NOT NULL,
+  `deleted` tinyint(1) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+
+-- Dumping data for table rise.imp_expense_categories: ~1 rows (approximately)
+INSERT INTO `imp_expense_categories` (`id`, `title`, `deleted`) VALUES
+	(1, 'Miscellaneous expense', 0);
+
+-- Dumping structure for table rise.imp_file_category
+CREATE TABLE IF NOT EXISTS `imp_file_category` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` text DEFAULT NULL,
+  `type` enum('project') NOT NULL DEFAULT 'project',
+  `deleted` tinyint(1) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+
+-- Dumping data for table rise.imp_file_category: ~0 rows (approximately)
+
+-- Dumping structure for table rise.imp_folders
+CREATE TABLE IF NOT EXISTS `imp_folders` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `title` varchar(255) NOT NULL,
+  `folder_id` varchar(255) NOT NULL,
+  `parent_id` int(11) NOT NULL,
+  `level` text DEFAULT NULL,
+  `created_by` int(11) DEFAULT NULL,
+  `created_at` datetime DEFAULT NULL,
+  `permissions` text DEFAULT NULL,
+  `context` varchar(255) NOT NULL,
+  `context_id` int(11) NOT NULL,
+  `starred_by` mediumtext NOT NULL,
+  `deleted` tinyint(1) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+
+-- Dumping data for table rise.imp_folders: ~0 rows (approximately)
+
+-- Dumping structure for table rise.imp_general_files
+CREATE TABLE IF NOT EXISTS `imp_general_files` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `file_name` text NOT NULL,
+  `file_id` text DEFAULT NULL,
+  `service_type` varchar(20) DEFAULT NULL,
+  `description` mediumtext DEFAULT NULL,
+  `file_size` double NOT NULL,
+  `created_at` datetime NOT NULL,
+  `client_id` int(11) NOT NULL DEFAULT 0,
+  `user_id` int(11) NOT NULL DEFAULT 0,
+  `uploaded_by` int(11) NOT NULL,
+  `folder_id` int(11) DEFAULT 0,
+  `context` varchar(100) NOT NULL,
+  `context_id` int(11) DEFAULT 0,
+  `deleted` tinyint(1) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+
+-- Dumping data for table rise.imp_general_files: ~0 rows (approximately)
+
+-- Dumping structure for table rise.imp_help_articles
+CREATE TABLE IF NOT EXISTS `imp_help_articles` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `title` text NOT NULL,
+  `description` longtext NOT NULL,
+  `category_id` int(11) NOT NULL,
+  `created_by` int(11) NOT NULL,
+  `created_at` datetime DEFAULT NULL,
+  `status` enum('active','inactive') NOT NULL DEFAULT 'active',
+  `files` text NOT NULL,
+  `total_views` int(11) NOT NULL DEFAULT 0,
+  `sort` int(11) NOT NULL DEFAULT 0,
+  `deleted` tinyint(1) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+
+-- Dumping data for table rise.imp_help_articles: ~0 rows (approximately)
+
+-- Dumping structure for table rise.imp_help_categories
+CREATE TABLE IF NOT EXISTS `imp_help_categories` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `title` text NOT NULL,
+  `description` text NOT NULL,
+  `type` enum('help','knowledge_base') NOT NULL,
+  `sort` int(11) NOT NULL,
+  `articles_order` varchar(3) NOT NULL DEFAULT '',
+  `status` enum('active','inactive') NOT NULL DEFAULT 'active',
+  `deleted` tinyint(1) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+
+-- Dumping data for table rise.imp_help_categories: ~0 rows (approximately)
+
+-- Dumping structure for table rise.imp_invoices
+CREATE TABLE IF NOT EXISTS `imp_invoices` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `type` enum('invoice','credit_note') NOT NULL DEFAULT 'invoice',
+  `client_id` int(11) NOT NULL,
+  `project_id` int(11) NOT NULL DEFAULT 0,
+  `bill_date` date NOT NULL,
+  `due_date` date NOT NULL,
+  `note` mediumtext DEFAULT NULL,
+  `labels` text DEFAULT NULL,
+  `last_email_sent_date` date DEFAULT NULL,
+  `status` enum('draft','not_paid','cancelled','credited') NOT NULL DEFAULT 'draft',
+  `tax_id` int(11) NOT NULL DEFAULT 0,
+  `tax_id2` int(11) NOT NULL DEFAULT 0,
+  `tax_id3` int(11) NOT NULL DEFAULT 0,
+  `recurring` tinyint(4) NOT NULL DEFAULT 0,
+  `recurring_invoice_id` int(11) NOT NULL DEFAULT 0,
+  `repeat_every` int(11) NOT NULL DEFAULT 0,
+  `repeat_type` enum('days','weeks','months','years') DEFAULT NULL,
+  `no_of_cycles` int(11) NOT NULL DEFAULT 0,
+  `next_recurring_date` date DEFAULT NULL,
+  `no_of_cycles_completed` int(11) NOT NULL DEFAULT 0,
+  `due_reminder_date` date DEFAULT NULL,
+  `recurring_reminder_date` date DEFAULT NULL,
+  `discount_amount` double NOT NULL,
+  `discount_amount_type` enum('percentage','fixed_amount') NOT NULL,
+  `discount_type` enum('before_tax','after_tax') NOT NULL,
+  `cancelled_at` datetime DEFAULT NULL,
+  `cancelled_by` int(11) NOT NULL,
+  `files` mediumtext NOT NULL,
+  `company_id` int(11) NOT NULL DEFAULT 0,
+  `estimate_id` int(11) NOT NULL DEFAULT 0,
+  `main_invoice_id` int(11) NOT NULL DEFAULT 0,
+  `subscription_id` int(11) NOT NULL DEFAULT 0,
+  `invoice_total` double NOT NULL,
+  `invoice_subtotal` double NOT NULL,
+  `discount_total` double NOT NULL,
+  `tax` double NOT NULL,
+  `tax2` double NOT NULL,
+  `tax3` double NOT NULL,
+  `deleted` tinyint(1) NOT NULL DEFAULT 0,
+  `order_id` int(11) NOT NULL DEFAULT 0,
+  `display_id` text NOT NULL,
+  `number_year` int(11) DEFAULT NULL,
+  `number_sequence` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `status` (`status`),
+  KEY `due_date` (`due_date`),
+  KEY `client_id` (`client_id`),
+  KEY `project_id` (`project_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+
+-- Dumping data for table rise.imp_invoices: ~0 rows (approximately)
+
+-- Dumping structure for table rise.imp_invoice_items
+CREATE TABLE IF NOT EXISTS `imp_invoice_items` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `title` text NOT NULL,
+  `description` text DEFAULT NULL,
+  `quantity` double NOT NULL,
+  `unit_type` varchar(20) NOT NULL DEFAULT '',
+  `rate` double NOT NULL,
+  `total` double NOT NULL,
+  `sort` int(11) NOT NULL DEFAULT 0,
+  `invoice_id` int(11) NOT NULL,
+  `item_id` int(11) NOT NULL DEFAULT 0,
+  `taxable` tinyint(1) NOT NULL DEFAULT 1,
+  `deleted` tinyint(1) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+
+-- Dumping data for table rise.imp_invoice_items: ~0 rows (approximately)
+INSERT INTO `imp_invoice_items` (`id`, `title`, `description`, `quantity`, `unit_type`, `rate`, `total`, `sort`, `invoice_id`, `item_id`, `taxable`, `deleted`) VALUES
+	(1, 'nnnnnn', 'hahahaha', 1, '', 21314, 21314, 0, 3, 0, 1, 0),
+	(2, 'yuytu', '<p>ghghgfh</p>', 2, '', 789, 1578, 0, 3, 0, 1, 0),
+	(3, 'Food ', '<p>Cook 2 mins</p>', 1, '', 103, 103, 0, 3, 0, 1, 0),
+	(4, 'Food', '<p>Cook 5 Mins</p>', 1, '', 110, 110, 0, 3, 0, 1, 0),
+	(5, 'nnnnnn', '<p>bcvbvcbvc</p>', 1, '', 21314, 21314, 0, 3, 0, 1, 0),
+	(6, 'yuytu', '<p>ghghgfh</p>', 1, '', 789, 789, 0, 3, 0, 1, 0),
+	(7, 'Re-pointing Exterior Brick', '<u>dssssssssssssssssssssssssssssssssssfjlkdsjfkdsjfkldsjflkdsflkdsfddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd</u>', 1, '', 129927, 129927, 0, 3, 0, 1, 0),
+	(8, 'nnnnnn', 'hahahaha', 1, '', 21314, 21314, 0, 4, 0, 1, 0),
+	(9, 'nnnnnn', '<p>bcvbvcbvc</p>', 1, '', 21314, 21314, 0, 4, 0, 1, 0),
+	(10, 'yuytu', '<p>ghghgfh</p>', 1, '', 789, 789, 0, 4, 0, 1, 0),
+	(11, 'Re-pointing Exterior Brick', '<u>dssssssssssssssssssssssssssssssssssfjlkdsjfkdsjfkldsjflkdsflkdsfddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd</u>', 1, '', 129927, 129927, 0, 4, 0, 1, 0),
+	(12, 'Pointing Brick', '<p>We will point all of the brick on the house<span style="background-color: var(--bs-modal-bg); color: var(--bs-modal-color); font-weight: var(--bs-body-font-weight); text-align: var(--bs-body-text-align);">We will point all of the brick on the house</span><span style="background-color: var(--bs-modal-bg); color: var(--bs-modal-color); font-weight: var(--bs-body-font-weight); text-align: var(--bs-body-text-align);">We will point all of the brick on the house</span><br></p>', 1, '', 12345, 12345, 0, 5, 0, 1, 0),
+	(13, 'Food', '<p>Cook 5 Mins</p>', 1, '', 110, 110, 0, 5, 0, 1, 0),
+	(14, 'Pointing Brick', '<p>We will point all of the brick on the house<span style="background-color: var(--bs-modal-bg); color: var(--bs-modal-color); font-weight: var(--bs-body-font-weight); text-align: var(--bs-body-text-align);">We will point all of the brick on the house</span><span style="background-color: var(--bs-modal-bg); color: var(--bs-modal-color); font-weight: var(--bs-body-font-weight); text-align: var(--bs-body-text-align);">We will point all of the brick on the house</span><br></p>', 2, '', 12345, 24690, 0, 5, 0, 1, 0);
+
+-- Dumping structure for table rise.imp_invoice_payments
+CREATE TABLE IF NOT EXISTS `imp_invoice_payments` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `amount` double NOT NULL,
+  `payment_date` date NOT NULL,
+  `payment_method_id` int(11) NOT NULL,
+  `note` text DEFAULT NULL,
+  `invoice_id` int(11) NOT NULL,
+  `deleted` tinyint(1) NOT NULL DEFAULT 0,
+  `transaction_id` tinytext DEFAULT NULL,
+  `created_by` int(11) DEFAULT 1,
+  `created_at` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `id` (`id`),
+  KEY `id_2` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+
+-- Dumping data for table rise.imp_invoice_payments: ~0 rows (approximately)
+
+-- Dumping structure for table rise.imp_items
+CREATE TABLE IF NOT EXISTS `imp_items` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `title` text NOT NULL,
+  `description` text DEFAULT NULL,
+  `unit_type` varchar(20) NOT NULL DEFAULT '',
+  `rate` double NOT NULL,
+  `files` mediumtext NOT NULL,
+  `show_in_client_portal` tinyint(1) NOT NULL DEFAULT 0,
+  `category_id` int(11) NOT NULL,
+  `taxable` tinyint(1) NOT NULL DEFAULT 0,
+  `sort` int(11) NOT NULL DEFAULT 0,
+  `deleted` tinyint(1) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+
+-- Dumping data for table rise.imp_items: ~0 rows (approximately)
+
+-- Dumping structure for table rise.imp_item_categories
+CREATE TABLE IF NOT EXISTS `imp_item_categories` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `title` text NOT NULL,
+  `deleted` tinyint(1) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+
+-- Dumping data for table rise.imp_item_categories: ~1 rows (approximately)
+INSERT INTO `imp_item_categories` (`id`, `title`, `deleted`) VALUES
+	(1, 'General item', 0);
+
+-- Dumping structure for table rise.imp_labels
+CREATE TABLE IF NOT EXISTS `imp_labels` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `title` text NOT NULL,
+  `color` varchar(15) NOT NULL,
+  `context` enum('event','invoice','note','project','task','ticket','to_do','subscription','client') DEFAULT NULL,
+  `user_id` int(11) NOT NULL DEFAULT 0,
+  `deleted` int(11) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`),
+  KEY `context` (`context`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+
+-- Dumping data for table rise.imp_labels: ~0 rows (approximately)
+
+-- Dumping structure for table rise.imp_leads
+CREATE TABLE IF NOT EXISTS `imp_leads` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `company_name` varchar(150) NOT NULL,
+  `first_name` varchar(150) NOT NULL,
+  `last_name` varchar(150) NOT NULL,
+  `email` varchar(150) NOT NULL,
+  `address` text DEFAULT NULL,
+  `city` varchar(50) DEFAULT NULL,
+  `state` varchar(50) DEFAULT NULL,
+  `zip` varchar(50) DEFAULT NULL,
+  `country` varchar(50) DEFAULT NULL,
+  `created_date` date NOT NULL,
+  `website` text DEFAULT NULL,
+  `phone` varchar(20) DEFAULT NULL,
+  `deleted` tinyint(1) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+
+-- Dumping data for table rise.imp_leads: ~0 rows (approximately)
+
+-- Dumping structure for table rise.imp_lead_source
+CREATE TABLE IF NOT EXISTS `imp_lead_source` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `title` varchar(100) NOT NULL,
+  `sort` int(11) NOT NULL,
+  `deleted` tinyint(1) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+
+-- Dumping data for table rise.imp_lead_source: ~5 rows (approximately)
+INSERT INTO `imp_lead_source` (`id`, `title`, `sort`, `deleted`) VALUES
+	(1, 'Google', 1, 0),
+	(2, 'Facebook', 2, 0),
+	(3, 'Twitter', 3, 0),
+	(4, 'Youtube', 4, 0),
+	(5, 'Elsewhere', 5, 0);
+
+-- Dumping structure for table rise.imp_lead_status
+CREATE TABLE IF NOT EXISTS `imp_lead_status` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `title` varchar(100) NOT NULL,
+  `color` varchar(7) NOT NULL,
+  `sort` int(11) NOT NULL,
+  `deleted` tinyint(1) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+
+-- Dumping data for table rise.imp_lead_status: ~6 rows (approximately)
+INSERT INTO `imp_lead_status` (`id`, `title`, `color`, `sort`, `deleted`) VALUES
+	(1, 'New', '#f1c40f', 0, 0),
+	(2, 'Qualified', '#2d9cdb', 1, 0),
+	(3, 'Discussion', '#29c2c2', 2, 0),
+	(4, 'Negotiation', '#2d9cdb', 3, 0),
+	(5, 'Won', '#83c340', 4, 0),
+	(6, 'Lost', '#e74c3c', 5, 0);
+
+-- Dumping structure for table rise.imp_leave_applications
+CREATE TABLE IF NOT EXISTS `imp_leave_applications` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `leave_type_id` int(11) NOT NULL,
+  `start_date` date NOT NULL,
+  `end_date` date NOT NULL,
+  `total_hours` decimal(7,2) NOT NULL,
+  `total_days` decimal(5,2) NOT NULL,
+  `applicant_id` int(11) NOT NULL,
+  `reason` mediumtext NOT NULL,
+  `status` enum('pending','approved','rejected','canceled') NOT NULL DEFAULT 'pending',
+  `created_at` datetime NOT NULL,
+  `created_by` int(11) NOT NULL,
+  `checked_at` datetime DEFAULT NULL,
+  `checked_by` int(11) NOT NULL DEFAULT 0,
+  `files` text NOT NULL,
+  `deleted` int(11) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`),
+  KEY `leave_type_id` (`leave_type_id`),
+  KEY `user_id` (`applicant_id`),
+  KEY `checked_by` (`checked_by`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+
+-- Dumping data for table rise.imp_leave_applications: ~0 rows (approximately)
+
+-- Dumping structure for table rise.imp_leave_types
+CREATE TABLE IF NOT EXISTS `imp_leave_types` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `title` varchar(100) NOT NULL,
+  `status` enum('active','inactive') NOT NULL DEFAULT 'active',
+  `color` varchar(7) NOT NULL,
+  `description` text DEFAULT NULL,
+  `deleted` int(11) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+
+-- Dumping data for table rise.imp_leave_types: ~1 rows (approximately)
+INSERT INTO `imp_leave_types` (`id`, `title`, `status`, `color`, `description`, `deleted`) VALUES
+	(1, 'Casual Leave', 'active', '#83c340', '', 0);
+
+-- Dumping structure for table rise.imp_likes
+CREATE TABLE IF NOT EXISTS `imp_likes` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `project_comment_id` int(11) NOT NULL,
+  `created_by` int(11) NOT NULL,
+  `created_at` datetime NOT NULL,
+  `deleted` tinyint(1) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+
+-- Dumping data for table rise.imp_likes: ~0 rows (approximately)
+
+-- Dumping structure for table rise.imp_messages
+CREATE TABLE IF NOT EXISTS `imp_messages` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `subject` varchar(255) NOT NULL DEFAULT 'Untitled',
+  `message` mediumtext NOT NULL,
+  `created_at` datetime NOT NULL,
+  `from_user_id` int(11) NOT NULL,
+  `to_user_id` int(11) NOT NULL,
+  `status` enum('unread','read') NOT NULL DEFAULT 'unread',
+  `message_id` int(11) NOT NULL DEFAULT 0,
+  `deleted` int(11) NOT NULL DEFAULT 0,
+  `files` longtext NOT NULL,
+  `deleted_by_users` text NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `message_from` (`from_user_id`),
+  KEY `message_to` (`to_user_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+
+-- Dumping data for table rise.imp_messages: ~0 rows (approximately)
+
+-- Dumping structure for table rise.imp_milestones
+CREATE TABLE IF NOT EXISTS `imp_milestones` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `title` text NOT NULL,
+  `project_id` int(11) NOT NULL,
+  `due_date` date NOT NULL,
+  `description` text NOT NULL,
+  `deleted` tinyint(4) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+
+-- Dumping data for table rise.imp_milestones: ~0 rows (approximately)
+
+-- Dumping structure for table rise.imp_notes
+CREATE TABLE IF NOT EXISTS `imp_notes` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `created_by` int(11) NOT NULL,
+  `created_at` datetime NOT NULL,
+  `title` text NOT NULL,
+  `description` mediumtext DEFAULT NULL,
+  `project_id` int(11) NOT NULL DEFAULT 0,
+  `client_id` int(11) NOT NULL DEFAULT 0,
+  `user_id` int(11) NOT NULL DEFAULT 0,
+  `labels` text DEFAULT NULL,
+  `files` mediumtext NOT NULL,
+  `is_public` tinyint(1) NOT NULL DEFAULT 0,
+  `deleted` tinyint(1) NOT NULL DEFAULT 0,
+  `category_id` int(11) DEFAULT 0,
+  `color` varchar(14) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+
+-- Dumping data for table rise.imp_notes: ~0 rows (approximately)
+
+-- Dumping structure for table rise.imp_note_category
+CREATE TABLE IF NOT EXISTS `imp_note_category` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` text DEFAULT NULL,
+  `user_id` int(11) NOT NULL DEFAULT 0,
+  `deleted` tinyint(1) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+
+-- Dumping data for table rise.imp_note_category: ~0 rows (approximately)
+
+-- Dumping structure for table rise.imp_notifications
+CREATE TABLE IF NOT EXISTS `imp_notifications` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL,
+  `description` longtext NOT NULL,
+  `created_at` datetime NOT NULL,
+  `notify_to` mediumtext NOT NULL,
+  `read_by` mediumtext NOT NULL,
+  `event` varchar(250) NOT NULL,
+  `project_id` int(11) NOT NULL,
+  `task_id` int(11) NOT NULL,
+  `project_comment_id` int(11) NOT NULL,
+  `ticket_id` int(11) NOT NULL,
+  `ticket_comment_id` int(11) NOT NULL,
+  `project_file_id` int(11) NOT NULL,
+  `leave_id` int(11) NOT NULL,
+  `post_id` int(11) NOT NULL,
+  `to_user_id` int(11) NOT NULL,
+  `activity_log_id` int(11) NOT NULL,
+  `client_id` int(11) NOT NULL,
+  `lead_id` int(11) NOT NULL,
+  `invoice_payment_id` int(11) NOT NULL,
+  `invoice_id` int(11) NOT NULL,
+  `estimate_id` int(11) NOT NULL,
+  `contract_id` int(11) NOT NULL,
+  `order_id` int(11) NOT NULL,
+  `estimate_request_id` int(11) NOT NULL,
+  `actual_message_id` int(11) NOT NULL,
+  `parent_message_id` int(11) NOT NULL,
+  `event_id` int(11) NOT NULL,
+  `announcement_id` int(11) NOT NULL,
+  `proposal_id` int(11) NOT NULL,
+  `estimate_comment_id` int(11) NOT NULL,
+  `subscription_id` int(11) NOT NULL,
+  `expense_id` int(11) NOT NULL,
+  `proposal_comment_id` int(11) NOT NULL,
+  `reminder_log_id` int(11) NOT NULL,
+  `deleted` int(11) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`),
+  KEY `user_id` (`user_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+
+-- Dumping data for table rise.imp_notifications: ~0 rows (approximately)
+
+-- Dumping structure for table rise.imp_notification_settings
+CREATE TABLE IF NOT EXISTS `imp_notification_settings` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `event` varchar(250) NOT NULL,
+  `category` varchar(50) NOT NULL,
+  `enable_email` int(11) NOT NULL DEFAULT 0,
+  `enable_web` int(11) NOT NULL DEFAULT 0,
+  `enable_slack` int(11) NOT NULL DEFAULT 0,
+  `notify_to_team` text NOT NULL,
+  `notify_to_team_members` text NOT NULL,
+  `notify_to_terms` text NOT NULL,
+  `sort` int(11) NOT NULL,
+  `deleted` int(11) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`),
+  KEY `event` (`event`)
+) ENGINE=InnoDB AUTO_INCREMENT=84 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+
+-- Dumping data for table rise.imp_notification_settings: ~81 rows (approximately)
+INSERT INTO `imp_notification_settings` (`id`, `event`, `category`, `enable_email`, `enable_web`, `enable_slack`, `notify_to_team`, `notify_to_team_members`, `notify_to_terms`, `sort`, `deleted`) VALUES
+	(1, 'project_created', 'project', 0, 0, 0, '', '', '', 1, 0),
+	(2, 'project_deleted', 'project', 0, 0, 0, '', '', '', 2, 0),
+	(3, 'project_task_created', 'project', 0, 1, 0, '', '', 'task_assignee,task_collaborators', 3, 0),
+	(4, 'project_task_updated', 'project', 0, 1, 0, '', '', 'task_assignee,task_collaborators', 4, 0),
+	(5, 'project_task_assigned', 'project', 0, 1, 0, '', '', 'task_assignee,task_collaborators', 5, 0),
+	(7, 'project_task_started', 'project', 0, 0, 0, '', '', '', 7, 0),
+	(8, 'project_task_finished', 'project', 0, 0, 0, '', '', '', 8, 0),
+	(9, 'project_task_reopened', 'project', 0, 0, 0, '', '', '', 9, 0),
+	(10, 'project_task_deleted', 'project', 0, 1, 0, '', '', 'task_assignee,task_collaborators', 10, 0),
+	(11, 'project_task_commented', 'project', 0, 1, 0, '', '', 'task_assignee,task_collaborators,mentioned_members', 11, 0),
+	(12, 'project_member_added', 'project', 0, 1, 0, '', '', 'project_members', 12, 0),
+	(13, 'project_member_deleted', 'project', 0, 1, 0, '', '', 'project_members', 13, 0),
+	(14, 'project_file_added', 'project', 0, 1, 0, '', '', 'project_members', 14, 0),
+	(15, 'project_file_deleted', 'project', 0, 1, 0, '', '', 'project_members', 15, 0),
+	(16, 'project_file_commented', 'project', 0, 1, 0, '', '', 'project_members,mentioned_members', 16, 0),
+	(17, 'project_comment_added', 'project', 0, 1, 0, '', '', 'project_members,mentioned_members', 17, 0),
+	(18, 'project_comment_replied', 'project', 0, 1, 0, '', '', 'project_members,comment_creator,mentioned_members', 18, 0),
+	(19, 'project_customer_feedback_added', 'project', 0, 1, 0, '', '', 'project_members,mentioned_members', 19, 0),
+	(20, 'project_customer_feedback_replied', 'project', 0, 1, 0, '', '', 'project_members,client_primary_contact,comment_creator,mentioned_members', 20, 0),
+	(21, 'client_signup', 'client', 0, 0, 0, '', '', '', 21, 0),
+	(22, 'invoice_online_payment_received', 'invoice', 0, 0, 0, '', '', '', 22, 0),
+	(23, 'leave_application_submitted', 'leave', 0, 0, 0, '', '', '', 23, 0),
+	(24, 'leave_approved', 'leave', 0, 1, 0, '', '', 'leave_applicant', 24, 0),
+	(25, 'leave_assigned', 'leave', 0, 1, 0, '', '', 'leave_applicant', 25, 0),
+	(26, 'leave_rejected', 'leave', 0, 1, 0, '', '', 'leave_applicant', 26, 0),
+	(27, 'leave_canceled', 'leave', 0, 0, 0, '', '', '', 27, 0),
+	(28, 'ticket_created', 'ticket', 0, 0, 0, '', '', 'ticket_assignee', 28, 0),
+	(29, 'ticket_commented', 'ticket', 0, 1, 0, '', '', 'client_primary_contact,ticket_creator,ticket_assignee', 29, 0),
+	(30, 'ticket_closed', 'ticket', 0, 1, 0, '', '', 'client_primary_contact,ticket_creator,ticket_assignee', 30, 0),
+	(31, 'ticket_reopened', 'ticket', 0, 1, 0, '', '', 'client_primary_contact,ticket_creator,ticket_assignee', 31, 0),
+	(32, 'estimate_request_received', 'estimate', 0, 0, 0, '', '', '', 32, 0),
+	(34, 'estimate_accepted', 'estimate', 0, 0, 0, '', '', '', 34, 0),
+	(35, 'estimate_rejected', 'estimate', 0, 0, 0, '', '', '', 35, 0),
+	(36, 'new_message_sent', 'message', 0, 0, 0, '', '', '', 36, 0),
+	(37, 'message_reply_sent', 'message', 0, 0, 0, '', '', '', 37, 0),
+	(38, 'invoice_payment_confirmation', 'invoice', 0, 0, 0, '', '', '', 22, 0),
+	(39, 'new_event_added_in_calendar', 'event', 0, 1, 0, '', '', 'recipient', 39, 0),
+	(40, 'recurring_invoice_created_vai_cron_job', 'invoice', 0, 0, 0, '', '', 'client_primary_contact', 22, 0),
+	(41, 'new_announcement_created', 'announcement', 0, 1, 0, '', '', 'recipient', 41, 0),
+	(42, 'invoice_due_reminder_before_due_date', 'invoice', 0, 1, 0, '', '', 'client_primary_contact', 22, 0),
+	(43, 'invoice_overdue_reminder', 'invoice', 0, 1, 0, '', '', 'client_primary_contact', 22, 0),
+	(44, 'recurring_invoice_creation_reminder', 'invoice', 0, 0, 0, '', '', '', 22, 0),
+	(45, 'project_completed', 'project', 0, 0, 0, '', '', '', 2, 0),
+	(46, 'lead_created', 'lead', 0, 0, 0, '', '', '', 21, 0),
+	(47, 'client_created_from_lead', 'lead', 0, 0, 0, '', '', '', 21, 0),
+	(48, 'project_task_deadline_pre_reminder', 'project', 0, 1, 0, '', '', 'task_assignee', 20, 0),
+	(49, 'project_task_reminder_on_the_day_of_deadline', 'project', 0, 1, 0, '', '', 'task_assignee', 20, 0),
+	(50, 'project_task_deadline_overdue_reminder', 'project', 0, 1, 0, '', '', 'task_assignee', 20, 0),
+	(51, 'recurring_task_created_via_cron_job', 'project', 0, 1, 0, '', '', 'project_members,task_assignee', 20, 0),
+	(52, 'calendar_event_modified', 'event', 0, 0, 0, '', '', '', 39, 0),
+	(53, 'client_contact_requested_account_removal', 'client', 0, 0, 0, '', '', '', 21, 0),
+	(54, 'bitbucket_push_received', 'project', 0, 0, 0, '', '', '', 45, 0),
+	(55, 'github_push_received', 'project', 0, 0, 0, '', '', '', 45, 0),
+	(56, 'invited_client_contact_signed_up', 'client', 0, 0, 0, '', '', '', 21, 0),
+	(57, 'created_a_new_post', 'timeline', 0, 0, 0, '', '', '', 52, 0),
+	(58, 'timeline_post_commented', 'timeline', 0, 1, 0, '', '', 'post_creator', 52, 0),
+	(59, 'ticket_assigned', 'ticket', 0, 1, 0, '', '', 'ticket_assignee', 31, 0),
+	(60, 'new_order_received', 'order', 0, 0, 0, '', '', '', 1, 0),
+	(61, 'order_status_updated', 'order', 0, 0, 0, '', '', '', 2, 0),
+	(62, 'proposal_accepted', 'proposal', 0, 0, 0, '', '', '', 34, 0),
+	(63, 'proposal_rejected', 'proposal', 0, 0, 0, '', '', '', 35, 0),
+	(64, 'estimate_commented', 'estimate', 0, 0, 0, '', '', '', 35, 0),
+	(65, 'invoice_manual_payment_added', 'invoice', 0, 0, 0, '', '', '', 22, 0),
+	(66, 'contract_accepted', 'contract', 0, 0, 0, '', '', '', 66, 0),
+	(67, 'contract_rejected', 'contract', 0, 0, 0, '', '', '', 67, 0),
+	(68, 'subscription_request_sent', 'subscription', 0, 1, 0, '', '', 'client_primary_contact', 68, 0),
+	(69, 'subscription_started', 'subscription', 0, 1, 0, '', '', 'client_primary_contact', 68, 0),
+	(70, 'subscription_invoice_created_via_cron_job', 'subscription', 0, 1, 0, '', '', 'client_primary_contact', 68, 0),
+	(71, 'general_task_created', 'general_task', 0, 1, 0, '', '', 'task_assignee,task_collaborators', 69, 0),
+	(72, 'general_task_updated', 'general_task', 0, 1, 0, '', '', 'task_assignee,task_collaborators', 70, 0),
+	(73, 'general_task_assigned', 'general_task', 0, 1, 0, '', '', 'task_assignee,task_collaborators', 71, 0),
+	(74, 'general_task_started', 'general_task', 0, 0, 0, '', '', '', 72, 0),
+	(75, 'general_task_finished', 'general_task', 0, 0, 0, '', '', '', 73, 0),
+	(76, 'general_task_reopened', 'general_task', 0, 0, 0, '', '', '', 74, 0),
+	(77, 'general_task_deleted', 'general_task', 0, 1, 0, '', '', 'task_assignee,task_collaborators', 75, 0),
+	(78, 'general_task_commented', 'general_task', 0, 1, 0, '', '', 'task_assignee,task_collaborators,mentioned_members', 76, 0),
+	(79, 'proposal_commented', 'proposal', 0, 0, 0, '', '', '', 77, 0),
+	(80, 'subscription_cancelled', 'subscription', 0, 0, 0, '', '', '', 68, 0),
+	(81, 'proposal_preview_opened', 'proposal', 0, 0, 0, '', '', '', 77, 0),
+	(82, 'proposal_email_opened', 'proposal', 0, 0, 0, '', '', '', 77, 0),
+	(83, 'subscription_renewal_reminder', 'subscription', 0, 0, 0, '', '', '', 68, 0);
+
+-- Dumping structure for table rise.imp_orders
+CREATE TABLE IF NOT EXISTS `imp_orders` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `client_id` int(11) NOT NULL,
+  `order_date` date NOT NULL,
+  `note` mediumtext DEFAULT NULL,
+  `status_id` int(11) NOT NULL,
+  `tax_id` int(11) NOT NULL DEFAULT 0,
+  `tax_id2` int(11) NOT NULL DEFAULT 0,
+  `discount_amount` double NOT NULL,
+  `discount_amount_type` enum('percentage','fixed_amount') NOT NULL,
+  `discount_type` enum('before_tax','after_tax') NOT NULL,
+  `created_by` int(11) NOT NULL DEFAULT 0,
+  `project_id` int(11) NOT NULL DEFAULT 0,
+  `files` longtext NOT NULL,
+  `company_id` int(11) NOT NULL DEFAULT 0,
+  `deleted` tinyint(1) NOT NULL DEFAULT 0,
+  `created_by_hash` text NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+
+-- Dumping data for table rise.imp_orders: ~0 rows (approximately)
+
+-- Dumping structure for table rise.imp_order_items
+CREATE TABLE IF NOT EXISTS `imp_order_items` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `title` text NOT NULL,
+  `description` text DEFAULT NULL,
+  `quantity` double NOT NULL,
+  `unit_type` varchar(20) NOT NULL DEFAULT '',
+  `rate` double NOT NULL,
+  `total` double NOT NULL,
+  `order_id` int(11) NOT NULL,
+  `created_by` int(11) NOT NULL,
+  `item_id` int(11) NOT NULL DEFAULT 0,
+  `sort` int(11) NOT NULL DEFAULT 0,
+  `deleted` tinyint(1) NOT NULL DEFAULT 0,
+  `created_by_hash` text NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+
+-- Dumping data for table rise.imp_order_items: ~0 rows (approximately)
+
+-- Dumping structure for table rise.imp_order_status
+CREATE TABLE IF NOT EXISTS `imp_order_status` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `title` varchar(100) NOT NULL,
+  `color` varchar(7) NOT NULL,
+  `sort` int(11) NOT NULL,
+  `deleted` tinyint(1) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+
+-- Dumping data for table rise.imp_order_status: ~3 rows (approximately)
+INSERT INTO `imp_order_status` (`id`, `title`, `color`, `sort`, `deleted`) VALUES
+	(1, 'New', '#f1c40f', 0, 0),
+	(2, 'Processing', '#29c2c2', 1, 0),
+	(3, 'Confirmed', '#83c340', 2, 0);
+
+-- Dumping structure for table rise.imp_pages
+CREATE TABLE IF NOT EXISTS `imp_pages` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `title` text DEFAULT NULL,
+  `content` longtext DEFAULT NULL,
+  `slug` text DEFAULT NULL,
+  `status` enum('active','inactive') NOT NULL DEFAULT 'active',
+  `internal_use_only` tinyint(1) NOT NULL DEFAULT 0,
+  `visible_to_team_members_only` tinyint(1) NOT NULL DEFAULT 0,
+  `visible_to_clients_only` tinyint(1) NOT NULL DEFAULT 0,
+  `full_width` tinyint(1) NOT NULL DEFAULT 0,
+  `hide_topbar` tinyint(1) NOT NULL DEFAULT 0,
+  `deleted` int(11) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+
+-- Dumping data for table rise.imp_pages: ~0 rows (approximately)
+
+-- Dumping structure for table rise.imp_payment_methods
+CREATE TABLE IF NOT EXISTS `imp_payment_methods` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `title` text NOT NULL,
+  `type` varchar(100) NOT NULL DEFAULT 'custom',
+  `description` text NOT NULL,
+  `online_payable` tinyint(1) NOT NULL DEFAULT 0,
+  `available_on_invoice` tinyint(1) NOT NULL DEFAULT 0,
+  `minimum_payment_amount` double NOT NULL DEFAULT 0,
+  `settings` longtext NOT NULL,
+  `sort` int(11) NOT NULL DEFAULT 0,
+  `deleted` tinyint(1) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+
+-- Dumping data for table rise.imp_payment_methods: ~6 rows (approximately)
+INSERT INTO `imp_payment_methods` (`id`, `title`, `type`, `description`, `online_payable`, `available_on_invoice`, `minimum_payment_amount`, `settings`, `sort`, `deleted`) VALUES
+	(1, 'Cash', 'custom', 'Cash payments', 0, 0, 0, '', 0, 0),
+	(2, 'Stripe', 'stripe', 'Stripe online payments', 1, 0, 0, 'a:3:{s:15:"pay_button_text";s:6:"Stripe";s:10:"secret_key";s:6:"";s:15:"publishable_key";s:6:"";}', 0, 0),
+	(3, 'PayPal Payments Standard', 'paypal_payments_standard', 'PayPal Payments Standard Online Payments', 1, 0, 0, 'a:4:{s:15:"pay_button_text";s:6:"PayPal";s:5:"email";s:4:"";s:11:"paypal_live";s:1:"0";s:5:"debug";s:1:"0";}', 0, 0),
+	(4, 'Paytm', 'paytm', 'Paytm online payments', 1, 0, 0, '', 0, 0),
+	(5, 'Card', 'custom', 'Card Payment', 0, 0, 0, 'Card Payment', 0, 0),
+	(6, 'Venmo', 'custom', 'Venmo Payment', 0, 0, 0, 'Venmo Payment', 0, 0);
+
+-- Dumping structure for table rise.imp_paypal_ipn
+CREATE TABLE IF NOT EXISTS `imp_paypal_ipn` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `verification_code` text NOT NULL,
+  `payment_verification_code` text NOT NULL,
+  `invoice_id` int(11) NOT NULL,
+  `contact_user_id` int(11) NOT NULL,
+  `client_id` int(11) NOT NULL,
+  `payment_method_id` int(11) NOT NULL,
+  `deleted` tinyint(1) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+
+-- Dumping data for table rise.imp_paypal_ipn: ~0 rows (approximately)
+
+-- Dumping structure for table rise.imp_pin_comments
+CREATE TABLE IF NOT EXISTS `imp_pin_comments` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `project_comment_id` int(11) NOT NULL,
+  `pinned_by` int(11) NOT NULL,
+  `created_at` datetime NOT NULL,
+  `deleted` tinyint(1) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+
+-- Dumping data for table rise.imp_pin_comments: ~0 rows (approximately)
+
+-- Dumping structure for table rise.imp_posts
+CREATE TABLE IF NOT EXISTS `imp_posts` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `created_by` int(11) NOT NULL,
+  `created_at` datetime NOT NULL,
+  `description` mediumtext NOT NULL,
+  `post_id` int(11) NOT NULL,
+  `share_with` text DEFAULT NULL,
+  `files` longtext DEFAULT NULL,
+  `deleted` tinyint(1) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+
+-- Dumping data for table rise.imp_posts: ~0 rows (approximately)
+
+-- Dumping structure for table rise.imp_projects
+CREATE TABLE IF NOT EXISTS `imp_projects` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `title` text NOT NULL,
+  `description` mediumtext DEFAULT NULL,
+  `project_type` enum('client_project','internal_project') NOT NULL DEFAULT 'client_project',
+  `start_date` date DEFAULT NULL,
+  `deadline` date DEFAULT NULL,
+  `client_id` int(11) NOT NULL,
+  `created_date` date DEFAULT NULL,
+  `created_by` int(11) NOT NULL DEFAULT 0,
+  `status` enum('open','completed','hold','canceled') NOT NULL DEFAULT 'open',
+  `status_id` int(11) NOT NULL DEFAULT 1,
+  `labels` text DEFAULT NULL,
+  `price` double NOT NULL DEFAULT 0,
+  `starred_by` mediumtext NOT NULL,
+  `estimate_id` int(11) NOT NULL,
+  `order_id` int(11) NOT NULL,
+  `proposal_id` int(11) DEFAULT 0,
+  `deleted` tinyint(1) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`),
+  KEY `client_id` (`client_id`),
+  KEY `status_id` (`status_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+
+-- Dumping data for table rise.imp_projects: ~0 rows (approximately)
+INSERT INTO `imp_projects` (`id`, `title`, `description`, `project_type`, `start_date`, `deadline`, `client_id`, `created_date`, `created_by`, `status`, `status_id`, `labels`, `price`, `starred_by`, `estimate_id`, `order_id`, `proposal_id`, `deleted`) VALUES
+	(1, 'ESTIMATE #1', NULL, 'client_project', '2024-10-10', '2024-10-10', 7, NULL, 0, 'open', 1, NULL, 0, '', 1, 0, 0, 1),
+	(2, 'ESTIMATE #2', NULL, 'client_project', '2024-10-11', '2024-11-08', 15, NULL, 0, 'open', 1, NULL, 0, '', 2, 0, 0, 1);
+
+-- Dumping structure for table rise.imp_project_comments
+CREATE TABLE IF NOT EXISTS `imp_project_comments` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `created_by` int(11) NOT NULL,
+  `created_at` datetime NOT NULL,
+  `description` mediumtext NOT NULL,
+  `project_id` int(11) NOT NULL DEFAULT 0,
+  `comment_id` int(11) NOT NULL DEFAULT 0,
+  `task_id` int(11) NOT NULL DEFAULT 0,
+  `file_id` int(11) NOT NULL DEFAULT 0,
+  `customer_feedback_id` int(11) NOT NULL DEFAULT 0,
+  `files` longtext DEFAULT NULL,
+  `deleted` tinyint(1) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+
+-- Dumping data for table rise.imp_project_comments: ~0 rows (approximately)
+
+-- Dumping structure for table rise.imp_project_files
+CREATE TABLE IF NOT EXISTS `imp_project_files` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `file_name` text NOT NULL,
+  `file_id` text DEFAULT NULL,
+  `service_type` varchar(20) DEFAULT NULL,
+  `description` mediumtext DEFAULT NULL,
+  `file_size` double NOT NULL,
+  `created_at` datetime NOT NULL,
+  `project_id` int(11) NOT NULL,
+  `uploaded_by` int(11) NOT NULL,
+  `category_id` int(11) NOT NULL DEFAULT 0,
+  `deleted` tinyint(1) NOT NULL DEFAULT 0,
+  `folder_id` int(11) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+
+-- Dumping data for table rise.imp_project_files: ~0 rows (approximately)
+
+-- Dumping structure for table rise.imp_project_members
+CREATE TABLE IF NOT EXISTS `imp_project_members` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL,
+  `project_id` int(11) NOT NULL,
+  `is_leader` tinyint(1) DEFAULT 0,
+  `deleted` tinyint(1) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`),
+  KEY `user_id` (`user_id`),
+  KEY `project_id` (`project_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+
+-- Dumping data for table rise.imp_project_members: ~0 rows (approximately)
+
+-- Dumping structure for table rise.imp_project_settings
+CREATE TABLE IF NOT EXISTS `imp_project_settings` (
+  `project_id` int(11) NOT NULL,
+  `setting_name` varchar(100) NOT NULL,
+  `setting_value` mediumtext NOT NULL,
+  `deleted` tinyint(1) NOT NULL DEFAULT 0,
+  UNIQUE KEY `unique_index` (`project_id`,`setting_name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+
+-- Dumping data for table rise.imp_project_settings: ~0 rows (approximately)
+
+-- Dumping structure for table rise.imp_project_status
+CREATE TABLE IF NOT EXISTS `imp_project_status` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `title` varchar(100) NOT NULL,
+  `title_language_key` text NOT NULL,
+  `key_name` varchar(100) NOT NULL,
+  `icon` varchar(50) NOT NULL,
+  `deleted` tinyint(1) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+
+-- Dumping data for table rise.imp_project_status: ~4 rows (approximately)
+INSERT INTO `imp_project_status` (`id`, `title`, `title_language_key`, `key_name`, `icon`, `deleted`) VALUES
+	(1, 'Open', 'open', 'open', 'grid', 0),
+	(2, 'Completed', 'completed', 'completed', 'check-circle', 0),
+	(3, 'Hold', 'hold', '', 'pause-circle', 0),
+	(4, 'Canceled', 'canceled', '', 'x-circle', 0);
+
+-- Dumping structure for table rise.imp_project_time
+CREATE TABLE IF NOT EXISTS `imp_project_time` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `project_id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `start_time` datetime NOT NULL,
+  `end_time` datetime DEFAULT NULL,
+  `hours` float NOT NULL,
+  `status` enum('open','logged','approved') NOT NULL DEFAULT 'logged',
+  `note` text DEFAULT NULL,
+  `task_id` int(11) NOT NULL DEFAULT 0,
+  `deleted` tinyint(1) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+
+-- Dumping data for table rise.imp_project_time: ~0 rows (approximately)
+
+-- Dumping structure for table rise.imp_proposals
+CREATE TABLE IF NOT EXISTS `imp_proposals` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `client_id` int(11) NOT NULL,
+  `proposal_date` date NOT NULL,
+  `valid_until` date NOT NULL,
+  `note` mediumtext DEFAULT NULL,
+  `last_email_sent_date` date DEFAULT NULL,
+  `status` enum('draft','sent','accepted','declined') NOT NULL DEFAULT 'draft',
+  `tax_id` int(11) NOT NULL DEFAULT 0,
+  `tax_id2` int(11) NOT NULL DEFAULT 0,
+  `discount_type` enum('before_tax','after_tax') NOT NULL,
+  `discount_amount` double NOT NULL,
+  `discount_amount_type` enum('percentage','fixed_amount') NOT NULL,
+  `content` mediumtext NOT NULL,
+  `public_key` varchar(10) NOT NULL,
+  `accepted_by` int(11) NOT NULL DEFAULT 0,
+  `created_by` int(11) NOT NULL DEFAULT 0,
+  `total_views` int(11) NOT NULL DEFAULT 0,
+  `last_preview_seen` datetime DEFAULT NULL,
+  `meta_data` text NOT NULL,
+  `company_id` int(11) NOT NULL DEFAULT 0,
+  `project_id` int(11) DEFAULT 0,
+  `deleted` tinyint(1) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+
+-- Dumping data for table rise.imp_proposals: ~0 rows (approximately)
+
+-- Dumping structure for table rise.imp_proposal_comments
+CREATE TABLE IF NOT EXISTS `imp_proposal_comments` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `created_by` int(11) NOT NULL,
+  `created_at` datetime NOT NULL,
+  `description` mediumtext NOT NULL,
+  `proposal_id` int(11) NOT NULL DEFAULT 0,
+  `files` longtext DEFAULT NULL,
+  `deleted` tinyint(1) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+
+-- Dumping data for table rise.imp_proposal_comments: ~0 rows (approximately)
+
+-- Dumping structure for table rise.imp_proposal_items
+CREATE TABLE IF NOT EXISTS `imp_proposal_items` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `title` text NOT NULL,
+  `description` text DEFAULT NULL,
+  `quantity` double NOT NULL,
+  `unit_type` varchar(20) NOT NULL DEFAULT '',
+  `rate` double NOT NULL,
+  `total` double NOT NULL,
+  `sort` int(11) NOT NULL DEFAULT 0,
+  `proposal_id` int(11) NOT NULL,
+  `item_id` int(11) NOT NULL DEFAULT 0,
+  `deleted` tinyint(1) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+
+-- Dumping data for table rise.imp_proposal_items: ~0 rows (approximately)
+
+-- Dumping structure for table rise.imp_proposal_templates
+CREATE TABLE IF NOT EXISTS `imp_proposal_templates` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `title` varchar(50) NOT NULL,
+  `template` mediumtext DEFAULT NULL,
+  `deleted` tinyint(1) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+
+-- Dumping data for table rise.imp_proposal_templates: ~1 rows (approximately)
+INSERT INTO `imp_proposal_templates` (`id`, `title`, `template`, `deleted`) VALUES
+	(1, 'Template 3.7', '<p>&nbsp;</p>\r\n<table class="table" style="background-color: #3d3d3d; color: #ffffff; height: 601.859px; width: 101.843%;">\r\n<tbody>\r\n<tr style="height: 601px;">\r\n<td style="text-align: center; width: 97.7706%;">\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<div style="font-size: 40px;"><strong>Web Design Proposal</strong></div>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n</td>\r\n</tr>\r\n</tbody>\r\n</table>\r\n<p style="text-align: justify;">&nbsp;</p>\r\n<p style="text-align: justify;">In response to the growing demands and opportunities within the industry, we propose to develop a comprehensive solution tailored to address key challenges and capitalize on emerging trends. Our proposal aims to deliver tangible value by leveraging our expertise, innovative approaches, and commitment to excellence.</p>\r\n<table style="margin-top: 0px; margin-bottom: 10px; height: 116.172px; width: 101.229%;">\r\n<tbody>\r\n<tr style="height: 115px;">\r\n<td style="padding: 0px; width: 99.6965%;">\r\n<div style="margin-top: 20px;">\r\n<div style="text-align: center;">\r\n<div style="font-size: 30px;">{PROPOSAL_ID}</div>\r\n<table style="margin-top: 10px; width: 99.6956%;">\r\n<tbody>\r\n<tr>\r\n<td style="width: 14.4424%;">&nbsp;</td>\r\n<td style="width: 14.4424%;">&nbsp;</td>\r\n<td style="width: 14.4424%;">&nbsp;</td>\r\n<td style="width: 14.4424%;">\r\n<div style="border-bottom: 5px solid #ff9800;">&nbsp;</div>\r\n</td>\r\n<td style="width: 14.4424%;">&nbsp;</td>\r\n<td style="width: 14.4424%;">&nbsp;</td>\r\n<td style="width: 12.9799%;">&nbsp;</td>\r\n</tr>\r\n</tbody>\r\n</table>\r\n</div>\r\n</div>\r\n</td>\r\n</tr>\r\n</tbody>\r\n</table>\r\n<div>Proposal Date: {PROPOSAL_DATE}<br>Expiry Date: {PROPOSAL_EXPIRY_DATE}</div>\r\n<table style="width: 100%; padding-top: 30px; margin-top: 0;">\r\n<tbody>\r\n<tr>\r\n<td style="width: 50%; padding-left: 0; padding-right: 10px;">\r\n<p>Proposal For</p>\r\n{PROPOSAL_TO_INFO}</td>\r\n<td style="width: 50%; padding-left: 10px;">\r\n<p>Proposal From</p>\r\n{COMPANY_INFO}</td>\r\n</tr>\r\n</tbody>\r\n</table>\r\n<p>&nbsp;</p>\r\n<table style="margin-top: 0px; margin-bottom: 10px; width: 102.304%;">\r\n<tbody>\r\n<tr>\r\n<td style="padding: 0px; width: 100%;">\r\n<div style="margin-top: 20px;">\r\n<div style="text-align: center;">\r\n<div style="font-size: 30px;">Our Best Offer</div>\r\n<table style="margin-top: 10px; width: 100.301%;">\r\n<tbody>\r\n<tr>\r\n<td style="width: 14.5125%;">&nbsp;</td>\r\n<td style="width: 14.5125%;">&nbsp;</td>\r\n<td style="width: 14.5125%;">&nbsp;</td>\r\n<td style="width: 14.5125%;">\r\n<div style="border-bottom: 5px solid #ff9800;">&nbsp;</div>\r\n</td>\r\n<td style="width: 14.5125%;">&nbsp;</td>\r\n<td style="width: 14.5125%;">&nbsp;</td>\r\n<td style="width: 14.5125%;">&nbsp;</td>\r\n</tr>\r\n</tbody>\r\n</table>\r\n</div>\r\n</div>\r\n</td>\r\n</tr>\r\n</tbody>\r\n</table>\r\n<p style="text-align: justify;">In consideration of your unique needs and aspirations, we are pleased to present our best offer, crafted with meticulous attention to detail and driven by a commitment to delivering exceptional value.</p>\r\n<p>&nbsp;</p>\r\n<p>{PROPOSAL_ITEMS}</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<table style="margin-top: 0px; margin-bottom: 10px; width: 102.458%;">\r\n<tbody>\r\n<tr>\r\n<td style="padding: 0px; width: 100%;">\r\n<div style="margin-top: 20px;">\r\n<div style="text-align: center;">\r\n<div style="font-size: 30px;">Our Objective</div>\r\n<table style="margin-top: 10px; width: 102.465%;">\r\n<tbody>\r\n<tr>\r\n<td style="width: 14.5125%;">&nbsp;</td>\r\n<td style="width: 14.5125%;">&nbsp;</td>\r\n<td style="width: 14.5125%;">&nbsp;</td>\r\n<td style="width: 14.5125%;">\r\n<div style="border-bottom: 5px solid #ff9800;">&nbsp;</div>\r\n</td>\r\n<td style="width: 14.5125%;">&nbsp;</td>\r\n<td style="width: 14.5125%;">&nbsp;</td>\r\n<td style="width: 14.5125%;">&nbsp;</td>\r\n</tr>\r\n</tbody>\r\n</table>\r\n</div>\r\n</div>\r\n</td>\r\n</tr>\r\n</tbody>\r\n</table>\r\n<p style="text-align: justify;">Our objective is to align seamlessly with your business goals, leveraging our expertise and resources to drive tangible results and foster long-term success.</p>\r\n<table style="width: 100%;">\r\n<tbody>\r\n<tr>\r\n<td style="width: 50%; vertical-align: top;"><span class="timeline-images inline-block"><img class="pasted-image" style="width: 100%;" src="../../assets/images/image_preview.png" alt=""></span></td>\r\n<td style="width: 50%; vertical-align: top;">\r\n<div style="line-height: 26px; padding: 0px 0px 30px; vertical-align: top;">Through a collaborative partnership, we aim to understand your unique challenges, opportunities, and aspirations, enabling us to tailor our approach to meet your specific needs. By focusing on measurable outcomes, continuous improvement, and proactive communication, we are committed to exceeding your expectations and establishing a foundation for sustained growth and competitiveness in a dynamic business environment.</div>\r\n</td>\r\n</tr>\r\n</tbody>\r\n</table>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<table style="margin-top: 0px; width: 102.151%;">\r\n<tbody>\r\n<tr>\r\n<td style="padding: 0px; width: 100%;">\r\n<div style="margin-top: 20px;">\r\n<div style="text-align: center;">\r\n<div style="font-size: 30px;">Our Portfolio</div>\r\n<table style="margin-top: 10px; width: 100.452%;">\r\n<tbody>\r\n<tr>\r\n<td style="width: 14.4597%;">&nbsp;</td>\r\n<td style="width: 14.4597%;">&nbsp;</td>\r\n<td style="width: 14.4597%;">&nbsp;</td>\r\n<td style="width: 14.4597%;">\r\n<div style="border-bottom: 5px solid #ff9800;">&nbsp;</div>\r\n</td>\r\n<td style="width: 14.4597%;">&nbsp;</td>\r\n<td style="width: 14.4597%;">&nbsp;</td>\r\n<td style="width: 12.9376%;">&nbsp;</td>\r\n</tr>\r\n</tbody>\r\n</table>\r\n</div>\r\n</div>\r\n</td>\r\n</tr>\r\n</tbody>\r\n</table>\r\n<p style="text-align: center;">Some of our recent work here</p>\r\n<table style="border-collapse: collapse; width: 100%;"><colgroup><col style="width: 49.9232%;"><col style="width: 49.9232%;"></colgroup>\r\n<tbody>\r\n<tr>\r\n<td><span class="timeline-images inline-block"><img class="pasted-image" style="width: 100%;" src="../../assets/images/image_preview.png" alt=""></span></td>\r\n<td><span class="timeline-images inline-block"><img class="pasted-image" style="width: 100%;" src="../../assets/images/image_preview.png" alt=""></span></td>\r\n</tr>\r\n<tr>\r\n<td><span class="timeline-images inline-block"><img class="pasted-image" style="width: 100%;" src="../../assets/images/image_preview.png" alt=""></span></td>\r\n<td><span class="timeline-images inline-block"><img class="pasted-image" style="width: 100%;" src="../../assets/images/image_preview.png" alt=""></span></td>\r\n</tr>\r\n</tbody>\r\n</table>\r\n<p>&nbsp;</p>\r\n<table style="margin-top: 0px; margin-bottom: 10px; width: 102.458%;">\r\n<tbody>\r\n<tr>\r\n<td style="padding: 0px; width: 100%;">\r\n<div style="margin-top: 20px;">\r\n<div style="text-align: center;">\r\n<div style="font-size: 30px;">Contact Us</div>\r\n<table style="margin-top: 10px; width: 99.6992%; height: 37.1719px;">\r\n<tbody>\r\n<tr style="height: 37.1719px;">\r\n<td style="width: 14.7147%;">&nbsp;</td>\r\n<td style="width: 14.7147%;">&nbsp;</td>\r\n<td style="width: 14.7147%;">&nbsp;</td>\r\n<td style="width: 14.7147%;">\r\n<div style="border-bottom: 5px solid #ff9800;">&nbsp;</div>\r\n</td>\r\n<td style="width: 14.7147%;">&nbsp;</td>\r\n<td style="width: 14.7147%;">&nbsp;</td>\r\n<td style="width: 12.1622%;">&nbsp;</td>\r\n</tr>\r\n</tbody>\r\n</table>\r\n</div>\r\n</div>\r\n</td>\r\n</tr>\r\n</tbody>\r\n</table>\r\n<p style="text-align: center;">We are looking forward to working with you. Please feel free to contact us.</p>\r\n<p>&nbsp;</p>', 0);
+
+-- Dumping structure for table rise.imp_reminder_logs
+CREATE TABLE IF NOT EXISTS `imp_reminder_logs` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `context` varchar(255) NOT NULL,
+  `context_id` int(11) NOT NULL,
+  `reminder_event` varchar(255) DEFAULT NULL,
+  `notification_status` enum('draft','completed') NOT NULL DEFAULT 'draft',
+  `reminder_date` date DEFAULT NULL,
+  `deleted` tinyint(1) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+
+-- Dumping data for table rise.imp_reminder_logs: ~0 rows (approximately)
+
+-- Dumping structure for table rise.imp_reminder_settings
+CREATE TABLE IF NOT EXISTS `imp_reminder_settings` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `type` varchar(20) NOT NULL DEFAULT 'app',
+  `context` text NOT NULL,
+  `reminder_event` text NOT NULL,
+  `reminder1` int(11) DEFAULT NULL,
+  `reminder2` int(11) DEFAULT NULL,
+  `reminder3` int(11) DEFAULT NULL,
+  `reminder4` int(11) DEFAULT NULL,
+  `reminder5` int(11) DEFAULT NULL,
+  `deleted` tinyint(1) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+
+-- Dumping data for table rise.imp_reminder_settings: ~0 rows (approximately)
+
+-- Dumping structure for table rise.imp_roles
+CREATE TABLE IF NOT EXISTS `imp_roles` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `title` varchar(100) NOT NULL,
+  `permissions` mediumtext DEFAULT NULL,
+  `deleted` tinyint(1) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+
+-- Dumping data for table rise.imp_roles: ~0 rows (approximately)
+
+-- Dumping structure for table rise.imp_settings
+CREATE TABLE IF NOT EXISTS `imp_settings` (
+  `setting_name` varchar(100) NOT NULL,
+  `setting_value` mediumtext NOT NULL,
+  `type` varchar(20) NOT NULL DEFAULT 'app',
+  `deleted` tinyint(1) NOT NULL DEFAULT 0,
+  UNIQUE KEY `setting_name` (`setting_name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+
+-- Dumping data for table rise.imp_settings: ~87 rows (approximately)
+INSERT INTO `imp_settings` (`setting_name`, `setting_value`, `type`, `deleted`) VALUES
+	('accepted_file_formats', 'jpg,jpeg,png,doc,xlsx,txt,pdf,zip,webm', 'app', 0),
+	('add_signature_option_on_accepting_estimate', '1', 'app', 0),
+	('allowed_ip_addresses', '', 'app', 0),
+	('app_title', 'Imperial - Ultimate Project Manager and CRM', 'app', 0),
+	('contract_color', '#000000', 'app', 0),
+	('create_new_projects_automatically_when_estimates_gets_accepted', '1', 'app', 0),
+	('currency_symbol', '$', 'app', 0),
+	('date_format', 'Y-m-d', 'app', 0),
+	('decimal_separator', '.', 'app', 0),
+	('default_contract_template', '1', 'app', 0),
+	('default_currency', 'USD', 'app', 0),
+	('default_due_date_after_billing_date', '14', 'app', 0),
+	('default_left_menu', 'a:25:{i:0;a:1:{s:4:"name";s:9:"dashboard";}i:1;a:1:{s:4:"name";s:6:"events";}i:2;a:1:{s:4:"name";s:7:"clients";}i:3;a:1:{s:4:"name";s:8:"projects";}i:4;a:1:{s:4:"name";s:5:"tasks";}i:5;a:1:{s:4:"name";s:5:"leads";}i:6;a:1:{s:4:"name";s:5:"sales";}i:7;a:2:{s:4:"name";s:8:"invoices";s:11:"is_sub_menu";s:1:"1";}i:8;a:2:{s:4:"name";s:11:"orders_list";s:11:"is_sub_menu";s:1:"1";}i:9;a:2:{s:4:"name";s:5:"store";s:11:"is_sub_menu";s:1:"1";}i:10;a:2:{s:4:"name";s:16:"invoice_payments";s:11:"is_sub_menu";s:1:"1";}i:11;a:2:{s:4:"name";s:5:"items";s:11:"is_sub_menu";s:1:"1";}i:12;a:2:{s:4:"name";s:9:"contracts";s:11:"is_sub_menu";s:1:"1";}i:13;a:1:{s:4:"name";s:9:"prospects";}i:14;a:2:{s:4:"name";s:13:"estimate_list";s:11:"is_sub_menu";s:1:"1";}i:15;a:2:{s:4:"name";s:17:"estimate_requests";s:11:"is_sub_menu";s:1:"1";}i:16;a:2:{s:4:"name";s:14:"estimate_forms";s:11:"is_sub_menu";s:1:"1";}i:17;a:2:{s:4:"name";s:9:"proposals";s:11:"is_sub_menu";s:1:"1";}i:18;a:1:{s:4:"name";s:5:"notes";}i:19;a:1:{s:4:"name";s:7:"tickets";}i:20;a:1:{s:4:"name";s:8:"expenses";}i:21;a:1:{s:4:"name";s:7:"reports";}i:22;a:1:{s:4:"name";s:5:"files";}i:23;a:1:{s:4:"name";s:8:"settings";}i:24;a:1:{s:4:"name";s:4:"todo";}}', 'app', 0),
+	('default_permissions_for_non_primary_contact', 'projects', 'app', 0),
+	('default_proposal_template', '1', 'app', 0),
+	('default_theme_color', '404040', 'app', 0),
+	('email_sent_from_address', 'info@imperialchimney-masonry.com', 'app', 0),
+	('email_sent_from_name', 'Nick', 'app', 0),
+	('enable_audio_recording', '1', 'app', 0),
+	('enable_background_image_for_invoice_pdf', '1', 'app', 0),
+	('enable_comments_on_estimates', '', 'app', 0),
+	('enable_estimate_lock_state', '', 'app', 0),
+	('enable_footer', '1', 'app', 0),
+	('enable_rich_text_editor', '1', 'app', 0),
+	('estimate_color', '#000000', 'app', 0),
+	('estimate_footer', '<p></p><p><br></p><h6 style="color: rgb(78, 94, 106); text-align: center;"><span style="color: rgb(0, 0, 0); font-family: Arial, sans-serif; font-size: 13.3333px; white-space-collapse: preserve;"><br></span></h6><h6 style="color: rgb(78, 94, 106); text-align: center;"><span style="color: rgb(0, 0, 0); font-family: Arial, sans-serif; font-size: 13.3333px; white-space-collapse: preserve;"><br></span></h6><h6 style="color: rgb(78, 94, 106); text-align: center;"><span style="color: rgb(0, 0, 0); font-family: Arial, sans-serif; font-size: 13.3333px; white-space-collapse: preserve;">This is an estimate only, not a contract. This estimate is for completing the job described above, based on our evaluation. It does not include unforeseen price increases or additional labor and materials which may be required should problems arise.</span><br></h6><div><span style="color: rgb(0, 0, 0); font-family: Arial, sans-serif; font-size: 13.3333px; white-space-collapse: preserve;"><br></span></div><p></p>', 'app', 0),
+	('estimate_prefix', '', 'app', 0),
+	('favicon', 'a:1:{s:9:"file_name";s:30:"_file6706b4cfb3fec-favicon.png";}', 'app', 0),
+	('first_day_of_week', '0', 'app', 0),
+	('footer_copyright_text', 'Copyright © 2024 - Imperial Chimney & Masonry', 'app', 0),
+	('footer_menus', 'a:0:{}', 'app', 0),
+	('initial_number_of_the_estimate', '3', 'app', 0),
+	('initial_number_of_the_invoice', '6', 'app', 0),
+	('invoice_color', '#000000', 'app', 0),
+	('invoice_footer', '<p><br></p><h6 style="color: rgb(78, 94, 106); text-align: center;"><span style="color: rgb(0, 0, 0); font-family: Arial, sans-serif; font-size: 13.3333px; white-space-collapse: preserve;"><br></span></h6><h6 style="color: rgb(78, 94, 106); text-align: center;"><span style="color: rgb(0, 0, 0); font-family: Arial, sans-serif; font-size: 13.3333px; white-space-collapse: preserve;"><br></span></h6><h6 style="color: rgb(78, 94, 106); text-align: center;"><span style="color: rgb(0, 0, 0); font-family: Arial, sans-serif; font-size: 13.3333px; white-space-collapse: preserve;">You may pay with cash or write a check to <b>Imperial Chimney &amp; Masonry</b>. Unless Payment discussed otherwise. You will receive a receipt upon payment. </span><br></h6><div><span style="color: rgb(0, 0, 0); font-family: Arial, sans-serif; font-size: 13.3333px; white-space-collapse: preserve;"><br></span></div><div><span style="color: rgb(0, 0, 0); font-family: Arial, sans-serif; font-size: 13.3333px; white-space-collapse: preserve;"><br></span></div><div><span style="color: rgb(0, 0, 0); font-family: Arial, sans-serif; font-size: 13.3333px; white-space-collapse: preserve;"><br></span></div>', 'app', 0),
+	('invoice_item_list_background', '#f4f4f4', 'app', 0),
+	('invoice_logo', 'default-invoice-logo.png', 'app', 0),
+	('invoice_number_format', '{SERIAL}', 'app', 0),
+	('invoice_pdf_background_footer_image', 'a:4:{s:9:"file_name";s:40:"invoice_file6707521a58ddf-design--3-.png";s:9:"file_size";s:6:"152534";s:7:"file_id";N;s:12:"service_type";N;}', 'app', 0),
+	('invoice_pdf_background_image', 'a:4:{s:9:"file_name";s:40:"invoice_file67093103b7c5f-design--3-.png";s:9:"file_size";s:6:"152534";s:7:"file_id";N;s:12:"service_type";N;}', 'app', 0),
+	('invoice_prefix', 'INVOICE #', 'app', 0),
+	('invoice_style', 'style_2', 'app', 0),
+	('item_purchase_code', '54c558da-53c5-4291-b526-f3a251df343d', 'app', 0),
+	('landing_page', '', 'app', 0),
+	('module_announcement', '1', 'app', 0),
+	('module_attendance', '1', 'app', 0),
+	('module_chat', '1', 'app', 0),
+	('module_contract', '1', 'app', 0),
+	('module_estimate', '1', 'app', 0),
+	('module_estimate_request', '1', 'app', 0),
+	('module_event', '1', 'app', 0),
+	('module_expense', '1', 'app', 0),
+	('module_file_manager', '1', 'app', 0),
+	('module_gantt', '1', 'app', 0),
+	('module_help', '1', 'app', 0),
+	('module_invoice', '1', 'app', 0),
+	('module_knowledge_base', '1', 'app', 0),
+	('module_lead', '1', 'app', 0),
+	('module_leave', '1', 'app', 0),
+	('module_message', '1', 'app', 0),
+	('module_note', '1', 'app', 0),
+	('module_order', '1', 'app', 0),
+	('module_project_timesheet', '1', 'app', 0),
+	('module_proposal', '1', 'app', 0),
+	('module_reminder', '1', 'app', 0),
+	('module_subscription', '1', 'app', 0),
+	('module_ticket', '1', 'app', 0),
+	('module_timeline', '1', 'app', 0),
+	('module_todo', '1', 'app', 0),
+	('order_color', '#000000', 'app', 0),
+	('proposal_color', '#000000', 'app', 0),
+	('reset_invoice_number_every_year', '', 'app', 0),
+	('rows_per_page', '10', 'app', 0),
+	('scrollbar', 'jquery', 'app', 0),
+	('send_estimate_bcc_to', '', 'app', 0),
+	('set_invoice_pdf_background_only_on_first_page', '1', 'app', 0),
+	('show_background_image_in_signin_page', 'yes', 'app', 0),
+	('show_logo_in_signin_page', 'yes', 'app', 0),
+	('show_most_recent_estimate_comments_at_the_top', '', 'app', 0),
+	('show_theme_color_changer', 'yes', 'app', 0),
+	('signin_page_background', 'a:4:{s:9:"file_name";s:52:"system_file6706b5071979e-fireplace-and-chimney-1.jpg";s:9:"file_size";s:6:"141558";s:7:"file_id";N;s:12:"service_type";N;}', 'app', 0),
+	('site_logo', 'a:1:{s:9:"file_name";s:32:"_file6706b4cfb1dc5-site-logo.png";}', 'app', 0),
+	('task_point_range', '5', 'app', 0),
+	('time_format', 'small', 'app', 0),
+	('timezone', 'UTC', 'app', 0),
+	('user_1_dashboard', '', 'user', 0),
+	('year_based_on', 'due_date', 'app', 0);
+
+-- Dumping structure for table rise.imp_social_links
+CREATE TABLE IF NOT EXISTS `imp_social_links` (
+  `id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `facebook` text DEFAULT NULL,
+  `twitter` text DEFAULT NULL,
+  `linkedin` text DEFAULT NULL,
+  `googleplus` text DEFAULT NULL,
+  `digg` text DEFAULT NULL,
+  `youtube` text DEFAULT NULL,
+  `pinterest` text DEFAULT NULL,
+  `instagram` text DEFAULT NULL,
+  `github` text DEFAULT NULL,
+  `tumblr` text DEFAULT NULL,
+  `vine` text DEFAULT NULL,
+  `whatsapp` text DEFAULT NULL,
+  `deleted` tinyint(1) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+
+-- Dumping data for table rise.imp_social_links: ~0 rows (approximately)
+
+-- Dumping structure for table rise.imp_stripe_ipn
+CREATE TABLE IF NOT EXISTS `imp_stripe_ipn` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `session_id` text NOT NULL,
+  `verification_code` text NOT NULL,
+  `payment_verification_code` text NOT NULL,
+  `invoice_id` int(11) NOT NULL,
+  `contact_user_id` int(11) NOT NULL,
+  `client_id` int(11) NOT NULL,
+  `payment_method_id` int(11) NOT NULL,
+  `deleted` tinyint(1) NOT NULL DEFAULT 0,
+  `setup_intent` text NOT NULL,
+  `subscription_id` int(11) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+
+-- Dumping data for table rise.imp_stripe_ipn: ~0 rows (approximately)
+
+-- Dumping structure for table rise.imp_subscriptions
+CREATE TABLE IF NOT EXISTS `imp_subscriptions` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `title` text NOT NULL,
+  `client_id` int(11) NOT NULL,
+  `bill_date` date DEFAULT NULL,
+  `end_date` date DEFAULT NULL,
+  `note` mediumtext DEFAULT NULL,
+  `labels` text NOT NULL,
+  `status` enum('draft','pending','active','cancelled') NOT NULL DEFAULT 'draft',
+  `payment_status` enum('success','failed') NOT NULL DEFAULT 'success',
+  `tax_id` int(11) NOT NULL DEFAULT 0,
+  `tax_id2` int(11) NOT NULL DEFAULT 0,
+  `repeat_every` int(11) NOT NULL DEFAULT 1,
+  `repeat_type` enum('days','weeks','months','years') DEFAULT NULL,
+  `no_of_cycles` int(11) NOT NULL DEFAULT 0,
+  `next_recurring_date` date DEFAULT NULL,
+  `no_of_cycles_completed` int(11) NOT NULL DEFAULT 0,
+  `cancelled_at` datetime DEFAULT NULL,
+  `cancelled_by` int(11) NOT NULL,
+  `files` mediumtext NOT NULL,
+  `company_id` int(11) NOT NULL DEFAULT 0,
+  `deleted` tinyint(1) NOT NULL DEFAULT 0,
+  `type` enum('app','stripe') NOT NULL DEFAULT 'app',
+  `stripe_subscription_id` text NOT NULL,
+  `stripe_product_id` text NOT NULL,
+  `stripe_product_price_id` text NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+
+-- Dumping data for table rise.imp_subscriptions: ~0 rows (approximately)
+
+-- Dumping structure for table rise.imp_subscription_items
+CREATE TABLE IF NOT EXISTS `imp_subscription_items` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `title` text NOT NULL,
+  `description` text DEFAULT NULL,
+  `quantity` double NOT NULL,
+  `unit_type` varchar(20) NOT NULL DEFAULT '',
+  `rate` double NOT NULL,
+  `total` double NOT NULL,
+  `sort` int(11) NOT NULL DEFAULT 0,
+  `subscription_id` int(11) NOT NULL,
+  `item_id` int(11) NOT NULL,
+  `deleted` tinyint(1) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+
+-- Dumping data for table rise.imp_subscription_items: ~0 rows (approximately)
+
+-- Dumping structure for table rise.imp_tasks
+CREATE TABLE IF NOT EXISTS `imp_tasks` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `title` text NOT NULL,
+  `description` mediumtext DEFAULT NULL,
+  `project_id` int(11) NOT NULL,
+  `milestone_id` int(11) NOT NULL DEFAULT 0,
+  `assigned_to` int(11) NOT NULL,
+  `deadline` datetime DEFAULT NULL,
+  `labels` text DEFAULT NULL,
+  `points` tinyint(4) NOT NULL DEFAULT 1,
+  `status` enum('to_do','in_progress','done') NOT NULL DEFAULT 'to_do',
+  `status_id` int(11) NOT NULL,
+  `priority_id` int(11) NOT NULL,
+  `start_date` datetime DEFAULT NULL,
+  `collaborators` text NOT NULL,
+  `sort` int(11) NOT NULL DEFAULT 0,
+  `recurring` tinyint(1) NOT NULL DEFAULT 0,
+  `repeat_every` int(11) NOT NULL DEFAULT 0,
+  `repeat_type` enum('days','weeks','months','years') DEFAULT NULL,
+  `no_of_cycles` int(11) NOT NULL DEFAULT 0,
+  `recurring_task_id` int(11) NOT NULL DEFAULT 0,
+  `no_of_cycles_completed` int(11) NOT NULL DEFAULT 0,
+  `created_date` date DEFAULT NULL,
+  `blocking` text NOT NULL,
+  `blocked_by` text NOT NULL,
+  `parent_task_id` int(11) NOT NULL,
+  `next_recurring_date` date DEFAULT NULL,
+  `reminder_date` date DEFAULT NULL,
+  `ticket_id` int(11) NOT NULL,
+  `status_changed_at` datetime DEFAULT NULL,
+  `deleted` tinyint(4) NOT NULL DEFAULT 0,
+  `expense_id` int(11) NOT NULL DEFAULT 0,
+  `subscription_id` int(11) NOT NULL DEFAULT 0,
+  `proposal_id` int(11) NOT NULL DEFAULT 0,
+  `contract_id` int(11) NOT NULL DEFAULT 0,
+  `order_id` int(11) NOT NULL DEFAULT 0,
+  `estimate_id` int(11) NOT NULL DEFAULT 0,
+  `invoice_id` int(11) NOT NULL DEFAULT 0,
+  `lead_id` int(11) NOT NULL DEFAULT 0,
+  `client_id` int(11) NOT NULL DEFAULT 0,
+  `context` enum('project','client','lead','invoice','estimate','order','contract','proposal','subscription','ticket','expense','general') NOT NULL DEFAULT 'general',
+  `created_by` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `status_id` (`status_id`),
+  KEY `priority_id` (`priority_id`),
+  KEY `sort` (`sort`),
+  KEY `project_id` (`project_id`),
+  KEY `milestone_id` (`milestone_id`),
+  KEY `assigned_to` (`assigned_to`),
+  KEY `ticket_id` (`ticket_id`),
+  KEY `client_id` (`client_id`),
+  KEY `invoice_id` (`invoice_id`),
+  KEY `estimate_id` (`estimate_id`),
+  KEY `order_id` (`order_id`),
+  KEY `contract_id` (`contract_id`),
+  KEY `proposal_id` (`proposal_id`),
+  KEY `subscription_id` (`subscription_id`),
+  KEY `expense_id` (`expense_id`),
+  KEY `lead_id` (`lead_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+
+-- Dumping data for table rise.imp_tasks: ~0 rows (approximately)
+
+-- Dumping structure for table rise.imp_task_priority
+CREATE TABLE IF NOT EXISTS `imp_task_priority` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `title` varchar(100) NOT NULL,
+  `icon` varchar(20) NOT NULL,
+  `color` varchar(7) NOT NULL,
+  `deleted` tinyint(1) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+
+-- Dumping data for table rise.imp_task_priority: ~4 rows (approximately)
+INSERT INTO `imp_task_priority` (`id`, `title`, `icon`, `color`, `deleted`) VALUES
+	(1, 'Minor', 'arrow-down', '#aab7b7', 0),
+	(2, 'Major', 'arrow-up', '#e18a00', 0),
+	(3, 'Critical ', 'alert-circle', '#ad159e', 0),
+	(4, 'Blocker ', 'alert-octagon', '#e74c3c', 0);
+
+-- Dumping structure for table rise.imp_task_status
+CREATE TABLE IF NOT EXISTS `imp_task_status` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `title` varchar(100) NOT NULL,
+  `key_name` varchar(100) NOT NULL,
+  `color` varchar(7) NOT NULL,
+  `sort` int(11) NOT NULL,
+  `hide_from_kanban` tinyint(1) NOT NULL DEFAULT 0,
+  `deleted` tinyint(1) NOT NULL DEFAULT 0,
+  `hide_from_non_project_related_tasks` tinyint(1) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+
+-- Dumping data for table rise.imp_task_status: ~3 rows (approximately)
+INSERT INTO `imp_task_status` (`id`, `title`, `key_name`, `color`, `sort`, `hide_from_kanban`, `deleted`, `hide_from_non_project_related_tasks`) VALUES
+	(1, 'To Do', 'to_do', '#F9A52D', 0, 0, 0, 0),
+	(2, 'In progress', 'in_progress', '#1672B9', 1, 0, 0, 0),
+	(3, 'Done', 'done', '#00B393', 2, 0, 0, 0);
+
+-- Dumping structure for table rise.imp_taxes
+CREATE TABLE IF NOT EXISTS `imp_taxes` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `title` tinytext NOT NULL,
+  `percentage` double NOT NULL,
+  `deleted` tinyint(1) NOT NULL DEFAULT 0,
+  `stripe_tax_id` text NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+
+-- Dumping data for table rise.imp_taxes: ~1 rows (approximately)
+INSERT INTO `imp_taxes` (`id`, `title`, `percentage`, `deleted`, `stripe_tax_id`) VALUES
+	(1, 'Tax (10%)', 10, 0, '');
+
+-- Dumping structure for table rise.imp_team
+CREATE TABLE IF NOT EXISTS `imp_team` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `title` text NOT NULL,
+  `members` mediumtext NOT NULL,
+  `deleted` int(11) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+
+-- Dumping data for table rise.imp_team: ~0 rows (approximately)
+
+-- Dumping structure for table rise.imp_team_member_job_info
+CREATE TABLE IF NOT EXISTS `imp_team_member_job_info` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL,
+  `date_of_hire` date DEFAULT NULL,
+  `deleted` int(11) NOT NULL DEFAULT 0,
+  `salary` double NOT NULL DEFAULT 0,
+  `salary_term` varchar(20) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `user_id` (`user_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+
+-- Dumping data for table rise.imp_team_member_job_info: ~0 rows (approximately)
+
+-- Dumping structure for table rise.imp_tickets
+CREATE TABLE IF NOT EXISTS `imp_tickets` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `client_id` int(11) NOT NULL,
+  `project_id` int(11) NOT NULL DEFAULT 0,
+  `ticket_type_id` int(11) NOT NULL,
+  `title` text NOT NULL,
+  `created_by` int(11) NOT NULL,
+  `requested_by` int(11) NOT NULL DEFAULT 0,
+  `created_at` datetime NOT NULL,
+  `status` enum('new','client_replied','open','closed') NOT NULL DEFAULT 'new',
+  `last_activity_at` datetime DEFAULT NULL,
+  `assigned_to` int(11) NOT NULL DEFAULT 0,
+  `creator_name` varchar(100) NOT NULL,
+  `creator_email` varchar(255) NOT NULL,
+  `labels` text DEFAULT NULL,
+  `task_id` int(11) NOT NULL,
+  `closed_at` datetime NOT NULL,
+  `merged_with_ticket_id` int(11) NOT NULL,
+  `deleted` tinyint(1) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`),
+  KEY `client_id` (`client_id`),
+  KEY `ticket_type_id` (`ticket_type_id`),
+  KEY `assigned_to` (`assigned_to`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+
+-- Dumping data for table rise.imp_tickets: ~0 rows (approximately)
+
+-- Dumping structure for table rise.imp_ticket_comments
+CREATE TABLE IF NOT EXISTS `imp_ticket_comments` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `created_by` int(11) NOT NULL,
+  `created_at` datetime NOT NULL,
+  `description` mediumtext NOT NULL,
+  `ticket_id` int(11) NOT NULL,
+  `files` longtext DEFAULT NULL,
+  `is_note` tinyint(1) NOT NULL DEFAULT 0,
+  `deleted` tinyint(1) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+
+-- Dumping data for table rise.imp_ticket_comments: ~0 rows (approximately)
+
+-- Dumping structure for table rise.imp_ticket_templates
+CREATE TABLE IF NOT EXISTS `imp_ticket_templates` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `title` text NOT NULL,
+  `description` mediumtext NOT NULL,
+  `ticket_type_id` int(11) NOT NULL,
+  `private` mediumtext NOT NULL,
+  `created_by` int(11) NOT NULL,
+  `created_at` datetime NOT NULL,
+  `deleted` tinyint(1) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+
+-- Dumping data for table rise.imp_ticket_templates: ~0 rows (approximately)
+
+-- Dumping structure for table rise.imp_ticket_types
+CREATE TABLE IF NOT EXISTS `imp_ticket_types` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `title` text NOT NULL,
+  `deleted` tinyint(1) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+
+-- Dumping data for table rise.imp_ticket_types: ~1 rows (approximately)
+INSERT INTO `imp_ticket_types` (`id`, `title`, `deleted`) VALUES
+	(1, 'General Support', 0);
+
+-- Dumping structure for table rise.imp_to_do
+CREATE TABLE IF NOT EXISTS `imp_to_do` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `created_by` int(11) NOT NULL,
+  `created_at` datetime NOT NULL,
+  `title` text NOT NULL,
+  `description` mediumtext DEFAULT NULL,
+  `labels` text DEFAULT NULL,
+  `status` enum('to_do','done') NOT NULL DEFAULT 'to_do',
+  `start_date` date DEFAULT NULL,
+  `deleted` tinyint(1) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`),
+  KEY `created_by` (`created_by`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+
+-- Dumping data for table rise.imp_to_do: ~0 rows (approximately)
+
+-- Dumping structure for table rise.imp_users
+CREATE TABLE IF NOT EXISTS `imp_users` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `first_name` varchar(50) NOT NULL,
+  `last_name` varchar(50) NOT NULL,
+  `user_type` enum('staff','client','lead') NOT NULL DEFAULT 'client',
+  `is_admin` tinyint(1) NOT NULL DEFAULT 0,
+  `role_id` int(11) NOT NULL DEFAULT 0,
+  `email` varchar(255) NOT NULL,
+  `password` varchar(255) DEFAULT NULL,
+  `image` text DEFAULT NULL,
+  `status` enum('active','inactive') NOT NULL DEFAULT 'active',
+  `message_checked_at` datetime DEFAULT NULL,
+  `client_id` int(11) NOT NULL DEFAULT 0,
+  `notification_checked_at` datetime DEFAULT NULL,
+  `is_primary_contact` tinyint(1) NOT NULL DEFAULT 0,
+  `job_title` varchar(100) NOT NULL DEFAULT 'Untitled',
+  `disable_login` tinyint(1) NOT NULL DEFAULT 0,
+  `note` mediumtext DEFAULT NULL,
+  `address` text DEFAULT NULL,
+  `alternative_address` text DEFAULT NULL,
+  `phone` varchar(20) DEFAULT NULL,
+  `alternative_phone` varchar(20) DEFAULT NULL,
+  `dob` date DEFAULT NULL,
+  `ssn` varchar(20) DEFAULT NULL,
+  `gender` enum('male','female','other') DEFAULT NULL,
+  `sticky_note` mediumtext DEFAULT NULL,
+  `skype` text DEFAULT NULL,
+  `language` varchar(50) NOT NULL,
+  `enable_web_notification` tinyint(1) NOT NULL DEFAULT 1,
+  `enable_email_notification` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` datetime DEFAULT NULL,
+  `last_online` datetime DEFAULT NULL,
+  `requested_account_removal` tinyint(1) NOT NULL DEFAULT 0,
+  `client_permissions` text DEFAULT NULL,
+  `deleted` int(11) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`),
+  KEY `user_type` (`user_type`),
+  KEY `email` (`email`),
+  KEY `client_id` (`client_id`),
+  KEY `deleted` (`deleted`)
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+
+-- Dumping data for table rise.imp_users: ~4 rows (approximately)
+INSERT INTO `imp_users` (`id`, `first_name`, `last_name`, `user_type`, `is_admin`, `role_id`, `email`, `password`, `image`, `status`, `message_checked_at`, `client_id`, `notification_checked_at`, `is_primary_contact`, `job_title`, `disable_login`, `note`, `address`, `alternative_address`, `phone`, `alternative_phone`, `dob`, `ssn`, `gender`, `sticky_note`, `skype`, `language`, `enable_web_notification`, `enable_email_notification`, `created_at`, `last_online`, `requested_account_removal`, `client_permissions`, `deleted`) VALUES
+	(1, 'Nick', 'Dry', 'staff', 1, 0, 'info@imperialchimney-masonry.com', '$2y$10$uQpY7dJzzVLZKIrw0vOSZed9sB1vDuqhJxJKWBtNzNcew9rEzEuP2', NULL, 'active', NULL, 0, '2024-10-10 22:13:53', 0, 'Admin', 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'male', NULL, NULL, '', 1, 1, '0000-00-00 00:00:00', '2024-10-11 14:34:43', 0, NULL, 0),
+	(2, 'cvxcvxc', 'vxcvxcv', 'client', 0, 0, 'nicktdry@icloud.com', '$2y$10$cvCxSjBdQjzC7IZ6PhtLUeHhkaHCZmUxSjTG.jk5oPh7DDddilw4S', NULL, 'active', NULL, 3, NULL, 1, '', 0, '', NULL, NULL, '675757567657567', NULL, NULL, NULL, 'female', NULL, '', '', 1, 1, '2024-10-10 02:00:06', NULL, 0, 'all', 1),
+	(3, 'Nick', 'Dry', 'client', 0, 0, 'nicktdry@icloud.com', '$2y$10$a263O/ksKdrGYlvBsN4RIuJMmkBBfCzzsegwqTReBqBJXWqieAlGm', NULL, 'active', NULL, 6, NULL, 1, 'd', 0, '', NULL, NULL, '4844471414', NULL, NULL, NULL, 'female', NULL, 'd', '', 1, 1, '2024-10-10 02:09:44', NULL, 0, 'all', 1),
+	(4, 'test', 'test', 'client', 0, 0, 'hhh@aol.com', '$2y$10$Ez7VesiabMXIgNL6Z/DuL.yWETrZ.iCGXsmB6OyDozg1Drw4KSngu', NULL, 'active', NULL, 14, NULL, 1, 'ljhjlk', 0, '', NULL, NULL, '2376792639712', NULL, NULL, NULL, 'female', NULL, 'jhjlkhj', '', 1, 1, '2024-10-10 03:04:51', NULL, 0, 'all', 1);
+
+-- Dumping structure for table rise.imp_verification
+CREATE TABLE IF NOT EXISTS `imp_verification` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `type` enum('invoice_payment','reset_password','verify_email','invitation') NOT NULL,
+  `code` varchar(10) NOT NULL,
+  `params` text NOT NULL,
+  `deleted` int(11) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+
+-- Dumping data for table rise.imp_verification: ~0 rows (approximately)
+
+/*!40103 SET TIME_ZONE=IFNULL(@OLD_TIME_ZONE, 'system') */;
+/*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;
+/*!40014 SET FOREIGN_KEY_CHECKS=IFNULL(@OLD_FOREIGN_KEY_CHECKS, 1) */;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40111 SET SQL_NOTES=IFNULL(@OLD_SQL_NOTES, 1) */;
