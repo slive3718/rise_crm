@@ -78,6 +78,30 @@ class Users_model extends Crud_model {
 
     function login_user_id() {
         $session = \Config\Services::session();
+        if(!session()->get('user_id')) {
+            // Check for remember_me cookie
+            if (isset($_COOKIE['remember_me'])) {
+                $uri_string = uri_string();
+                $token = $_COOKIE['remember_me'];
+
+                // Load user model and validate the token
+                $user = $this->db_builder->where('remember_token', $token)->get()->getResult()[0];
+                if ($user) {
+                    // Log the user in
+                    $session->set('logged_in', true);
+                    $session->set('user_id', $user->id);
+                    // Optional: Refresh cookie expiration
+                    $expireTime = time() + (86400 * 30); // Extend for 30 days
+                    setcookie('remember_me', $token, $expireTime, '/', '', true, true);
+                    $login_user_id = $user->id; // Update login user ID
+                    app_redirect('signin?redirect=' . get_uri($uri_string));
+                } else {
+                    // Clear the cookie if the token is invalid
+                    setcookie('remember_me', '', time() - 3600, '/');
+                }
+
+            }
+        }
         return $session->has("user_id") ? $session->get("user_id") : "";
     }
 
@@ -89,6 +113,10 @@ class Users_model extends Crud_model {
         }
 
         $session = \Config\Services::session();
+        if(!empty($_COOKIE['remember_me'])) {
+            $this->db_builder->update(['remember_token' => null], ['id' => session()->get('user_id')]);
+            setcookie('remember_me', '', time() - 3600, '/'); // Expire the cookie
+        }
         $session->destroy();
         app_redirect('signin');
     }
@@ -499,5 +527,14 @@ class Users_model extends Crud_model {
         FROM $users_table 
         WHERE $users_table.deleted=0 AND $users_table.user_type='staff' AND $users_table.status='active' $where";
         return $this->db->query($sql);
+    }
+    function update_user_token($email, $token) {
+        $users_table = $this->db->prefixTable('users');
+        $email = $this->_get_clean_value($email);
+
+        $sql = "UPDATE $users_table SET $users_table.remember_token='$token' WHERE $users_table.deleted=0 AND $users_table.email='$email'; ";
+        $this->db->query($sql);
+
+        return true;
     }
 }

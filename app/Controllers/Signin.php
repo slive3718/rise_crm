@@ -54,6 +54,8 @@ class Signin extends App_Controller {
 
         $email = $this->request->getPost("email");
         $password = $this->request->getPost("password");
+        $rememberMe = $this->request->getPost("remember_me"); // Check if Remember Me is selected
+
         if (!$email) {
             //loaded the page directly
             app_redirect('signin');
@@ -84,13 +86,29 @@ class Signin extends App_Controller {
             app_redirect('signin');
         }
 
-        //authentication success
+        // Remember Me functionality
+        if ($rememberMe) {
+            $token = bin2hex(random_bytes(32));  // Generate secure token
+            $expireTime = time() + (86400 * 30); // Set expiration for 30 days
+
+            // Save token to user's record in the database
+            $this->Users_model->update_user_token($email, $token);
+
+            // Set the cookie with the token and expiration time
+            setcookie('remember_me', $token, $expireTime, '/', '', true, true);  // HttpOnly and Secure flags
+        } else {
+            // If "Remember Me" is not checked, clear any existing token
+            $this->Users_model->update_user_token($email, null);
+            setcookie('remember_me', '', time() - 3600, '/'); // Expire the cookie
+        }
+
         $redirect = $this->request->getPost("redirect");
         if ($redirect) {
             $allowed_host = $_SERVER['HTTP_HOST'];
 
             $parsed_redirect = parse_url($redirect);
             $redirect_host = get_array_value($parsed_redirect, "host");
+
             if ($allowed_host === $redirect_host) {
                 return redirect()->to($redirect);
             } else {

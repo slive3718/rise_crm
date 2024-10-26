@@ -49,6 +49,21 @@
             ));
             ?>
         </div>
+
+        <div class="form-group">
+            <?php
+            echo form_checkbox(array(
+                "id" => "remember_me",
+                "name" => "remember_me",
+                "value" => "1",
+                "class" => "form-check-input"
+            ));
+            ?>
+            <label for="remember_me" class="form-check-label">
+                Remember Me
+            </label>
+        </div>
+
         <input type="hidden" name="redirect" value="<?php
         if (isset($redirect)) {
             echo $redirect;
