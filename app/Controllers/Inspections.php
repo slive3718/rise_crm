@@ -1,0 +1,175 @@
+<?php
+
+namespace App\Controllers;
+
+use App\Controllers\Security_Controller;
+use App\Models\Inspections_fields_model;
+use App\Models\Inspections_model;
+use App\Models\Inspections_templates_model;
+use App\Models\Inspections_response_model;
+
+class Inspections extends Security_Controller
+{
+
+    function __construct()
+    {
+        parent::__construct();
+    }
+
+    /* load invoice list view */
+
+    function index()
+    {
+        $view_data["client_info"] = $this->Clients_model->get_one($this->login_user->client_id);
+        $view_data['client_id'] = $this->login_user->client_id;
+        $view_data['page_type'] = "full";
+        $view_data['app_lang'] = "english";
+
+         $inspections = $this->Inspections_model->where('is_deleted', 0)->get()->getResultArray();
+        foreach ($inspections as &$inspection){
+            $inspection['template'] =  $this->Inspections_templates_model->where(['is_deleted'=>0, 'id' => $inspection['template_id']])->first();
+        }
+        $view_data['inspections'] = $inspections;
+
+        return $this->template->rander("inspections/index", $view_data);
+    }
+
+    public function save()
+    {
+        $responses = $this->request->getPost();
+        if ($this->request->getMethod() === 'POST' || $this->request->getMethod() === 'get') {
+            // Save the inspection
+            $inspectionId = $this->Inspections_model->insert([
+                'template_id' => $responses['template_id'],
+                'inspection_name' => 'test',
+                'inspection_date' => date('Y-m-d'),
+                'inspector_id' => session()->get('user_id'),
+                'created_at' => date('Y-m-d H:i:s'),
+            ]);
+
+            if ($inspectionId) { // Ensure inspection was created
+                // Save responses for each field
+                if ($responses) {
+                    $fields = json_decode($responses['fields']);
+                    foreach ($fields as $fieldId => $response) {
+                        $this->Inspections_response_model->insert([
+                            'inspection_id' => $inspectionId,
+                            'inspection_field_id' => $fieldId,
+                            'response' => $response,
+                            'created_at' => date('Y-m-d H:i:s'),
+                        ]);
+                    }
+                    return $this->response->setJSON([
+                        'status' => 'success',
+                        'message' => 'Inspection Saved!'
+                    ]);
+                }
+
+            } else {
+                return $this->response->setJSON([
+                    'status' => 'failed',
+                    'message' => 'Failed to create inspection'
+                ]);
+            }
+        } else {
+            return $this->response->setJSON([
+                'status' => 'error',
+                'message' => 'error'
+            ]);
+        }
+    }
+
+    public function update_inspection_response()
+    {
+        if ($this->request->getMethod() === 'POST') {
+            $response_id = $this->request->getPost('inspection_response_id');
+            if (!empty($response_id)) { // Ensure inspection was created
+                // Save responses for each field
+                $response = $this->request->getPost('response');
+                if ($response) {
+                    $this->Inspections_response_model->where('id', $response_id)->set([
+                        'response' => $response,
+                        'updated_at' => date('Y-m-d H:i:s'),
+                    ])->update();
+                }
+                return $this->response->setJSON([
+                    'status' => 'success',
+                    'message' => 'Update success!'
+                ]);
+            } else {
+                return $this->response->setJSON([
+                    'status' => 'failed',
+                    'message' => 'Failed to update response!'
+                ]);
+            }
+        } else {
+            return $this->response->setJSON([
+                'status' => 'error',
+                'message' => 'Invalid request.'
+            ]);
+        }
+    }
+
+    public function list() {
+        if($this->request->getPost('inspection_id')) {
+            $inspection = $this->Inspections_model->where('is_deleted', 0)->find($this->request->getPost('inspection_id'));
+            $formFieldModel = $this->Inspections_fields_model;
+
+            if(!empty($inspection)) {
+                // Fetch all fields, ordered by section and sort_order
+                $fields = $formFieldModel->getFormFields($inspection['template_id'])->findAll();
+                $responses = (new Inspections_response_model())->where('inspection_id', $this->request->getPost('inspection_id'))->findAll();
+                $sections = [];
+                foreach ($fields as $field) {
+                    // Initialize the field with a default value (empty string or null)
+                    $field['value'] = '';
+                    $field['response_id'] = '';
+                    // Search for a matching response for this field
+                    foreach ($responses as $response) {
+                        if ($response['inspection_field_id'] == $field['id']) {
+                            $field['value'] = $response['response'];
+                            $field['response_id'] = $response['id'];
+                            break;
+                        }
+                    }
+                    // Group fields by their section
+                    $sections[$field['section_name']][] = $field;
+                }
+                $view_data['sections'] = $sections;
+                $view_data['fieldsData'] = $fields;
+            }
+
+        }else{
+            return $this->response->setJSON([
+                'status' => 'error',
+                'message' => 'Missing Inspection ID'
+            ]);
+        }
+        return view('inspections/inspection_form_fields', $view_data);
+    }
+
+    public function delete()
+    {
+        $inspection_id = $this->request->getPost('inspection_id');
+
+        if ($inspection_id) {
+            try {
+                $this->Inspections_model->where('id', $inspection_id)->set('is_deleted', 1)->update();
+            } catch (\Exception $e) {
+                return $this->response->setJSON([
+                    'status' => 'error',
+                    'message' => 'Failed to delete inspection. Please try again later.'
+                ]);
+            }
+            return $this->response->setJSON([
+                'status' => 'success',
+                'message' => 'Inspection deleted successfully.'
+            ]);
+        }
+        return $this->response->setJSON([
+            'status' => 'error',
+            'message' => 'Inspection ID is required.'
+        ]);
+    }
+
+}

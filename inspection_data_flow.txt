@@ -1,0 +1,12 @@
+Inspection templates will be save on database with fields
+[
+    name,
+    created_by,
+    created_at
+]
+
+then form fields will have the template ID as foreign key of inspection_templates
+
+Inspection responses will store the data save that client is needed per template
+
+imp_inspections will store the data of template and fields

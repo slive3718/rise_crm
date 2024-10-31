@@ -34,7 +34,7 @@ class Database extends Config
 		'DSN'      => '',
 		'hostname' => 'localhost',
 		'username' => 'root',
-		'password' => 'Local123',
+		'password' => '',
 		'database' => 'rise',
 		'DBDriver' => 'MySQLi',
 		'DBPrefix' => 'imp_',

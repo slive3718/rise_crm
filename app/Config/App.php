@@ -64,7 +64,7 @@ class App extends BaseConfig {
      *
      * @var string
      */
-    public $baseURL = '';
+    public $baseURL = 'http://localhost/rise_crm/';
     
     /**
      * Allowed Hostnames in the Site URL other than the hostname in the baseURL.
