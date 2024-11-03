@@ -83,7 +83,8 @@ class Inspections_templates extends Security_Controller
                             foreach ($field['options'] as $optionIndex => $option) {
                                 $fieldOptionsArray[] = [
                                     'label' => $option, // Each option label
-                                    'color' => $field['colors'][$optionIndex] ?? '#000000' // Use color or default black
+                                    'color' => $field['colors'][$optionIndex] ?? '#000000', // Use color or default black
+                                    'flags' => $field['flags'][$optionIndex] ?? '0' // Use color or default black
                                 ];
                             }
                         }
@@ -137,6 +138,8 @@ class Inspections_templates extends Security_Controller
 
         $fields->where('template_id', intVal($this->request->getPost('template_id')));
         $fields = $fields->findAll();
+
+        $clients = $this->Clients_model->get()->getResult();
         // Group fields by section
         $sections = [];
         foreach ($fields as $field) {
@@ -144,8 +147,8 @@ class Inspections_templates extends Security_Controller
         }
 
         $view_data['sections'] = $sections;
-        return $this->response->setJSON($sections);
-//        return $this->template->view("inspections/inspection_form_fields", $view_data);
+        $view_data['clients'] = $clients;
+        return $this->template->view("inspections/inspection_form_fields", $view_data);
     }
 
     public function get_create_template_modal(){

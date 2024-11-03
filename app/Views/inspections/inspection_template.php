@@ -189,7 +189,6 @@
                     template_id : template_id
                 },
                 function(response){
-                    console.log(response)
                     formFieldModal.modal('show');
                     formFieldModal.attr('template_id', template_id)
                     $('#customInspectionModal .modal-body').html(response)
@@ -303,6 +302,15 @@
 
             // Append fields as a JSON string to FormData
             formData.append('fields', JSON.stringify(fields));
+            let client_id = $('#client_id').val();
+            let conducted_location = $('#conducted_location').val();
+            let conducted_date = $('#conducted_date').val();
+            let prepared_by = $('#prepared_by').val();
+
+            formData.append('client_id', client_id)
+            formData.append('conducted_location', conducted_location)
+            formData.append('conducted_date', conducted_date)
+            formData.append('inspector_name', prepared_by)
 
             $.ajax({
                 url: '<?= get_uri("inspections/save") ?>',
@@ -426,11 +434,12 @@
 
         const optionCounter = optionsContainer.children.length + 1; // Keep track of the number of options
         const optionHtml = `
-            <div class="d-flex align-items-center mb-2">
-                <input type="text" class="form-control me-2" name="sections[${sectionId}][fields][${fieldCounter}][options][]" placeholder="Option ${optionCounter}" required>
-                <input type="color" class="form-control form-control-color me-2" name="sections[${sectionId}][fields][${fieldCounter}][colors][]" value="#7AB2D3" title="Choose color">
-                <button type="button" class="btn btn-danger btn-sm delete-option" title="Delete Option">x</button>
-            </div>`;
+        <div class="d-flex align-items-center mb-2">
+            <input type="text" class="form-control me-2" name="sections[${sectionId}][fields][${fieldCounter}][options][]" placeholder="Option ${optionCounter}" required>
+            <input type="color" class="form-control form-control-color me-2" name="sections[${sectionId}][fields][${fieldCounter}][colors][]" value="#7AB2D3" title="Choose color">
+            <input type="checkbox" class="me-1 mt-1" name="sections[${sectionId}][fields][${fieldCounter}][flags][]" value="1"><label class="mt-5">Flagged</label>
+            <button type="button" class="btn btn-danger btn-sm delete-option" title="Delete Option">x</button>
+        </div>`;
 
         optionsContainer.insertAdjacentHTML('beforeend', optionHtml);
 

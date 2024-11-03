@@ -153,8 +153,8 @@
                                 </a>
                             </td>
                             <td class="option w150">
-                                <a href="#" class="edit useTemplateBtn" inspection_id="<?=$item['id']?>"><span data-feather="edit" class="icon-16" title="Edit"></span></a>
-                                <a href="#"  class="delete useTemplateBtn"  inspection_id="<?=$item['id']?>"><span data-feather="x" class="icon-16" title="delete"></span></a>
+                                <a href="#" class="edit" inspection_id="<?=$item['id']?>"><span data-feather="edit" class="icon-16" title="Edit"></span></a>
+                                <a href="#"  class="delete" inspection_id="<?=$item['id']?>"><span data-feather="x" class="icon-16" title="delete"></span></a>
                             </td>
                             <td><?= $item['template'] ? $item['template']['template_name'] : "Missing Template"?></td>
                             <td><?= $item['result']?></td>
@@ -178,19 +178,23 @@
         let isUpdating = false;  // Flag to track update status
 
         let inspectionTable =  $('#inspections_table');
-        inspectionTable.on('click', '.view', function(){
-            let inspection_id = $(this).attr('inspection_id')
-            console.log(inspection_id)
-            getInspection(inspection_id).then(function(){
-                $('#customInspectionModal #inspectionCreateForm button[type="submit"]').hide()
-            })
-        })
+        inspectionTable.on('click', '.view', function() {
+            let inspection_id = $(this).attr('inspection_id');
+            $('#customInspectionModal .modal-body').html("");
+            getInspection(inspection_id).then(function(response) {
+                $('#customInspectionModal #inspectionCreateForm button[type="submit"]').hide();
+                $('#customInspectionModal').modal('show');
+                $('#customInspectionModal .modal-body').html(response);
+            });
+        });
 
         inspectionTable.on('click', '.edit', function(){
             let inspection_id = $(this).attr('inspection_id')
-            getInspection(inspection_id).then(function() {
+            $('#customInspectionModal .modal-body').html("");
+            getInspection(inspection_id).then(function(response) {
                 $('#customInspectionModal #inspectionCreateForm button[type="submit"]').hide();
-
+                $('#customInspectionModal').modal('show');
+                $('#customInspectionModal .modal-body').html(response);
                 // Unbind any previous event handlers to prevent multiple triggers
                 $('#customInspectionModal #inspectionCreateForm :input').off('input change').on('input change', function() {
                     // Handle changes
@@ -206,10 +210,7 @@
 
         inspectionTable.on('click', '.viewReport', function(){
             let inspection_id = $(this).attr('inspection_id')
-            getInspection(inspection_id).then(function(e){
-                console.log(e)
-                $('#customInspectionModal #inspectionCreateForm button[type="submit"]').hide()
-            })
+            window.location.href="<?= get_uri('inspections/view_report/') ?>"+inspection_id
         })
 
         inspectionTable.on('click', '.delete', function(){
@@ -219,16 +220,14 @@
     })
 
     async function getInspection(inspection_id){
-        $('#customInspectionModal .modal-body').html();
-        await $.ajax({
+        return $.ajax({
             url: "<?= get_uri('inspections/list') ?>",
             type: "POST", // Specify request type
             data: {
                 inspection_id: inspection_id
             },
             success: function(response) {
-                $('#customInspectionModal').modal('show');
-                $('#customInspectionModal .modal-body').html(response);
+                return response
             },
             error: function(xhr, status, error) {
                 console.error("AJAX Error:", status, error);

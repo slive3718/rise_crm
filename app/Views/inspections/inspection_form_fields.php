@@ -1,3 +1,25 @@
+
+<div class="card">
+    <div class="card-body">
+        <label for="client_id"> Client </label>
+        <select name="client_id" id="client_id" class="form-control">
+            <?php if(!empty($clients)): ?>
+                <?php foreach ($clients as $client): ?>
+                    <option value="<?=$client->id?>"><?= $client->company_name ?></option>
+                <?php endforeach ?>
+            <?php endif ?>
+        </select>
+        <label for="conducted_location">Location</label>
+        <input type="text" id="conducted_location" name="conducted_location" class="form-control">
+
+        <label for="conducted_date">Conducted Date</label>
+        <input type="date" id="conducted_date" name="conducted_date" class="form-control">
+
+        <label for="prepared_by">Prepared By</label>
+        <input type="text" id="prepared_by" name="conducted_date" class="form-control">
+    </div>
+</div>
+
 <form id="inspectionCreateForm">
     <?php foreach ($sections as $section_name => $fields): ?>
         <div class="form-section card">
@@ -23,7 +45,7 @@
                                             >
                                             <label class="btn btn-outline-primary w-100 text-start"
                                                    for="<?= $field['field_name'].'-'.$option['label'] ?>"
-                                                   style="color: black; background-color: <?= $option['color'] ?>;">
+                                                   style="color: black; background-color: <?= (isset($option['flags']) && $option['flags'] === '1') ? 'rgb(198, 0, 34)' : $option['color'] ?>;">
                                                 <?= $option['label'] ?>
                                             </label>
                                         </div>

@@ -42,8 +42,11 @@ class Inspections extends Security_Controller
             $inspectionId = $this->Inspections_model->insert([
                 'template_id' => $responses['template_id'],
                 'inspection_name' => 'test',
-                'inspection_date' => date('Y-m-d'),
+                'inspection_date' => $responses['conducted_date'],
                 'inspector_id' => session()->get('user_id'),
+                'location' => $responses['conducted_location'],
+                'client_id' => $responses['client_id'],
+                'inspector_name' => $responses['inspector_name'],
                 'created_at' => date('Y-m-d H:i:s'),
             ]);
 
@@ -170,6 +173,46 @@ class Inspections extends Security_Controller
             'status' => 'error',
             'message' => 'Inspection ID is required.'
         ]);
+    }
+
+    public function view_report($inspection_id){
+        $inspection = $this->Inspections_model->where('is_deleted', 0)->find($inspection_id);
+        $formFieldModel = $this->Inspections_fields_model;
+        $view_data["LOGO_URL"] = get_logo_url();
+        if(!empty($inspection)) {
+            // Fetch all fields, ordered by section and sort_order
+            $fields = $formFieldModel->getFormFields($inspection['template_id'])->findAll();
+            $responses = (new Inspections_response_model())->where('inspection_id', $inspection_id)->findAll();
+            $sections = [];
+
+            foreach ($fields as $field) {
+
+                // Initialize the field with a default value (empty string or null)
+                $field['value'] = '';
+                $field['response_id'] = '';
+                // Search for a matching response for this field
+                foreach ($responses as $response) {
+                    if ($response['inspection_field_id'] == $field['id']) {
+                        $field['value'] = $response['response'];
+                        $field['response_id'] = $response['id'];
+                        break;
+                    }
+                }
+                // Group fields by their section
+                $sections[$field['section_name']][] = $field;
+            }
+
+            $inspection_client = $this->Clients_model->get_one($inspection['client_id']);
+
+//            print_r($inspection['client_id']);exit;
+            $view_data['sections'] = $sections;
+            $view_data['inspection'] = $inspection;
+            $view_data['inspection_client'] = $inspection_client;
+            $view_data['fieldsData'] = $fields;
+            $view_data['inspection_id'] = $inspection_id;
+        }
+//        print_r($view_data);exit;
+        return $this->template->rander('inspections/view_report', $view_data);
     }
 
 }
