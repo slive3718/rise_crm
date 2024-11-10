@@ -85,7 +85,7 @@ class Users_model extends Crud_model {
                 $token = $_COOKIE['remember_me'];
 
                 // Load user model and validate the token
-                $user = $this->db_builder->where('remember_token', $token)->get()->getResult()[0];
+                $user = $this->db_builder->where('remember_token', $token)->get()->getResult()[0] ?? '';
                 if ($user) {
                     // Log the user in
                     $session->set('logged_in', true);

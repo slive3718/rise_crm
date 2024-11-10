@@ -3250,3 +3250,129 @@ if (!function_exists('validate_list_of_numbers')) {
         }
     }
 }
+
+if (!function_exists('prepare_inspection_pdf')) {
+
+//    function prepare_inspection_pdf($inspection_data, $mode = "download") {
+//        // Path to wkhtmltopdf executable, using double backslashes
+//        $wkhtmltopdfPath = FCPATH.'files/wkhtmltopdf/bin/wkhtmltopdf.exe';
+//
+//
+//        if (!file_exists($wkhtmltopdfPath)) {
+//            throw new Exception("wkhtmltopdf executable not found at: " . $wkhtmltopdfPath);
+//        }
+//
+//        if ($inspection_data) {
+//            $inspection_data["mode"] = clean_data($mode);
+//
+//            // Generate HTML content using CodeIgniter view
+//            $html = view("inspections/view_report", $inspection_data);
+//            if ($html === false) {
+//                throw new Exception("Failed to generate HTML for inspection report.");
+//            }
+//
+//            // Save HTML to a temporary file with double backslashes
+//            $tempHtmlFile = str_replace('/', '\\', WRITEPATH . 'temp\\' . uniqid('html_') . '.html');
+//            file_put_contents($tempHtmlFile, $html);
+//
+//            // Define PDF output path with double backslashes
+//            $inspection_id = $inspection_data['inspection_id'] ?? 'Unknown';
+//            $pdf_file_name = preg_replace('/[^A-Za-z0-9\-]/', '-', "Inspections_" . $inspection_id) . ".pdf";
+//            $tempPdfFile = str_replace('/', '\\', WRITEPATH . 'temp\\' . $pdf_file_name);
+//
+//            // Updated command with consistent backslashes
+//            $command = escapeshellarg($wkhtmltopdfPath) . " " . escapeshellarg($tempHtmlFile) . " " . escapeshellarg($tempPdfFile);
+//
+//
+//            // Execute command and capture output
+//            exec($command . ' 2>&1', $output, $returnVar);
+//
+//            // Clean up the temporary HTML file
+//            unlink($tempHtmlFile);
+//
+//            // Check if wkhtmltopdf succeeded
+//            if ($returnVar !== 0 || !file_exists($tempPdfFile)) {
+//                throw new Exception("wkhtmltopdf failed to generate PDF. Output: " . implode("\n", $output));
+//            }
+//
+//            // Handle output based on mode
+//            if ($mode === "download") {
+//                header('Content-Type: application/pdf');
+//                header("Content-Disposition: inline; filename=$pdf_file_name");
+//                readfile($tempPdfFile);
+//            } elseif ($mode === "send_email") {
+//                return $tempPdfFile;
+//            } elseif ($mode === "view") {
+//                header('Content-Type: application/pdf');
+//                header("Content-Disposition: inline; filename=$pdf_file_name");
+//                readfile($tempPdfFile);
+//                unlink($tempPdfFile); // Clean up after displaying
+//                exit;
+//            } elseif ($mode === "html") {
+//                return $html;
+//            }
+//        }
+//    }
+
+
+
+    function prepare_inspection_pdf($inspection_data, $mode = "download") {
+        $pdf = new Pdf("inspection");
+
+        //if setting is desable then don't show header
+        if (!get_setting("enable_background_image_for_invoice_pdf")) {
+            $pdf->setPrintHeader(false);
+        }
+
+        $pdf->setPrintFooter(false);
+        $pdf->SetCellPadding(1.5);
+        $pdf->setImageScale(1.42);
+        $pdf->AddPage();
+
+        // Get the page width in user units (default is millimeters)
+        $pageWidthInUserUnits = $pdf->getPageWidth();
+
+        $pageWidthInPixels = ($pageWidthInUserUnits / 25.4) * 92;
+
+        //show background image on first page
+        if (get_setting("set_invoice_pdf_background_only_on_first_page")) {
+            $pdf->setPrintHeader(false);
+        }
+        if ($inspection_data) {
+            $inspection_data["mode"] = clean_data($mode);
+
+            // print_r($invoice_data);exit;
+            $html = view("inspections/prepare_pdf", $inspection_data);
+
+            // print_r($html);exit;
+            if ($mode != "html") {
+                if ($html === false) {
+                    throw new Exception("Failed to rebuild HTML for inspection report.");
+                }
+                $html = rebuild_html($html, $pageWidthInPixels);
+                $pdf->writeHTML($html, true, false, true, false, '');
+
+                print_r($html);exit;
+
+            }
+
+            $inspection_id = $inspection_data['inspection_id'] ?? 'Unknown';
+            $pdf_file_name = preg_replace('/[^A-Za-z0-9\-]/', '-', "Inspections_" . $inspection_id) . ".pdf";
+
+            if ($mode === "download") {
+                $pdf->Output($pdf_file_name, "I");
+                exit;
+            } else if ($mode === "send_email") {
+                $temp_download_path = getcwd() . "/" . get_setting("temp_file_path") . $pdf_file_name;
+                $pdf->Output($temp_download_path, "F");
+                return $temp_download_path;
+            } else if ($mode === "view") {
+                $pdf->SetTitle($pdf_file_name);
+                $pdf->Output($pdf_file_name, "I");
+                exit;
+            } else if ($mode === "html") {
+                return $html;
+            }
+        }
+    }
+}

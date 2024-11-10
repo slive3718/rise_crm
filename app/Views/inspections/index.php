@@ -160,6 +160,7 @@
                             <td><?= $item['result']?></td>
                             <td><?= $item['status']?></td>
                             <td><button class="btn btn-link viewReport" inspection_id="<?=$item['id']?>"> View Report</button></td>
+                            <td><button class="btn btn-link viewPdf" inspection_id="<?=$item['id']?>"> View Pdf</button></td>
                         </tr>
                     <?php endforeach; ?>
 
@@ -211,6 +212,11 @@
         inspectionTable.on('click', '.viewReport', function(){
             let inspection_id = $(this).attr('inspection_id')
             window.location.href="<?= get_uri('inspections/view_report/') ?>"+inspection_id
+        })
+
+        inspectionTable.on('click', '.viewPdf', function(){
+            let inspection_id = $(this).attr('inspection_id')
+            window.location.href="<?= get_uri('inspections/prepare_inspection_pdf/') ?>"+inspection_id
         })
 
         inspectionTable.on('click', '.delete', function(){
