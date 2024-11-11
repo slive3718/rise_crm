@@ -3352,8 +3352,6 @@ if (!function_exists('prepare_inspection_pdf')) {
                 $html = rebuild_html($html, $pageWidthInPixels);
                 $pdf->writeHTML($html, true, false, true, false, '');
 
-                print_r($html);exit;
-
             }
 
             $inspection_id = $inspection_data['inspection_id'] ?? 'Unknown';
