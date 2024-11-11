@@ -143,7 +143,7 @@
                             </div>
                             <div class="card-body">
                                 <div class="text-center mb-3">
-                                    <img src="<?=get_uri('assets/images/logo.png')?>" alt="Company Logo" class="img-fluid" style="max-height: 100px;">
+                                    <img src="<?=get_uri('assets/images/test.png')?>" alt="Company Logo" class="img-fluid" style="max-height: 100px;">
                                     <h6 class="mt-2"><?=$inspection['inspection_name']?></h6>
                                     <p><?=date("Y-m-d", strtotime($inspection['created_at']))?></p>
                                 </div>
