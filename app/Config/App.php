@@ -64,7 +64,7 @@ class App extends BaseConfig {
      *
      * @var string
      */
-    public $baseURL = 'http://localhost/rise_crm/';
+    public $baseURL = 'http://imperial-crm.com/dev/rise_crm/';
     
     /**
      * Allowed Hostnames in the Site URL other than the hostname in the baseURL.
