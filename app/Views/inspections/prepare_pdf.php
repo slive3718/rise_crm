@@ -4,7 +4,7 @@
         <tr>
             <td width="100%" style="font-weight: bold; padding: 0  20px">
                 <!-- Replace this with an inline base64 image for TCPDF -->
-                <img src="<?= $LOGO_URL ?>" style="width: 200px; height: auto;">
+                <img src="<?=base_url('assets/images/inspection_logo.png')?>" style="width: 200px; height: auto;">
             </td>
         </tr>
         <tr>
@@ -13,7 +13,7 @@
             </td>
         </tr>
         <tr>
-            <td width="100%" style="font-weight: bold; padding: 0  20px">
+            <td width="66%" style="font-weight: bold; padding: 0  20px">
                 <span style="font-size:15px"><?= date( "F d Y", strtotime($inspection['created_at']))?></span>
             </td>
             <td width="33%" style="font-weight: bold; padding: 0  20px">
@@ -26,7 +26,7 @@
     <table width="100%" style="margin-top: 15px; border-collapse: collapse; font-size: 14px; ">
         <tr style="background-color: #e9edf6; ">
             <td width="33%" style="font-weight: bold; padding: 0  20px">
-                <strong style="text-align: left">Score</strong> <span style="text-align: right; right:0; float:right; letter-spacing: 4px"> <?= countItemsValue($sections) .'/'. countAllFields($sections)?> <?= intVal(countAllFields($sections) / (countItemsValue($sections))*100)?>% </span>
+                <strong style="text-align: left">Score</strong> <span style="text-align: right; right:0; float:right; letter-spacing: 4px"> <?= countItemsValue($sections) .'/'. countAllFields($sections)?> <?= intVal( (countItemsValue($sections)/ countAllFields($sections))*100)?>% </span>
             </td>
             <td width="33%" style="font-weight: bold; padding: 0  20px">
                 <strong style="text-align: left">Flagged items </strong> <span style="text-align: right; right:0; float:right"> <?= countFlaggedItems($sections) ?></span>
@@ -180,8 +180,10 @@ function countItemsValue($data) {
 }
 
 function countAllFields($data) {
+    $fieldsCount = 0;
     foreach ($data as $section) {
-        return count($section);
+        $fieldsCount += count($section);
     }
+    return $fieldsCount;
 }
 ?>
