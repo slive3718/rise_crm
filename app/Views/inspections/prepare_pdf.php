@@ -97,10 +97,9 @@
             <tr>
                 <td width="70%"  style="font-weight: bold; color: #555; background-color: #e9edf6;  padding: 0  20px">
                     <strong><?= htmlspecialchars($section_name)?></strong>
-
                 </td>
                 <td width="30%" style="text-align: right;  padding: 0  20px; background-color:#e9edf6">
-                    <strong><?= (countFlaggedItems($sections))?></strong>
+                    <strong><?= (countFlaggedItemsPerSection($sections[$section_name])) != 0 ?? ''?> Flagged</strong>
                 </td>
             </tr>
 
@@ -154,7 +153,6 @@ function calculateFlags($field)
 
 function countFlaggedItems($data) {
     $flaggedCount = 0;
-
     foreach ($data as $section) {
         foreach ($section as $item) {
             if (isset($item['flagged']) && $item['flagged'] == 1) {
@@ -162,7 +160,16 @@ function countFlaggedItems($data) {
             }
         }
     }
+    return $flaggedCount;
+}
 
+function countFlaggedItemsPerSection($data) {
+    $flaggedCount = 0;
+    foreach ($data as $item) {
+        if (isset($item['flagged']) && $item['flagged'] == 1) {
+            $flaggedCount++;
+        }
+    }
     return $flaggedCount;
 }
 
