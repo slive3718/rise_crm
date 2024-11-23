@@ -181,12 +181,12 @@
                                     <?php foreach ($sections as $section_name => $fields): ?>
                                         <?php if(!empty ($flaggedCounts[$section_name])): ?>
                                         <div class="form-section">
-                                        <div  class="form-section-header px-4 pt-3" data-bs-toggle="collapse" data-bs-target="#section-<?= strtolower(str_replace(' ', '-', $section_name)) ?>" aria-expanded="false" aria-controls="section-<?= strtolower(str_replace(' ', '-', $section_name)) ?>">
+                                        <div  class="form-section-header px-4 pt-3" data-bs-toggle="collapse" data-bs-target="#section-flagged-<?= strtolower(str_replace(' ', '-', $section_name)) ?>" aria-expanded="false" aria-controls="section-<?= strtolower(str_replace(' ', '-', $section_name)) ?>">
                                             <?= $section_name ?>
                                             <span data-feather="bell" class="icon-16 ms-3 text-danger" title="Flagged" ></span>
                                             <span class="text-danger" id="flagged_items_count"><?= $flaggedCounts[$section_name] ?? 0 ?> </span>
                                         </div>
-                                        <div id="section-<?= strtolower(str_replace(' ', '-', $section_name)) ?>" class="form-section-content collapse">
+                                        <div id="section-flagged-<?= strtolower(str_replace(' ', '-', $section_name)) ?>" class="form-section-content collapse">
                                             <?php foreach ($fields as $field): ?>
                                                 <?php if($field['flagged'] == '1'): ?>
                                             <div class="form-group">
@@ -200,9 +200,9 @@
                                                         <?php  foreach (json_decode($field['field_options'], true) as $option): ?>
                                                             <div class="col-12">
                                                                 <?php if( $field['value'] == $option['label'] ): ?>
-                                                                    <badge class="badge py-1 px-4 text-start" data-flagged = "<?= (isset($option['flags']) && $option['flags'] === '1') ? 1: 0 ?>"
+                                                                    <badge class="badge py-1 px-4 text-start" data-flagged = "<?= (isset($option['flagged']) && $option['flagged'] === '1') ? 1: 0 ?>"
                                                                            for="<?= $field['field_name'].'-'.$option['label'] ?>"
-                                                                           style="border-radius:20px;font-size: 16px ;color: white; background-color: <?= (isset($option['flags']) && $option['flags'] === '1') ? 'rgb(198,0,34)' : $option['color'] ?>;">
+                                                                           style="border-radius:20px;font-size: 16px ;color: white; background-color: <?= (isset($option['flagged']) && $option['flagged'] === '1') ? 'rgb(198,0,34)' : $option['color'] ?>;">
                                                                         <?= $option['label'] ?>
                                                                     </badge>
                                                                 <?php endif; ?>
@@ -243,9 +243,9 @@
                                                             <?php  foreach (json_decode($field['field_options'], true) as $option): ?>
                                                                 <div class="col-12">
                                                                     <?php if( $field['value'] == $option['label'] ): ?>
-                                                                    <badge class="badge py-1 px-4 text-start" data-flagged = "<?= (isset($option['flags']) && $option['flags'] === '1') ? 1: 0 ?>"
+                                                                    <badge class="badge py-1 px-4 text-start" data-flagged = "<?= (isset($option['flagged']) && $option['flagged'] === '1') ? 1: 0 ?>"
                                                                            for="<?= $field['field_name'].'-'.$option['label'] ?>"
-                                                                           style="border-radius:20px;font-size: 16px ;color: white; background-color: <?= (isset($option['flags']) && $option['flags'] === '1') ? 'rgb(198,0,34)' : $option['color'] ?>;">
+                                                                           style="border-radius:20px;font-size: 16px ;color: white; background-color: <?= (isset($option['flagged']) && $option['flagged'] === '1') ? 'rgb(198,0,34)' : $option['color'] ?>;">
                                                                         <?= $option['label'] ?>
                                                                     </badge>
                                                                     <?php endif; ?>

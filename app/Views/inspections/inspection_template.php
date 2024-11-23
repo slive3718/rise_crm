@@ -171,6 +171,9 @@
     $(function(){
         $("#createInspectionTemplate").on('click', function(){
             $('#InspectionTemplateCreateModal').modal('show')
+            $('#InspectionTemplateCreateModal').find('#templateForm')[0].reset();
+            $('#InspectionTemplateCreateModal').find('#sections').html('');
+            $('#InspectionTemplateCreateModal').find('input[name="template_id"]').val('')
         })
 
         $('.form-section-header').on('click', function(e){
@@ -197,26 +200,6 @@
             )
         })
 
-        templateTable.on('click', '.edit', function(e){
-            e.preventDefault();
-            let template_id = $(this).attr('template_id');
-
-            console.log(template_id);
-            // return false;
-            //$.post("<?php //=get_uri('inspections_templates/delete')?>//",
-            //    {
-            //        template_id : template_id
-            //    },
-            //    function(response){
-            //        if(response.status === 'success') {
-            //            toastr.success(response.message)
-            //            $('#template_table').find(`tr[data-template-id="${template_id}"]`).fadeOut();
-            //        }
-            //        else
-            //            toastr.error(response.message)
-            //    }
-            //)
-        })
 
         templateTable.on('click', '.delete', function(e){
             e.preventDefault();
@@ -237,38 +220,52 @@
             )
         })
 
-        templateTable.on('click', '.edit', function(e){
+        // Event handler for the Edit button in the template table
+        $('#template_table').on('click', '.edit', function(e) {
             e.preventDefault();
             let template_id = $(this).attr('template_id');
             let createTemplateModal = $('#InspectionTemplateCreateModal')
-
-
-            $.post("<?=get_uri('inspections_templates/get_template_field')?>",
+            $.post("<?=get_uri('inspections_templates/get_template_field_data')?>",
                 {
-                    template_id : template_id
+                    template_id: template_id
                 },
-                function(response){
+                function (response) {
                     console.log(response)
                     createTemplateModal.modal('show');
-                    createTemplateModal.attr('template_id', template_id)
-                    createTemplateModal.attr('template_id', template_id)
 
 
-                    // $('#InspectionTemplateCreateModal .modal-body').html(response)
-                    // $('#InspectionTemplateCreateModal .modal-title').html("Inspection Form")
-                }
-            )
+                    createTemplateModal.find('.modal-body').html('');
+                    createTemplateModal.find('.modal-body').html(response);
+                    createTemplateModal.find('input[name="template_id"]').val(template_id)
 
 
-            //$.post("<?php //=get_uri('inspections_templates/edit')?>//",
-            //    {
-            //        template_id : template_id
-            //    },
-            //    function(response){
-            //
-            //    }
-            //)
+                    $('.delete-section').on('click', function(){
+                        deleteSection(this.getAttribute('data-section'));
+                    })
+
+                    $(`.add-field`).on('click', function() {
+                        addField(this.getAttribute('data-section'));
+                    });
+
+                    $('.delete-field').on('click', function(){
+                        deleteField(this.getAttribute('data-section'),this.getAttribute('data-field') );
+                    })
+
+                    $('#addSectionBtn').on('click', function(){
+                        addSection();
+                    })
+
+                    $('#templateForm').submit(function(e) {
+                        e.preventDefault();
+                        let formData = new FormData(this);
+                        let template_id = $(this).find('input[name="template_id"]').val();
+                        saveTemplate(formData, template_id);
+                    });
+
+                    initSortable();
+                });
         })
+
     })
 
     $(function(){
@@ -338,6 +335,11 @@
 
     // Add a new section
     document.getElementById('addSectionBtn').addEventListener('click', function() {
+        addSection();
+    });
+
+    function addSection(){
+        sectionCounter = $('.section-box').length
         sectionCounter++;
         sectionCounters[sectionCounter] = 0; // Initialize field counter for the new section
 
@@ -372,7 +374,7 @@
         });
 
         initSortable(); // Initialize sortable functionality on new section
-    });
+    }
 
     // Function to add a field to a specific section
     function addField(sectionId) {
@@ -436,9 +438,10 @@
         const optionHtml = `
         <div class="d-flex align-items-center mb-2">
             <input type="text" class="form-control me-2" name="sections[${sectionId}][fields][${fieldCounter}][options][]" placeholder="Option ${optionCounter}" required>
-            <input type="color" class="form-control form-control-color me-2" name="sections[${sectionId}][fields][${fieldCounter}][colors][]" value="#7AB2D3" title="Choose color">
-            <input type="checkbox" class="me-1 mt-1" name="sections[${sectionId}][fields][${fieldCounter}][flags][]" value="1"><label class="mt-5">Flagged</label>
-            <button type="button" class="btn btn-danger btn-sm delete-option" title="Delete Option">x</button>
+            <input type="color" class="form-control form-control-color me-2" style="width:80px" name="sections[${sectionId}][fields][${fieldCounter}][colors][]" value="#7AB2D3" title="Choose color">
+            <input type="checkbox" class="me-2" name="sections[${sectionId}][fields][${fieldCounter}][flagged][]" value="1" title="Mark flagged"><label class="me-3">Flagged</label>
+            <input type="hidden" class="me-2" name="sections[${sectionId}][fields][${fieldCounter}][flagged][]" value="0" title="Mark flagged">
+            <button type="button" class="btn btn-danger btn-sm delete-option" style="padding: 1px 9px" title="Delete Option">x</button>
         </div>`;
 
         optionsContainer.insertAdjacentHTML('beforeend', optionHtml);
@@ -499,24 +502,30 @@
         $('#templateForm').submit(function(e) {
             e.preventDefault();
             let formData = new FormData(this);
-            $.ajax({
-                url: "<?= get_uri('inspections_templates/create') ?>",
-                method: 'POST',
-                data: formData,
-                contentType: false,
-                processData: false,
-                success: function(response) {
-                    if(response.status === 'success')
-                        toastr.success(response.message)
-                },
-                error: function(response) {
-                }
-            });
-
-            $(this).closest('.modal').modal('hide');
+            let template_id = $(this).find('input[name="template_id"]').val();
+            saveTemplate(formData, template_id);
         });
     });
 
+    function saveTemplate(formData, template_id){
+        let url = (template_id ? "<?= get_uri('inspections_templates/update') ?>" : "<?= get_uri('inspections_templates/create') ?>")
+
+        $.ajax({
+            url: url,
+            method: 'POST',
+            data: formData,
+            contentType: false,
+            processData: false,
+            success: function(response) {
+                if(response.status === 'success')
+                    toastr.success(response.message)
+            },
+            error: function(response) {
+            }
+        });
+
+        $(this).closest('.modal').modal('hide');
+    }
 
     // Initialize the dragging functionality
     function initDraggable(containerSelector, itemSelector) {

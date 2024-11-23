@@ -99,7 +99,7 @@
                     <strong><?= htmlspecialchars($section_name)?></strong>
                 </td>
                 <td width="30%" style="text-align: right;  padding: 0  20px; background-color:#e9edf6">
-                    <strong><?= (countFlaggedItemsPerSection($sections[$section_name])) != 0 ?? ''?> Flagged</strong>
+                    <strong style="color:rgb(198,0,34)"><?= (countFlaggedItemsPerSection($sections[$section_name])) != 0 ? countFlaggedItemsPerSection($sections[$section_name]).' Flagged' : ''?></strong>
                 </td>
             </tr>
 
