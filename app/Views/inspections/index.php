@@ -198,7 +198,6 @@
             getInspection(inspection_id).then(function(response) {
                 $('#customInspectionModal').modal('show');
                 $('#customInspectionModal .modal-body').html(response);
-d
                 // Unbind any previous event handlers to prevent multiple triggers
                 $('#customInspectionModal #inspectionCreateForm :input').off('input change').on('input change', function() {
                     let $this = $(this);

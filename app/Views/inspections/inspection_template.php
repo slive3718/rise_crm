@@ -255,6 +255,10 @@
                         addSection();
                     })
 
+                    $('.add-option').on('click', function(){
+                        addOption(this.getAttribute('data-section'),this.getAttribute('data-field'));
+                    })
+
                     $('#templateForm').submit(function(e) {
                         e.preventDefault();
                         let formData = new FormData(this);
