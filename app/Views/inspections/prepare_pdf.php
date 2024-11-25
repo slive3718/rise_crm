@@ -26,7 +26,11 @@
     <table width="100%" style="margin-top: 15px; border-collapse: collapse; font-size: 14px; ">
         <tr style="background-color: #e9edf6; ">
             <td width="33%" style="font-weight: bold; padding: 0  20px">
-                <strong style="text-align: left">Score</strong> <span style="text-align: right; right:0; float:right; letter-spacing: 4px"> <?= countItemsValue($sections) .'/'. countAllFields($sections)?> <?= intVal( (countItemsValue($sections)/ countAllFields($sections))*100)?>% </span>
+                <strong style="text-align: left">Score</strong>
+                <?php if (countItemsValue($sections) > 0) : ?>
+                    <span style="text-align: right; right:0; float:right; letter-spacing: 4px">
+                <?= countItemsValue($sections) .'/'. countAllFields($sections)?> <?= intVal( (countItemsValue($sections)/ countAllFields($sections))*100)?>% </span>
+                <?php endif ?>
             </td>
             <td width="33%" style="font-weight: bold; padding: 0  20px">
                 <strong style="text-align: left">Flagged items </strong> <span style="text-align: right; right:0; float:right"> <?= $totalFlagged ?></span>
