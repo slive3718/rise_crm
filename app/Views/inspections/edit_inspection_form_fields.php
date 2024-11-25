@@ -68,6 +68,7 @@
                                             <?php
                                             $fieldOptions = json_decode($field['field_options'], true);
                                             if(is_array($fieldOptions)){
+                                                $flagged = 0;
                                                 foreach ($fieldOptions as $optionIndex => $option):
                                                     $optionLabel = htmlspecialchars($option['label']);
                                                     $optionColor = $option['color'] ?? '#7AB2D3';

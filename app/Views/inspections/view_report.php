@@ -126,6 +126,13 @@
         .form-section-header.collapsed::after {
             content: '\25b6'; /* right arrow */
         }
+
+        .flagCount{
+            color:rgb(198,0,34)
+        }
+        #flagged_items_count {
+            color:rgb(198,0,34)
+        }
     </style>
         <div id="page-content" class="page-wrapper clearfix grid-button">
         <div class="card clearfix " >
@@ -145,14 +152,14 @@
                                 <div class="text-center mb-3">
                                     <img src="<?=base_url('assets/images/inspection_logo.png')?>" alt="Company Logo" class="img-fluid" style="max-height: 100px;">
                                     <h6 class="mt-2"><?=$inspection['inspection_name']?></h6>
-                                    <p><?=date("Y-m-d", strtotime($inspection['created_at']))?></p>
+                                    <p><?= date("Y-m-d", strtotime($inspection['inspection_date']))?></p>
                                 </div>
                                 <div class="row">
                                     <div class="col-md-4">
                                         <p><strong>Inspection score:</strong> 15 / 16 (93.75%)</p>
                                     </div>
                                     <div class="col-md-4">
-                                        <p><strong>Flagged items:</strong> 2</p>
+                                        <p><strong>Flagged items:</strong> <?= $totalFlagged ??''?> </p>
                                     </div>
                                     <div class="col-md-4">
                                         <p><strong>Created actions:</strong> 0</p>
@@ -175,7 +182,7 @@
                                 <div class="form-section-header px-4 pt-3" data-bs-toggle="collapse" data-bs-target="#section-flagged-items" aria-expanded="false" aria-controls="section-flagged-items">
                                     Flagged Items
                                     <span data-feather="bell" class="icon-16 ms-3 text-danger" title="Flagged" ></span>
-                                    <span class="text-danger" id="flagged_items_count"><?=$totalFlagged ??''?></span>
+                                    <span id="flagged_items_count"><?= $totalFlagged ??''?></span>
                                 </div>
                                 <div id="section-flagged-items" class="form-section-content collapse">
                                     <?php foreach ($sections as $section_name => $fields): ?>
@@ -184,7 +191,7 @@
                                         <div  class="form-section-header px-4 pt-3" data-bs-toggle="collapse" data-bs-target="#section-flagged-<?= strtolower(str_replace(' ', '-', $section_name)) ?>" aria-expanded="false" aria-controls="section-<?= strtolower(str_replace(' ', '-', $section_name)) ?>">
                                             <?= $section_name ?>
                                             <span data-feather="bell" class="icon-16 ms-3 text-danger" title="Flagged" ></span>
-                                            <span class="text-danger" id="flagged_items_count"><?= $flaggedCounts[$section_name] ?? 0 ?> </span>
+                                            <span class="text-danger" id="flagged_items_count"><?= $flaggedCounts[$section_name] > 0 ?? '' ?> </span>
                                         </div>
                                         <div id="section-flagged-<?= strtolower(str_replace(' ', '-', $section_name)) ?>" class="form-section-content collapse">
                                             <?php foreach ($fields as $field): ?>
@@ -228,7 +235,9 @@
                                 <div class="form-section">
                                     <div  class="form-section-header px-4 pt-3" data-bs-toggle="collapse" data-bs-target="#section-<?= strtolower(str_replace(' ', '-', $section_name)) ?>" aria-expanded="false" aria-controls="section-<?= strtolower(str_replace(' ', '-', $section_name)) ?>">
                                         <?= $section_name ?>
-                                        <span class="flagCount"></span>
+                                        <?php if(!empty ($flaggedCounts[$section_name])): ?>
+                                        <span class="flagCount"><?= $flaggedCounts[$section_name] > 0 ?? '' ?> </span>
+                                        <?php endif ?>
                                     </div>
                                     <div id="section-<?= strtolower(str_replace(' ', '-', $section_name)) ?>" class="form-section-content collapse">
                                         <?php foreach ($fields as $field): ?>

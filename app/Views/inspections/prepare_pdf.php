@@ -14,7 +14,7 @@
         </tr>
         <tr>
             <td width="66%" style="font-weight: bold; padding: 0  20px">
-                <span style="font-size:15px"><?= date( "F d Y", strtotime($inspection['created_at']))?></span>
+                <span style="font-size:15px"><?= date("Y-m-d", strtotime($inspection['inspection_date']))?></span>
             </td>
             <td width="33%" style="font-weight: bold; padding: 0  20px">
                 Incomplete
@@ -29,7 +29,7 @@
                 <strong style="text-align: left">Score</strong> <span style="text-align: right; right:0; float:right; letter-spacing: 4px"> <?= countItemsValue($sections) .'/'. countAllFields($sections)?> <?= intVal( (countItemsValue($sections)/ countAllFields($sections))*100)?>% </span>
             </td>
             <td width="33%" style="font-weight: bold; padding: 0  20px">
-                <strong style="text-align: left">Flagged items </strong> <span style="text-align: right; right:0; float:right"> <?= countFlaggedItems($sections) ?></span>
+                <strong style="text-align: left">Flagged items </strong> <span style="text-align: right; right:0; float:right"> <?= $totalFlagged ?></span>
             </td>
             <td width="33%" style="font-weight: bold; padding: 0 20px">
                 Actions
@@ -99,7 +99,9 @@
                     <strong><?= htmlspecialchars($section_name)?></strong>
                 </td>
                 <td width="30%" style="text-align: right;  padding: 0  20px; background-color:#e9edf6">
-                    <strong style="color:rgb(198,0,34)"><?= (countFlaggedItemsPerSection($sections[$section_name])) != 0 ? countFlaggedItemsPerSection($sections[$section_name]).' Flagged' : ''?></strong>
+                    <?php if(!empty ($flaggedCounts[$section_name])): ?>
+                    <strong style="color:rgb(198,0,34)"><?= $flaggedCounts[$section_name] > 0 ? "Flagged: ". $flaggedCounts[$section_name] : '' ?></strong>
+                    <?php endif; ?>
                 </td>
             </tr>
 

@@ -255,7 +255,6 @@ class Inspections extends Security_Controller
             $view_data['fieldsData'] = $fields;
             $view_data['inspection_id'] = $inspection_id;
         }
-
         return $this->template->rander('inspections/view_report', $view_data);
     }
 
@@ -280,29 +279,32 @@ class Inspections extends Security_Controller
             $flaggedCounts = [];
             $totalFlagged = 0;  // Initialize a variable for the overall total of flagged counts
 
+
             foreach ($fields as $field) {
                 if(in_array($field['id'], array_column($responses, 'inspection_field_id'))) {
                     // Initialize the field with default values
                     $field['value'] = '';
                     $field['response_id'] = '';
-                    $field['flagged'] = false; // Add a flagged property, defaulting to false
+                    $field['flagged'] = false; // Default flagged status to false
 
                     // Search for a matching response for this field
                     foreach ($responses as $response) {
                         if ($response['inspection_field_id'] == $field['id']) {
                             $field['value'] = $response['response'];
                             $field['response_id'] = $response['id'];
-                            break;
-                        }
-                    }
 
-                    if (isset($field['field_options'])) {
-                        $field_options = json_decode($field['field_options']);
-                        foreach ($field_options as $option) {
-                            if (!empty($option->flagged)) { // Check if the option is flagged
-                                $field['flagged'] = true;
-                                break;
+                            // Check if the field has options and if the selected option is flagged
+                            if (isset($field['field_options'])) {
+                                $field_options = json_decode($field['field_options']);
+                                foreach ($field_options as $option) {
+                                    // Only set flagged if the selected option is flagged
+                                    if ($field['value'] == $option->label && !empty($option->flagged)) {
+                                        $field['flagged'] = true; // Mark the field as flagged if the selected option is flagged
+                                        break;
+                                    }
+                                }
                             }
+                            break;
                         }
                     }
 
@@ -314,11 +316,10 @@ class Inspections extends Security_Controller
                         if (!isset($flaggedCounts[$field['section_name']])) {
                             $flaggedCounts[$field['section_name']] = 0;
                         }
-                        $flaggedCounts[$field['section_name']]++;
-                        $totalFlagged++;
+                        $flaggedCounts[$field['section_name']]++; // Increment flagged count for this section
+                        $totalFlagged++; // Increment total flagged count
                     }
                 }
-
             }
 
 

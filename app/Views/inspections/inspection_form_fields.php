@@ -38,7 +38,7 @@
                         <?php foreach ($fields as $field): ?>
                             <div class="form-group">
                                 <?php if ($field['field_type'] == 'radio'): ?>
-                                    <div class="card border-0 p-3">
+                                    <div class="">
                                         <div class="mb-2">
                                             <h5 class="mb-0"><?= $field['field_label'] ?></h5>
                                         </div>
@@ -51,7 +51,7 @@
                                                            response_id="<?= $field['response_id'] ?? '' ?>">
                                                     <label class="btn btn-outline-primary w-100 text-start"
                                                            for="<?= $field['id'] . '_' . $option['label'] ?>"
-                                                           style="color: black; background-color: <?= isset($option['flags']) && $option['flags'] === '1' ? 'rgb(198, 0, 34)' : ($option['color'] ?? '') ?>;">
+                                                           style="color: black; background-color: <?= isset($option['flagged']) && $option['flagged'] === '1' ? 'rgb(198, 0, 34)' : ($option['color'] ?? '') ?>;">
                                                         <?= $option['label'] ?>
                                                     </label>
                                                 </div>
