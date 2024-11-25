@@ -10,13 +10,13 @@
             <?php endif ?>
         </select>
         <label for="conducted_location">Location</label>
-        <input type="text" id="conducted_location" name="conducted_location" class="form-control" value="<?= (isset($inspection) && $inspection['location'])? $inspection['location']:'' ?>">
+        <input type="text" id="conducted_location" name="conducted_location" class="form-control" inspection_id="<?=$inspection['id']?>" value="<?= (isset($inspection) && $inspection['location'])? $inspection['location']:'' ?>">
 
         <label for="conducted_date">Conducted Date</label>
-        <input type="date" id="conducted_date" name="conducted_date" class="form-control" value="<?= (isset($inspection) && $inspection['inspection_date'])? $inspection['inspection_date']:'' ?>">
+        <input type="date" id="conducted_date" name="conducted_date" class="form-control" inspection_id="<?=$inspection['id']?>" value="<?= (isset($inspection) && $inspection['inspection_date'])? date("Y-m-d", strtotime($inspection['inspection_date'])):'' ?>">
 
         <label for="prepared_by">Prepared By</label>
-        <input type="text" id="prepared_by" name="conducted_date" class="form-control" value="<?= (isset($inspection) && $inspection['inspector_name'])? $inspection['inspector_name']:'' ?>">
+        <input type="text" id="prepared_by" name="conducted_date" class="form-control" inspection_id="<?=$inspection['id']?>" value="<?= (isset($inspection) && $inspection['inspector_name'])? $inspection['inspector_name']:'' ?>">
     </div>
 </div>
 <form id="inspectionCreateForm">

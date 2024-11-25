@@ -124,6 +124,38 @@ class Inspections extends Security_Controller
         }
     }
 
+    public function update_inspection()
+    {
+        $post = $this->request->getPost();
+        if ($this->request->getMethod() === 'POST') {
+            $inspection_id = $this->request->getPost('inspection_id');
+            if (!empty($inspection_id)) { // Ensure inspection was created
+                // Save responses for each field
+                $this->Inspections_model->where('id', $inspection_id)->set([
+                    'inspection_date' => $post['date'] ?? '',
+                    'client_id' => $post['client_id'] ?? '',
+                    'location' => $post['location'] ?? '',
+                    'inspector_name' => $post['prepared_by'] ?? '',
+                    'updated_at' => date('Y-m-d H:i:s'),
+                ])->update();
+                return $this->response->setJSON([
+                    'status' => 'success',
+                    'message' => 'Update success!'
+                ]);
+            } else {
+                return $this->response->setJSON([
+                    'status' => 'failed',
+                    'message' => 'Failed to update inspection!'
+                ]);
+            }
+        } else {
+            return $this->response->setJSON([
+                'status' => 'error',
+                'message' => 'Invalid request.'
+            ]);
+        }
+    }
+
     public function list() {
         if($this->request->getPost('inspection_id')) {
             $inspection = $this->Inspections_model->where('is_deleted', 0)->find($this->request->getPost('inspection_id'));

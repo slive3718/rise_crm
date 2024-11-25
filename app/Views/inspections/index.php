@@ -225,7 +225,45 @@
             let inspection_id = $(this).attr('inspection_id')
             deleteInspection(inspection_id)
         })
+
+        $("#customInspectionModal").on('change input', '#conducted_date, #client_id, #prepared_by, #conducted_location', function() {
+            let $this = $(this);
+            clearTimeout(debounceTimer);
+            debounceTimer = setTimeout(() => {
+                updateInspection($this);
+            }, 300); // Adjust delay as needed (300ms in this example)
+
+        });
     })
+
+    function updateInspection($this){
+        let inspection_id = $this.attr('inspection_id')
+        let client_id = $("#client_id").val();
+        let location = $("#conducted_location").val();
+        let date = $("#conducted_date").val();
+        let prepared_by = $("#prepared_by").val();
+        $.ajax({
+            url: "<?= get_uri('inspections/update_inspection') ?>",
+            type: "POST", // Specify request type
+            data: {
+                inspection_id: inspection_id,
+                client_id: client_id,
+                location: location,
+                date: date,
+                prepared_by: prepared_by
+            },
+            success: function(response) {
+                if (response.status === 'success')
+                    toastr.success(response.message);
+                else
+                    toastr.error(response.message);
+            },
+            error: function(xhr, status, error) {
+                console.error("AJAX Error:", status, error);
+                alert("An error occurred while updating the inspection details. Please try again.");
+            }
+        });
+    }
 
     async function getInspection(inspection_id){
         return $.ajax({
