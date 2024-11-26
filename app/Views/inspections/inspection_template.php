@@ -307,11 +307,13 @@
             let conducted_location = $('#conducted_location').val();
             let conducted_date = $('#conducted_date').val();
             let prepared_by = $('#prepared_by').val();
+            let payment_method = $('#payment_method').val();
 
             formData.append('client_id', client_id)
             formData.append('conducted_location', conducted_location)
             formData.append('conducted_date', conducted_date)
             formData.append('inspector_name', prepared_by)
+            formData.append('payment_method', payment_method)
 
             $.ajax({
                 url: '<?= get_uri("inspections/save") ?>',

@@ -226,7 +226,7 @@
             deleteInspection(inspection_id)
         })
 
-        $("#customInspectionModal").on('change input', '#conducted_date, #client_id, #prepared_by, #conducted_location', function() {
+        $("#customInspectionModal").on('change input', '#conducted_date, #client_id, #prepared_by, #conducted_location, #payment_method', function() {
             let $this = $(this);
             clearTimeout(debounceTimer);
             debounceTimer = setTimeout(() => {
@@ -242,6 +242,7 @@
         let location = $("#conducted_location").val();
         let date = $("#conducted_date").val();
         let prepared_by = $("#prepared_by").val();
+        let payment_method = $("#payment_method").val();
         $.ajax({
             url: "<?= get_uri('inspections/update_inspection') ?>",
             type: "POST", // Specify request type
@@ -250,7 +251,8 @@
                 client_id: client_id,
                 location: location,
                 date: date,
-                prepared_by: prepared_by
+                prepared_by: prepared_by,
+                payment_method: payment_method
             },
             success: function(response) {
                 if (response.status === 'success')

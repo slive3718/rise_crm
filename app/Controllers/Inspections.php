@@ -47,6 +47,7 @@ class Inspections extends Security_Controller
                 'location' => $responses['conducted_location'],
                 'client_id' => $responses['client_id'],
                 'inspector_name' => $responses['inspector_name'],
+                'payment_method_id' => $responses['payment_method'],
                 'created_at' => date('Y-m-d H:i:s'),
             ]);
 
@@ -136,6 +137,7 @@ class Inspections extends Security_Controller
                     'client_id' => $post['client_id'] ?? '',
                     'location' => $post['location'] ?? '',
                     'inspector_name' => $post['prepared_by'] ?? '',
+                    'payment_method_id' => ($post['payment_method']) ? intVal($post['payment_method']) : 0,
                     'updated_at' => date('Y-m-d H:i:s'),
                 ])->update();
                 return $this->response->setJSON([
@@ -181,9 +183,13 @@ class Inspections extends Security_Controller
                         $sections[$field['section_name']][] = $field;
                     }
                 }
+
+                $payment_method = $this->Payment_methods_model->get()->getResult();
+
                 $view_data['sections'] = $sections;
                 $view_data['fieldsData'] = $fields;
                 $view_data['inspection'] = $inspection;
+                $view_data['payment_method'] = $payment_method;
                 $view_data['clients'] = $this->Clients_model->get()->getResult();
             }
 
@@ -288,6 +294,7 @@ class Inspections extends Security_Controller
             $inspection['value_count'] = $fieldWithValue;
             $inspection['populated_percentage'] = round(($fieldWithValue/$fieldCount) * 100, 1);
 
+            $inspection['paid_by'] = ($result = $this->Payment_methods_model->where('id', $inspection['payment_method_id'])->get()->getResult()) ? $result[0]:'';
 
             $inspection_client = $this->Clients_model->get_one($inspection['client_id']);
             $view_data['sections'] = $sections;
@@ -364,6 +371,8 @@ class Inspections extends Security_Controller
                     }
                 }
             }
+
+            $inspection['paid_by'] = ($result = $this->Payment_methods_model->where('id', $inspection['payment_method_id'])->get()->getResult()) ? $result[0]:'';
 
 
             $inspection_client = $this->Clients_model->get_one($inspection['client_id']);

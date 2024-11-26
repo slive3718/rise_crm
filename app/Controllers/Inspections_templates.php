@@ -248,9 +248,11 @@ class Inspections_templates extends Security_Controller
         foreach ($fields as $field) {
             $sections[$field['section_name']][] = $field;
         }
+        $payment_method = $this->Payment_methods_model->get()->getResult();
 
         $view_data['sections'] = $sections;
         $view_data['clients'] = $clients;
+        $view_data['payment_method'] = $payment_method;
         return $this->template->view("inspections/inspection_form_fields", $view_data);
     }
 

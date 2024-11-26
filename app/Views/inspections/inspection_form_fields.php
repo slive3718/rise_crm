@@ -2,13 +2,24 @@
 <div class="card">
     <div class="card-body">
         <label for="client_id"> Client </label>
-        <select name="client_id" id="client_id" class="form-control">
+        <select name="client_id" id="client_id" class="form-control" inspection_id="<?=$inspection['id'] ?? ""?>">
             <?php if(!empty($clients)): ?>
                 <?php foreach ($clients as $client): ?>
                     <option value="<?=$client->id?>" <?= (isset($inspection) && $inspection['client_id'] == $client->id)? 'selected':'' ?>><?= $client->company_name ?></option>
                 <?php endforeach ?>
             <?php endif ?>
         </select>
+
+        <label for="payment_method"> Payment Method </label>
+        <select name="payment_method" id="payment_method" class="form-control" inspection_id="<?=$inspection['id'] ?? ""?>">
+            <?php if(!empty($payment_method)): ?>
+                <option value="" >-- select --</option>
+                <?php foreach ($payment_method as $method): ?>
+                    <option value="<?=$method->id?>"  <?= (isset($inspection) && $inspection['payment_method_id'] == $method->id)? 'selected':'' ?>><?= $method->title ?></option>
+                <?php endforeach ?>
+            <?php endif ?>
+        </select>
+
         <label for="conducted_location">Location</label>
         <input type="text" id="conducted_location" name="conducted_location" class="form-control" inspection_id="<?=$inspection['id'] ?? ""?>" value="<?= (isset($inspection) && $inspection['location'])? $inspection['location']:'' ?>">
 

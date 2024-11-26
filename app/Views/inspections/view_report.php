@@ -171,7 +171,7 @@
                                 <p><strong>Location:</strong> <?=$inspection['location']?></p>
                                 <p><strong>Conducted on:</strong> <?= date("Y-m-d", strtotime($inspection['inspection_date']))?></p>
                                 <p><strong>Prepared By:</strong> <?=$inspection['inspector_name']?></p>
-                                <p><strong>Paid By:</strong> N/A</p>
+                                <p><strong>Paid By:</strong> <?=$inspection['paid_by']->title?></p>
                             </div>
                         </div>
 
