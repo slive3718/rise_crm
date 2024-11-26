@@ -71,7 +71,7 @@
                 <strong style="text-align: left">Conducted on</strong>
             </td>
             <td style=" padding: 0  20px">
-                <span style="text-align: right; right:0; float:right;"><?= $inspection['inspection_date']?>  </span>
+                <span style="text-align: right; right:0; float:right;"><?= date('Y-m-d', strtotime($inspection['inspection_date']))?>  </span>
             </td>
         </tr>
         <tr>
