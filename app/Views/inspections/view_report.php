@@ -156,13 +156,13 @@
                                 </div>
                                 <div class="row">
                                     <div class="col-md-4">
-                                        <p><strong>Inspection score:</strong> 15 / 16 (93.75%)</p>
+                                        <p><strong>Inspection score:</strong> <?=$inspection['value_count']?>/<?=$inspection['field_count']?> <?=$inspection['populated_percentage']?>%</p>
                                     </div>
                                     <div class="col-md-4">
                                         <p><strong>Flagged items:</strong> <?= $totalFlagged ??''?> </p>
                                     </div>
                                     <div class="col-md-4">
-                                        <p><strong>Created actions:</strong> 0</p>
+                                        <p><strong>Created actions:</strong> N/A </p>
                                     </div>
                                 </div>
                                 <hr>

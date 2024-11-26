@@ -234,8 +234,12 @@ class Inspections extends Security_Controller
             $flaggedCounts = [];
             $totalFlagged = 0;  // Initialize a variable for the overall total of flagged counts
 
+            $fieldWithValue = 0;
+            $fieldCount = 0;
+
             foreach ($fields as $field) {
                 if(in_array($field['id'], array_column($responses, 'inspection_field_id'))) {
+                    $fieldCount++;
                     // Initialize the field with default values
                     $field['value'] = '';
                     $field['response_id'] = '';
@@ -255,6 +259,10 @@ class Inspections extends Security_Controller
                                     if ($field['value'] == $option->label && !empty($option->flagged)) {
                                         $field['flagged'] = true; // Mark the field as flagged if the selected option is flagged
                                         break;
+                                    }
+
+                                    if(!empty($field['value'])){
+                                        $fieldWithValue++;
                                     }
                                 }
                             }
@@ -276,6 +284,9 @@ class Inspections extends Security_Controller
                 }
             }
 
+            $inspection['field_count'] = $fieldCount;
+            $inspection['value_count'] = $fieldWithValue;
+            $inspection['populated_percentage'] = round(($fieldWithValue/$fieldCount) * 100, 1);
 
 
             $inspection_client = $this->Clients_model->get_one($inspection['client_id']);

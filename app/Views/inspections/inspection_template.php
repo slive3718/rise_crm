@@ -322,7 +322,7 @@
                 contentType: false,
                 success: function(data) {
                     toastr.success(data.message || 'Data saved successfully');
-                    $(this).closest('.modal').modal('hide');
+                    $('#customInspectionModal').modal('hide')
                     // Additional success handling if needed
                 },
                 error: function(jqXHR, textStatus, errorThrown) {
