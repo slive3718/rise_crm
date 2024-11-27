@@ -87,7 +87,7 @@
                 <strong style="text-align: left">Paid By: </strong>
             </td>
             <td style=" padding: 0  20px">
-                <span style="text-align: right; right:0; float:right;"><?=$inspection['paid_by']->title?></span>
+                <span style="text-align: right; right:0; float:right;"><?=$inspection['paid_by'] ? $inspection['paid_by']->title : ''?></span>
             </td>
         </tr>
     </table>
