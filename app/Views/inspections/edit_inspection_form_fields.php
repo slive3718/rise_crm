@@ -31,6 +31,7 @@
                             $fieldIndex ++;
                             $fieldType = $field['field_type'];
                             $fieldName = htmlspecialchars($field['field_name']);
+                            $fieldLabel = htmlspecialchars($field['field_label']);
                             $fieldOptions = $field['field_options'] ?? [];
 
                             if($fieldType):
@@ -48,7 +49,7 @@
                                     <input type="text" class="form-control"
                                            id="field_<?= $sectionCount ?>_<?= $fieldIndex ?>"
                                            name="sections[<?= $sectionCount ?>][fields][<?= $fieldIndex ?>][name]"
-                                           value="<?= $fieldName ?>"
+                                           value="<?= $fieldLabel ?>"
                                            placeholder="Enter field name" required>
 
                                     <label for="field_type_<?= $sectionCount ?>_<?= $fieldIndex ?>" class="form-label">Field Type</label>
