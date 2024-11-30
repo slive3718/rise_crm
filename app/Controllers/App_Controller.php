@@ -91,6 +91,7 @@ class App_Controller extends Controller {
     public $Inspections_fields_model;
     public $Inspections_response_model;
     public $Inspections_templates_model;
+    public $Inspections_response_fields_model;
 
     public function __construct() {
         //main template to make frame of this app
@@ -215,7 +216,8 @@ class App_Controller extends Controller {
             'Inspections_model',
             'Inspections_fields_model',
             'Inspections_response_model',
-            'Inspections_templates_model'
+            'Inspections_templates_model',
+            'Inspections_response_fields_model'
         );
     }
 

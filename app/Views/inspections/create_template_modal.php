@@ -13,6 +13,7 @@
                     <div class="mb-4">
                         <label for="template_name" class="form-label">Template Name</label>
                         <input type="text" class="form-control" id="template_name" name="template_name" placeholder="Enter template name" required>
+                        <input type="hidden" class="form-control" id="template_id" name="template_id" value="">
                     </div>
                     <div id="sections" class="sortable-list"></div>
                     <button type="button" class="btn btn-primary" id="addSectionBtn">Add Section</button>

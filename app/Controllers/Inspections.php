@@ -47,6 +47,7 @@ class Inspections extends Security_Controller
                 'location' => $responses['conducted_location'],
                 'client_id' => $responses['client_id'],
                 'inspector_name' => $responses['inspector_name'],
+                'payment_method_id' => $responses['payment_method'],
                 'created_at' => date('Y-m-d H:i:s'),
             ]);
 
@@ -55,9 +56,10 @@ class Inspections extends Security_Controller
                 if ($responses) {
                     $fields = json_decode($responses['fields']);
                     foreach ($fields as $fieldId => $response) {
+                        $copiedFieldId = $this->copyFields($fieldId) ?? '';
                         $this->Inspections_response_model->insert([
                             'inspection_id' => $inspectionId,
-                            'inspection_field_id' => $fieldId,
+                            'inspection_field_id' => $copiedFieldId,
                             'response' => $response,
                             'created_at' => date('Y-m-d H:i:s'),
                         ]);
@@ -82,6 +84,16 @@ class Inspections extends Security_Controller
         }
     }
 
+    function copyFields($field_id){
+        $formFields = (new Inspections_fields_model());
+        $formFieldsData = $formFields->where('id', $field_id)->first();
+
+        if (!empty($formFieldsData)) {
+            return ($this->Inspections_response_fields_model)->insert($formFieldsData);
+        }
+
+        return false;
+    }
     public function update_inspection_response()
     {
         if ($this->request->getMethod() === 'POST') {
@@ -113,33 +125,72 @@ class Inspections extends Security_Controller
         }
     }
 
+    public function update_inspection()
+    {
+        $post = $this->request->getPost();
+        if ($this->request->getMethod() === 'POST') {
+            $inspection_id = $this->request->getPost('inspection_id');
+            if (!empty($inspection_id)) { // Ensure inspection was created
+                // Save responses for each field
+                $this->Inspections_model->where('id', $inspection_id)->set([
+                    'inspection_date' => $post['date'] ?? '',
+                    'client_id' => $post['client_id'] ?? '',
+                    'location' => $post['location'] ?? '',
+                    'inspector_name' => $post['prepared_by'] ?? '',
+                    'payment_method_id' => ($post['payment_method']) ? intVal($post['payment_method']) : 0,
+                    'updated_at' => date('Y-m-d H:i:s'),
+                ])->update();
+                return $this->response->setJSON([
+                    'status' => 'success',
+                    'message' => 'Update success!'
+                ]);
+            } else {
+                return $this->response->setJSON([
+                    'status' => 'failed',
+                    'message' => 'Failed to update inspection!'
+                ]);
+            }
+        } else {
+            return $this->response->setJSON([
+                'status' => 'error',
+                'message' => 'Invalid request.'
+            ]);
+        }
+    }
+
     public function list() {
         if($this->request->getPost('inspection_id')) {
             $inspection = $this->Inspections_model->where('is_deleted', 0)->find($this->request->getPost('inspection_id'));
-            $formFieldModel = $this->Inspections_fields_model;
+            $responseFormFieldModel = $this->Inspections_response_fields_model;
 
             if(!empty($inspection)) {
                 // Fetch all fields, ordered by section and sort_order
-                $fields = $formFieldModel->getFormFields($inspection['template_id'])->findAll();
-                $responses = (new Inspections_response_model())->where('inspection_id', $this->request->getPost('inspection_id'))->findAll();
+                $fields = $responseFormFieldModel->getFormFields($inspection['template_id'])->findAll();
+                $responses = ($this->Inspections_response_model)->where('inspection_id', $this->request->getPost('inspection_id'))->findAll();
                 $sections = [];
                 foreach ($fields as $field) {
-                    // Initialize the field with a default value (empty string or null)
-                    $field['value'] = '';
-                    $field['response_id'] = '';
-                    // Search for a matching response for this field
-                    foreach ($responses as $response) {
-                        if ($response['inspection_field_id'] == $field['id']) {
-                            $field['value'] = $response['response'];
-                            $field['response_id'] = $response['id'];
-                            break;
+                    if(in_array($field['id'], array_column($responses, 'inspection_field_id'))) {
+                        // Initialize the field with a default value (empty string or null)
+                        $field['value'] = '';
+                        $field['response_id'] = '';
+                        foreach ($responses as $response) {
+                            if ($response['inspection_field_id'] == $field['id']) {
+                                $field['value'] = $response['response'];
+                                $field['response_id'] = $response['id'];
+                                break;
+                            }
                         }
+                        $sections[$field['section_name']][] = $field;
                     }
-                    // Group fields by their section
-                    $sections[$field['section_name']][] = $field;
                 }
+
+                $payment_method = $this->Payment_methods_model->get()->getResult();
+
                 $view_data['sections'] = $sections;
                 $view_data['fieldsData'] = $fields;
+                $view_data['inspection'] = $inspection;
+                $view_data['payment_method'] = $payment_method;
+                $view_data['clients'] = $this->Clients_model->get()->getResult();
             }
 
         }else{
@@ -177,58 +228,73 @@ class Inspections extends Security_Controller
 
     public function view_report($inspection_id) {
         $inspection = $this->Inspections_model->where('is_deleted', 0)->find($inspection_id);
-        $formFieldModel = $this->Inspections_fields_model;
+        $formFieldModel = $this->Inspections_response_fields_model;
         $view_data["LOGO_URL"] = get_logo_url();
 
         if (!empty($inspection)) {
             // Fetch all fields, ordered by section and sort_order
             $fields = $formFieldModel->getFormFields($inspection['template_id'])->findAll();
-            $responses = (new Inspections_response_model())->where('inspection_id', $inspection_id)->findAll();
+            $responses = ($this->Inspections_response_model)->where('inspection_id', $inspection_id)->findAll();
             $sections = [];
 
             $flaggedCounts = [];
             $totalFlagged = 0;  // Initialize a variable for the overall total of flagged counts
 
+            $fieldWithValue = 0;
+            $fieldCount = 0;
+
             foreach ($fields as $field) {
-                // Initialize the field with default values
-                $field['value'] = '';
-                $field['response_id'] = '';
-                $field['flagged'] = false; // Add a flagged property, defaulting to false
+                if(in_array($field['id'], array_column($responses, 'inspection_field_id'))) {
+                    $fieldCount++;
+                    // Initialize the field with default values
+                    $field['value'] = '';
+                    $field['response_id'] = '';
+                    $field['flagged'] = false; // Default flagged status to false
 
-                // Search for a matching response for this field
-                foreach ($responses as $response) {
-                    if ($response['inspection_field_id'] == $field['id']) {
-                        $field['value'] = $response['response'];
-                        $field['response_id'] = $response['id'];
-                        break;
-                    }
-                }
+                    // Search for a matching response for this field
+                    foreach ($responses as $response) {
+                        if ($response['inspection_field_id'] == $field['id']) {
+                            $field['value'] = $response['response'];
+                            $field['response_id'] = $response['id'];
 
-                if (isset($field['field_options'])) {
-                    $field_options = json_decode($field['field_options']);
-                    foreach ($field_options as $option) {
-                        if (!empty($option->flags)) { // Check if the option is flagged
-                            $field['flagged'] = true;
+                            // Check if the field has options and if the selected option is flagged
+                            if (isset($field['field_options'])) {
+                                $field_options = json_decode($field['field_options']);
+                                foreach ($field_options as $option) {
+                                    // Only set flagged if the selected option is flagged
+                                    if ($field['value'] == $option->label && !empty($option->flagged)) {
+                                        $field['flagged'] = true; // Mark the field as flagged if the selected option is flagged
+                                        break;
+                                    }
+
+                                    if(!empty($field['value'])){
+                                        $fieldWithValue++;
+                                    }
+                                }
+                            }
                             break;
                         }
                     }
-                }
 
-                // Group fields by their section
-                $sections[$field['section_name']][] = $field;
+                    // Group fields by their section
+                    $sections[$field['section_name']][] = $field;
 
-                // Increment the flagged count for the section if the field is flagged
-                if ($field['flagged']) {
-                    if (!isset($flaggedCounts[$field['section_name']])) {
-                        $flaggedCounts[$field['section_name']] = 0;
+                    // Increment the flagged count for the section if the field is flagged
+                    if ($field['flagged']) {
+                        if (!isset($flaggedCounts[$field['section_name']])) {
+                            $flaggedCounts[$field['section_name']] = 0;
+                        }
+                        $flaggedCounts[$field['section_name']]++; // Increment flagged count for this section
+                        $totalFlagged++; // Increment total flagged count
                     }
-                    $flaggedCounts[$field['section_name']]++;
-                    $totalFlagged++;
                 }
-
             }
 
-//            print_r($sections);exit;
+            $inspection['field_count'] = $fieldCount;
+            $inspection['value_count'] = $fieldWithValue;
+            $inspection['populated_percentage'] = round(($fieldWithValue/$fieldCount) * 100, 1);
+
+            $inspection['paid_by'] = ($result = $this->Payment_methods_model->where('id', $inspection['payment_method_id'])->get()->getResult()) ? $result[0]:'';
 
             $inspection_client = $this->Clients_model->get_one($inspection['client_id']);
             $view_data['sections'] = $sections;
@@ -239,7 +305,6 @@ class Inspections extends Security_Controller
             $view_data['fieldsData'] = $fields;
             $view_data['inspection_id'] = $inspection_id;
         }
-
         return $this->template->rander('inspections/view_report', $view_data);
     }
 
@@ -249,7 +314,7 @@ class Inspections extends Security_Controller
 
         $inspection = $this->Inspections_model->where('is_deleted', 0)->find($inspection_id);
         $inspection_template = ($this->Inspections_templates_model)->find($inspection['template_id']);
-        $formFieldModel = $this->Inspections_fields_model;
+        $formFieldModel = $this->Inspections_response_fields_model;
         $view_data["LOGO_URL"] = get_logo_url();
 
 
@@ -264,46 +329,51 @@ class Inspections extends Security_Controller
             $flaggedCounts = [];
             $totalFlagged = 0;  // Initialize a variable for the overall total of flagged counts
 
+
             foreach ($fields as $field) {
-                // Initialize the field with default values
-                $field['value'] = '';
-                $field['response_id'] = '';
-                $field['flagged'] = false; // Add a flagged property, defaulting to false
+                if(in_array($field['id'], array_column($responses, 'inspection_field_id'))) {
+                    // Initialize the field with default values
+                    $field['value'] = '';
+                    $field['response_id'] = '';
+                    $field['flagged'] = false; // Default flagged status to false
 
-                // Search for a matching response for this field
-                foreach ($responses as $response) {
-                    if ($response['inspection_field_id'] == $field['id']) {
-                        $field['value'] = $response['response'];
-                        $field['response_id'] = $response['id'];
-                        break;
-                    }
-                }
+                    // Search for a matching response for this field
+                    foreach ($responses as $response) {
+                        if ($response['inspection_field_id'] == $field['id']) {
+                            $field['value'] = $response['response'];
+                            $field['response_id'] = $response['id'];
 
-                if (isset($field['field_options'])) {
-                    $field_options = json_decode($field['field_options']);
-                    foreach ($field_options as $option) {
-                        if (!empty($option->flags)) { // Check if the option is flagged
-                            $field['flagged'] = true;
+                            // Check if the field has options and if the selected option is flagged
+                            if (isset($field['field_options'])) {
+                                $field_options = json_decode($field['field_options']);
+                                foreach ($field_options as $option) {
+                                    // Only set flagged if the selected option is flagged
+                                    if ($field['value'] == $option->label && !empty($option->flagged)) {
+                                        $field['flagged'] = true; // Mark the field as flagged if the selected option is flagged
+                                        break;
+                                    }
+                                }
+                            }
                             break;
                         }
                     }
-                }
 
-                // Group fields by their section
-                $sections[$field['section_name']][] = $field;
+                    // Group fields by their section
+                    $sections[$field['section_name']][] = $field;
 
-                // Increment the flagged count for the section if the field is flagged
-                if ($field['flagged']) {
-                    if (!isset($flaggedCounts[$field['section_name']])) {
-                        $flaggedCounts[$field['section_name']] = 0;
+                    // Increment the flagged count for the section if the field is flagged
+                    if ($field['flagged']) {
+                        if (!isset($flaggedCounts[$field['section_name']])) {
+                            $flaggedCounts[$field['section_name']] = 0;
+                        }
+                        $flaggedCounts[$field['section_name']]++; // Increment flagged count for this section
+                        $totalFlagged++; // Increment total flagged count
                     }
-                    $flaggedCounts[$field['section_name']]++;
-                    $totalFlagged++;
                 }
-
             }
 
-//            print_r($sections);exit;
+            $inspection['paid_by'] = ($result = $this->Payment_methods_model->where('id', $inspection['payment_method_id'])->get()->getResult()) ? $result[0]:'';
+
 
             $inspection_client = $this->Clients_model->get_one($inspection['client_id']);
             $view_data['sections'] = $sections;
@@ -316,7 +386,6 @@ class Inspections extends Security_Controller
             $view_data['template'] = $inspection_template;
         }
 
-//        print_r($view_data);exit;
 
 
         prepare_inspection_pdf($view_data);

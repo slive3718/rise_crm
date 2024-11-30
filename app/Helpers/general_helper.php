@@ -3344,7 +3344,7 @@ if (!function_exists('prepare_inspection_pdf')) {
             // print_r($invoice_data);exit;
             $html = view("inspections/prepare_pdf", $inspection_data);
 
-            // print_r($html);exit;
+
             if ($mode != "html") {
                 if ($html === false) {
                     throw new Exception("Failed to rebuild HTML for inspection report.");

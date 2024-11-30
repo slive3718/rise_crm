@@ -14,7 +14,7 @@
         </tr>
         <tr>
             <td width="66%" style="font-weight: bold; padding: 0  20px">
-                <span style="font-size:15px"><?= date( "F d Y", strtotime($inspection['created_at']))?></span>
+                <span style="font-size:15px"><?= date("Y-m-d", strtotime($inspection['inspection_date']))?></span>
             </td>
             <td width="33%" style="font-weight: bold; padding: 0  20px">
                 Incomplete
@@ -26,10 +26,14 @@
     <table width="100%" style="margin-top: 15px; border-collapse: collapse; font-size: 14px; ">
         <tr style="background-color: #e9edf6; ">
             <td width="33%" style="font-weight: bold; padding: 0  20px">
-                <strong style="text-align: left">Score</strong> <span style="text-align: right; right:0; float:right; letter-spacing: 4px"> <?= countItemsValue($sections) .'/'. countAllFields($sections)?> <?= intVal( (countItemsValue($sections)/ countAllFields($sections))*100)?>% </span>
+                <strong style="text-align: left">Score</strong>
+                <?php if (countItemsValue($sections) > 0) : ?>
+                    <span style="text-align: right; right:0; float:right; letter-spacing: 4px">
+                <?= countItemsValue($sections) .'/'. countAllFields($sections)?> <?= intVal( (countItemsValue($sections)/ countAllFields($sections))*100)?>% </span>
+                <?php endif ?>
             </td>
             <td width="33%" style="font-weight: bold; padding: 0  20px">
-                <strong style="text-align: left">Flagged items </strong> <span style="text-align: right; right:0; float:right"> <?= countFlaggedItems($sections) ?></span>
+                <strong style="text-align: left">Flagged items </strong> <span style="text-align: right; right:0; float:right"> <?= $totalFlagged ?></span>
             </td>
             <td width="33%" style="font-weight: bold; padding: 0 20px">
                 Actions
@@ -67,7 +71,7 @@
                 <strong style="text-align: left">Conducted on</strong>
             </td>
             <td style=" padding: 0  20px">
-                <span style="text-align: right; right:0; float:right;"><?= $inspection['inspection_date']?>  </span>
+                <span style="text-align: right; right:0; float:right;"><?= date('Y-m-d', strtotime($inspection['inspection_date']))?>  </span>
             </td>
         </tr>
         <tr>
@@ -83,7 +87,7 @@
                 <strong style="text-align: left">Paid By: </strong>
             </td>
             <td style=" padding: 0  20px">
-                <span style="text-align: right; right:0; float:right;"> Test</span>
+                <span style="text-align: right; right:0; float:right;"><?=$inspection['paid_by'] ? $inspection['paid_by']->title : ''?></span>
             </td>
         </tr>
     </table>
@@ -97,10 +101,11 @@
             <tr>
                 <td width="70%"  style="font-weight: bold; color: #555; background-color: #e9edf6;  padding: 0  20px">
                     <strong><?= htmlspecialchars($section_name)?></strong>
-
                 </td>
                 <td width="30%" style="text-align: right;  padding: 0  20px; background-color:#e9edf6">
-                    <strong><?= (countFlaggedItems($sections))?></strong>
+                    <?php if(!empty ($flaggedCounts[$section_name])): ?>
+                    <strong style="color:rgb(198,0,34)"><?= $flaggedCounts[$section_name] > 0 ? "Flagged: ". $flaggedCounts[$section_name] : '' ?></strong>
+                    <?php endif; ?>
                 </td>
             </tr>
 
@@ -154,7 +159,6 @@ function calculateFlags($field)
 
 function countFlaggedItems($data) {
     $flaggedCount = 0;
-
     foreach ($data as $section) {
         foreach ($section as $item) {
             if (isset($item['flagged']) && $item['flagged'] == 1) {
@@ -162,7 +166,16 @@ function countFlaggedItems($data) {
             }
         }
     }
+    return $flaggedCount;
+}
 
+function countFlaggedItemsPerSection($data) {
+    $flaggedCount = 0;
+    foreach ($data as $item) {
+        if (isset($item['flagged']) && $item['flagged'] == 1) {
+            $flaggedCount++;
+        }
+    }
     return $flaggedCount;
 }
 

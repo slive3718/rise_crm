@@ -186,28 +186,30 @@
                 $('#customInspectionModal #inspectionCreateForm button[type="submit"]').hide();
                 $('#customInspectionModal').modal('show');
                 $('#customInspectionModal .modal-body').html(response);
+                $('#customInspectionModal #inspectionCreateForm button[type="submit"]').hide();
             });
         });
 
-        inspectionTable.on('click', '.edit', function(){
-            let inspection_id = $(this).attr('inspection_id')
+        let debounceTimer; // Declare a timer variable outside to keep track of debounce
+
+        inspectionTable.on('click', '.edit', function() {
+            let inspection_id = $(this).attr('inspection_id');
             $('#customInspectionModal .modal-body').html("");
             getInspection(inspection_id).then(function(response) {
-                $('#customInspectionModal #inspectionCreateForm button[type="submit"]').hide();
                 $('#customInspectionModal').modal('show');
                 $('#customInspectionModal .modal-body').html(response);
                 // Unbind any previous event handlers to prevent multiple triggers
                 $('#customInspectionModal #inspectionCreateForm :input').off('input change').on('input change', function() {
-                    // Handle changes
-                    if (!isUpdating) {
-                        isUpdating = true;  // Set flag before updating
-                        let $this = $(this);
-                        updateResponse($this);
-                        setTimeout(() => { isUpdating = false; }, 0);  // Reset flag after handling update
-                    }
+                    let $this = $(this);
+                    clearTimeout(debounceTimer);
+                    debounceTimer = setTimeout(() => {
+                        updateResponse($this); // Call update function after delay
+                    }, 300); // Adjust delay as needed (300ms in this example)
                 });
+
+                $('#customInspectionModal #inspectionCreateForm button[type="submit"]').hide();
             });
-        })
+        });
 
         inspectionTable.on('click', '.viewReport', function(){
             let inspection_id = $(this).attr('inspection_id')
@@ -223,7 +225,47 @@
             let inspection_id = $(this).attr('inspection_id')
             deleteInspection(inspection_id)
         })
+
+        $("#customInspectionModal").on('change input', '#conducted_date, #client_id, #prepared_by, #conducted_location, #payment_method', function() {
+            let $this = $(this);
+            clearTimeout(debounceTimer);
+            debounceTimer = setTimeout(() => {
+                updateInspection($this);
+            }, 300); // Adjust delay as needed (300ms in this example)
+
+        });
     })
+
+    function updateInspection($this){
+        let inspection_id = $this.attr('inspection_id')
+        let client_id = $("#client_id").val();
+        let location = $("#conducted_location").val();
+        let date = $("#conducted_date").val();
+        let prepared_by = $("#prepared_by").val();
+        let payment_method = $("#payment_method").val();
+        $.ajax({
+            url: "<?= get_uri('inspections/update_inspection') ?>",
+            type: "POST", // Specify request type
+            data: {
+                inspection_id: inspection_id,
+                client_id: client_id,
+                location: location,
+                date: date,
+                prepared_by: prepared_by,
+                payment_method: payment_method
+            },
+            success: function(response) {
+                if (response.status === 'success')
+                    toastr.success(response.message);
+                else
+                    toastr.error(response.message);
+            },
+            error: function(xhr, status, error) {
+                console.error("AJAX Error:", status, error);
+                alert("An error occurred while updating the inspection details. Please try again.");
+            }
+        });
+    }
 
     async function getInspection(inspection_id){
         return $.ajax({
@@ -242,22 +284,21 @@
         });
     }
 
-    function updateResponse($this){
-        let inspection_response_id = $this.attr('response_id')
+    function updateResponse($this) {
+        let inspection_response_id = $this.attr('response_id');
 
-         $.ajax({
+        $.ajax({
             url: "<?= get_uri('inspections/update_inspection_response') ?>",
             type: "POST", // Specify request type
             data: {
                 inspection_response_id: inspection_response_id,
-                response:$this.val()
+                response: $this.val()
             },
             success: function(response) {
-                response = JSON.parse(response)
-                if(response.status === 'success')
-                    toastr.success(response.message)
+                if (response.status === 'success')
+                    toastr.success(response.message);
                 else
-                    toastr.error(response.message)
+                    toastr.error(response.message);
             },
             error: function(xhr, status, error) {
                 console.error("AJAX Error:", status, error);
