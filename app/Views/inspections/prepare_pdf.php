@@ -29,7 +29,7 @@
                 <strong style="text-align: left">Score</strong>
                 <?php if (countItemsValue($sections) > 0) : ?>
                     <span style="text-align: right; right:0; float:right; letter-spacing: 4px">
-                <?= countItemsValue($sections) .'/'. countAllFields($sections)?> <?= intVal( (countItemsValue($sections)/ countAllFields($sections))*100)?>% </span>
+               <?=$totalFlagged?>/<?=$radioTotalCount?> <?=$inspection['populated_percentage']?>%</span>
                 <?php endif ?>
             </td>
             <td width="33%" style="font-weight: bold; padding: 0  20px">

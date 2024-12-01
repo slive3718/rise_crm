@@ -156,7 +156,7 @@
                                 </div>
                                 <div class="row">
                                     <div class="col-md-4">
-                                        <p><strong>Inspection score:</strong> <?=$inspection['value_count']?>/<?=$inspection['field_count']?> <?=$inspection['populated_percentage']?>%</p>
+                                        <p><strong>Inspection score:</strong> <?=$totalFlagged?>/<?=$radioTotalCount?> <?=$inspection['populated_percentage']?>%</p>
                                     </div>
                                     <div class="col-md-4">
                                         <p><strong>Flagged items:</strong> <?= $totalFlagged ??''?> </p>

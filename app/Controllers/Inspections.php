@@ -242,8 +242,11 @@ class Inspections extends Security_Controller
 
             $fieldWithValue = 0;
             $fieldCount = 0;
-
+            $radioTotalCount = 0;
             foreach ($fields as $field) {
+                if($field['field_type'] == 'radio'){
+                    $radioTotalCount++;
+                }
                 if(in_array($field['id'], array_column($responses, 'inspection_field_id'))) {
                     $fieldCount++;
                     // Initialize the field with default values
@@ -292,13 +295,14 @@ class Inspections extends Security_Controller
 
             $inspection['field_count'] = $fieldCount;
             $inspection['value_count'] = $fieldWithValue;
-            $inspection['populated_percentage'] = round(($fieldWithValue/$fieldCount) * 100, 1);
+            $inspection['populated_percentage'] = round(($totalFlagged/$radioTotalCount) * 100, 1);
 
             $inspection['paid_by'] = ($result = $this->Payment_methods_model->where('id', $inspection['payment_method_id'])->get()->getResult()) ? $result[0]:'';
 
             $inspection_client = $this->Clients_model->get_one($inspection['client_id']);
             $view_data['sections'] = $sections;
             $view_data['flaggedCounts'] = $flaggedCounts;
+            $view_data['radioTotalCount'] = $radioTotalCount;
             $view_data['totalFlagged'] = $totalFlagged;
             $view_data['inspection'] = $inspection;
             $view_data['inspection_client'] = $inspection_client;
@@ -328,9 +332,12 @@ class Inspections extends Security_Controller
 
             $flaggedCounts = [];
             $totalFlagged = 0;  // Initialize a variable for the overall total of flagged counts
-
+            $radioTotalCount = 0;
 
             foreach ($fields as $field) {
+                if($field['field_type'] == 'radio'){
+                    $radioTotalCount++;
+                }
                 if(in_array($field['id'], array_column($responses, 'inspection_field_id'))) {
                     // Initialize the field with default values
                     $field['value'] = '';
@@ -374,11 +381,13 @@ class Inspections extends Security_Controller
 
             $inspection['paid_by'] = ($result = $this->Payment_methods_model->where('id', $inspection['payment_method_id'])->get()->getResult()) ? $result[0]:'';
 
+            $inspection['populated_percentage'] = round(($totalFlagged/$radioTotalCount) * 100, 1);
 
             $inspection_client = $this->Clients_model->get_one($inspection['client_id']);
             $view_data['sections'] = $sections;
             $view_data['flaggedCounts'] = $flaggedCounts;
             $view_data['totalFlagged'] = $totalFlagged;
+            $view_data['radioTotalCount'] = $radioTotalCount;
             $view_data['inspection'] = $inspection;
             $view_data['inspection_client'] = $inspection_client;
             $view_data['fieldsData'] = $fields;
