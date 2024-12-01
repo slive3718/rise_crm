@@ -43,10 +43,10 @@
 
     <table width="100%" style="margin-top: 15px; border-collapse: collapse; font-size: 14px; ">
         <tr>
-            <td width="70%" style="font-weight: bold; padding: 0  20px">
+            <td width="40%" style="font-weight: bold; padding: 0  20px">
                 <strong style="text-align: left">Customer</strong>
             </td>
-            <td width="30%" style=" padding: 0  20px">
+            <td width="60%" style=" padding: 0  20px">
                 <span style="text-align: right;  float:right;"> <?= $inspection_client->company_name?> </span>
             </td>
         </tr>
@@ -99,7 +99,7 @@
     <table width="100%" style="margin-top: 15px; border-collapse: collapse; font-size: 14px; ">
         <?php  foreach ($sections as $section_name => $fields): ?>
             <tr>
-                <td width="70%"  style="font-weight: bold; color: #555; background-color: #e9edf6;  padding: 0  20px">
+                <td width="70%"  style="font-weight: bold; color: black; background-color: #e9edf6;  padding: 0  20px">
                     <strong><?= htmlspecialchars($section_name)?></strong>
                 </td>
                 <td width="30%" style="text-align: right;  padding: 0  20px; background-color:#e9edf6">
@@ -112,8 +112,8 @@
             <?php foreach ($fields as $field): if(is_array($field) && $field['field_label']): ?>
 
                 <tr style="border-bottom: 1px solid black">
-                    <td width="70%" style="font-weight: bold; color: #555;  padding: 0  20px">
-                        <?= htmlspecialchars($field['field_label']) ?>
+                    <td width="70%" style="font-weight: bold; color: black;  padding: 0  20px">
+                        <?= htmlspecialchars(ucfirst($field['field_label'])) ?>
                     </td>
 
                     <?php
@@ -127,12 +127,12 @@
                             // Display the selected radio option
                             foreach (json_decode($field['field_options'], true) as $option) {
                                 if ($field['value'] == $option['label']) {
-                                    echo htmlspecialchars($option['label']);
+                                    echo htmlspecialchars(ucfirst($option['label']));
                                 }
                             }
                         } else {
                             // For text, textarea, and select fields, display the value directly
-                            echo htmlspecialchars(isset($field['value']) ? $field['value'] : '');
+                            echo htmlspecialchars(ucfirst(isset($field['value']) ? $field['value'] : ''));
                         }
                         ?>
                     </td>
