@@ -17,7 +17,7 @@
                 <span style="font-size:15px"><?= date("Y-m-d", strtotime($inspection['inspection_date']))?></span>
             </td>
             <td width="33%" style="font-weight: bold; padding: 0  20px">
-                Incomplete
+           
             </td>
         </tr>
     </table>
@@ -47,7 +47,7 @@
                 <strong style="text-align: left">Customer</strong>
             </td>
             <td width="60%" style=" padding: 0  20px">
-                <span style="text-align: right;  float:right;"> <?= $inspection_client->company_name?> </span>
+                <span style="text-align: right;  float:right;"> <?= ucfirst($inspection_client->company_name)?> </span>
             </td>
         </tr>
         <tr>
@@ -63,7 +63,7 @@
                 <strong style="text-align: left">Location</strong>
             </td>
             <td style=" padding: 0  20px">
-                <span style="text-align: right; right:0; float:right;"><?= $inspection_client->address?>  </span>
+                <span style="text-align: right; right:0; float:right;"><?= ucfirst($inspection_client->address)?>  </span>
             </td>
         </tr>
         <tr>
@@ -79,7 +79,7 @@
                 <strong style="text-align: left">Prepared By: </strong>
             </td>
             <td style=" padding: 0  20px">
-                <span style="text-align: right; right:0; float:right;"><?= $inspection['inspector_name']?>  </span>
+                <span style="text-align: right; right:0; float:right;"><?= ucfirst($inspection['inspector_name'])?>  </span>
             </td>
         </tr>
         <tr>
@@ -87,7 +87,7 @@
                 <strong style="text-align: left">Paid By: </strong>
             </td>
             <td style=" padding: 0  20px">
-                <span style="text-align: right; right:0; float:right;"><?=$inspection['paid_by'] ? $inspection['paid_by']->title : ''?></span>
+                <span style="text-align: right; right:0; float:right;"><?=ucfirst($inspection['paid_by'] ? $inspection['paid_by']->title : '')?></span>
             </td>
         </tr>
     </table>
@@ -100,7 +100,7 @@
         <?php  foreach ($sections as $section_name => $fields): ?>
             <tr>
                 <td width="70%"  style="font-weight: bold; color: black; background-color: #e9edf6;  padding: 0  20px">
-                    <strong><?= htmlspecialchars($section_name)?></strong>
+                    <strong><?= ucfirst(htmlspecialchars($section_name))?></strong>
                 </td>
                 <td width="30%" style="text-align: right;  padding: 0  20px; background-color:#e9edf6">
                     <?php if(!empty ($flaggedCounts[$section_name])): ?>
